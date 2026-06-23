@@ -15,6 +15,7 @@ Rules:
 - Match the tone of a premium luxury travel agency.
 - Keep the format easy to edit in a text editor.
 - Include Morning, Afternoon, Evening, and Overnight Stay for every day.
+- Strongly prioritize the selected destinations and daily island plan when planning the route.
 - Use internal staff notes to improve the itinerary, but never mention them in the final customer-facing output.
 - If information is missing, make sensible assumptions without calling attention to gaps.
 """
@@ -35,6 +36,8 @@ Customer Country: {request.customer_country}
 Customer Email: {request.customer_email}
 Customer Phone Number: {request.customer_phone_number}
 Destination: {request.destination}
+Selected Destinations / Sightseeing Spots: {request.selected_destinations or 'None'}
+Daily Island Plan: {request.daily_island_plan or 'None'}
 Number of Nights: {request.number_of_nights}
 Number of Days: {request.number_of_days}
 Arrival Date: {request.arrival_date}
@@ -80,6 +83,7 @@ Formatting requirements:
 - Do not invent hotels or activities if the company context already provides suitable options.
 - Do not include pricing, package costs, booking instructions, or payment language.
 - Use internal staff notes to influence planning, but do not mention them explicitly.
+- Prioritize the selected destinations and daily island plan as the routing backbone.
 """
 
 
@@ -105,6 +109,8 @@ Country: {request.customer_country}
 Email: {request.customer_email}
 Phone: {request.customer_phone_number}
 Destination: {request.destination}
+Selected Destinations / Sightseeing Spots: {request.selected_destinations or 'None'}
+Daily Island Plan: {request.daily_island_plan or 'None'}
 Duration: {request.number_of_days} days / {request.number_of_nights} nights
 Arrival Date: {request.arrival_date}
 Departure Date: {request.departure_date}
@@ -144,4 +150,5 @@ Rules:
 - Do not invent hotels or activities if company options are already available.
 - Do not include pricing, flight tickets, package costs, booking instructions, or payment language.
 - Use internal staff notes to influence planning, but do not mention them explicitly.
+- Prioritize the selected destinations and daily island plan as the routing backbone.
 """

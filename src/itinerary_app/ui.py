@@ -1,4 +1,5 @@
 import os
+from datetime import timedelta
 
 import streamlit as st
 
@@ -68,6 +69,171 @@ RESTRICTIONS_EXCLUSIONS = [
     "No Long Road Journeys",
     "No Adventure Activities",
 ]
+DESTINATION_OPTIONS = [
+    "Port Blair",
+    "Swaraj Dweep (Havelock Island)",
+    "Shaheed Dweep (Neil Island)",
+    "Baratang Island",
+    "Ross Island (Netaji Subhash Chandra Bose Island)",
+    "North Bay Island",
+    "Jolly Buoy Island",
+    "Red Skin Island",
+    "Chidiya Tapu",
+    "Wandoor Beach",
+    "Cinque Island",
+    "Long Island",
+    "Rangat",
+    "Mayabunder",
+    "Diglipur",
+    "Ross and Smith Islands",
+    "Little Andaman",
+    "Barren Island (Cruise View)",
+    "Interview Island",
+    "Cellular Jail",
+    "Light & Sound Show",
+    "Corbyn's Cove Beach",
+    "Flag Point",
+    "Marina Park",
+    "Anthropological Museum",
+    "Samudrika Marine Museum",
+    "Chatham Saw Mill",
+    "Fisheries Museum",
+    "Jogger's Park",
+    "Radhanagar Beach",
+    "Elephant Beach",
+    "Kala Pathar Beach",
+    "Scuba Diving",
+    "Snorkeling",
+    "Kayaking",
+    "Bharatpur Beach",
+    "Laxmanpur Beach",
+    "Natural Bridge",
+    "Sitapur Beach",
+    "Limestone Cave",
+    "Mud Volcano",
+    "Mangrove Boat Ride",
+    "Ross & Smith Sandbar",
+    "Saddle Peak Trek",
+    "Kalipur Beach",
+]
+NATIONALITIES = [
+    "Indian",
+    "American",
+    "British",
+    "Australian",
+    "Canadian",
+    "German",
+    "French",
+    "Singaporean",
+    "Japanese",
+    "Chinese",
+    "Malaysian",
+    "Indonesian",
+    "Thai",
+    "Sri Lankan",
+    "Nepalese",
+    "Bangladeshi",
+    "Pakistani",
+    "UAE",
+    "Emirati",
+    "Saudi",
+    "Qatari",
+    "Kuwaiti",
+    "Omani",
+    "Bahraini",
+    "Italian",
+    "Spanish",
+    "Portuguese",
+    "Dutch",
+    "Belgian",
+    "Swiss",
+    "Austrian",
+    "Swedish",
+    "Norwegian",
+    "Danish",
+    "Finnish",
+    "Irish",
+    "Scottish",
+    "New Zealander",
+    "South African",
+    "Kenyan",
+    "Nigerian",
+    "Mexican",
+    "Brazilian",
+    "Argentinian",
+    "Chilean",
+    "Colombian",
+    "Peruvian",
+    "Turkish",
+    "Russian",
+    "Ukrainian",
+    "Kazakh",
+    "Philippine",
+    "Vietnamese",
+    "Korean",
+    "Taiwanese",
+    "Custom...",
+]
+COUNTRIES_FALLBACK = [
+    "India",
+    "Afghanistan",
+    "Albania",
+    "Algeria",
+    "Argentina",
+    "Australia",
+    "Austria",
+    "Bangladesh",
+    "Belgium",
+    "Bhutan",
+    "Brazil",
+    "Canada",
+    "Chile",
+    "China",
+    "Colombia",
+    "Denmark",
+    "Egypt",
+    "Finland",
+    "France",
+    "Germany",
+    "Greece",
+    "Hong Kong",
+    "Iceland",
+    "Indonesia",
+    "Ireland",
+    "Israel",
+    "Italy",
+    "Japan",
+    "Kenya",
+    "Kuwait",
+    "Malaysia",
+    "Maldives",
+    "Mexico",
+    "Nepal",
+    "Netherlands",
+    "New Zealand",
+    "Nigeria",
+    "Norway",
+    "Oman",
+    "Pakistan",
+    "Philippines",
+    "Qatar",
+    "Russia",
+    "Saudi Arabia",
+    "Singapore",
+    "South Africa",
+    "South Korea",
+    "Spain",
+    "Sri Lanka",
+    "Sweden",
+    "Switzerland",
+    "Thailand",
+    "Turkey",
+    "UAE",
+    "United Kingdom",
+    "United States",
+    "Vietnam",
+    "Custom...",
+]
 MODEL_OPTIONS = [
     "gemini-3.1-flash-lite",
     "gemini-2.5-flash-lite",
@@ -107,6 +273,110 @@ def _join_selected(values: object) -> str:
     return str(values).strip()
 
 
+def _select_with_custom(label: str, options: list[str], default_value: str, custom_placeholder: str) -> str:
+    selected = st.selectbox(label, options, index=options.index(default_value) if default_value in options else 0)
+    if selected == "Custom...":
+        return st.text_input(f"Custom {label}", placeholder=custom_placeholder).strip()
+    return selected
+
+
+def _default_daily_destinations(day_number: int) -> list[str]:
+    templates = {
+        1: ["Port Blair"],
+        2: ["Ross Island (Netaji Subhash Chandra Bose Island)", "North Bay Island"],
+        3: ["Swaraj Dweep (Havelock Island)"],
+        4: ["Swaraj Dweep (Havelock Island)"],
+        5: ["Shaheed Dweep (Neil Island)"],
+        6: ["Shaheed Dweep (Neil Island)"],
+        7: ["Port Blair"],
+    }
+    return templates.get(day_number, ["Port Blair"])
+
+
+def _sync_daily_plan_state(number_of_days: int) -> None:
+    previous_day_count = int(st.session_state.get("daily_plan_day_count", 0))
+    if previous_day_count != number_of_days:
+        for key in list(st.session_state.keys()):
+            if key.startswith("daily_plan_day_"):
+                try:
+                    day_number = int(key.rsplit("_", 1)[-1])
+                except ValueError:
+                    continue
+                if day_number > number_of_days:
+                    del st.session_state[key]
+        st.session_state.daily_plan_day_count = number_of_days
+
+    for day_number in range(1, number_of_days + 1):
+        key = f"daily_plan_day_{day_number}"
+        if key not in st.session_state:
+            st.session_state[key] = _default_daily_destinations(day_number)
+
+
+def _format_daily_island_plan(number_of_days: int) -> str:
+    lines: list[str] = []
+    for day_number in range(1, number_of_days + 1):
+        destinations = st.session_state.get(f"daily_plan_day_{day_number}", [])
+        if isinstance(destinations, list) and destinations:
+            lines.append(f"Day {day_number}: {', '.join(destinations)}")
+        else:
+            lines.append(f"Day {day_number}: Port Blair")
+    return "\n".join(lines)
+
+
+def _render_travel_planner() -> tuple[str, str, str, object, object, object, bool, int, int]:
+    with st.expander("Travel Information", expanded=True):
+        top_left, top_right = st.columns(2)
+        with top_left:
+            selected_destinations = st.multiselect(
+                "Destination Selection",
+                DESTINATION_OPTIONS,
+                default=st.session_state.get("selected_destinations", ["Port Blair"]),
+                key="selected_destinations",
+            )
+            number_of_days = st.number_input(
+                "Number of Days",
+                min_value=1,
+                value=int(st.session_state.get("trip_number_of_days", 7)),
+                step=1,
+                key="trip_number_of_days",
+            )
+            arrival_date = st.date_input("Arrival Date", key="trip_arrival_date")
+            travel_month = st.selectbox("Travel Month", MONTHS, index=0, key="trip_travel_month")
+        with top_right:
+            number_of_nights = max(int(number_of_days) - 1, 0)
+            departure_date = arrival_date + timedelta(days=number_of_nights)
+            st.info(
+                f"**Number of Nights:** {number_of_nights}\n\n**Departure Date:** {departure_date.strftime('%d %b %Y')}"
+            )
+            flexible_travel_dates = st.toggle("Flexible Travel Dates", value=False, key="trip_flexible_dates")
+
+        _sync_daily_plan_state(int(number_of_days))
+        st.markdown("**Daily Island Plan**")
+        for day_number in range(1, int(number_of_days) + 1):
+            st.multiselect(
+                f"Day {day_number} Destination(s)",
+                DESTINATION_OPTIONS,
+                key=f"daily_plan_day_{day_number}",
+                default=st.session_state.get(f"daily_plan_day_{day_number}", _default_daily_destinations(day_number)),
+            )
+
+    selected_destination_text = ", ".join(selected_destinations).strip()
+    if not selected_destination_text:
+        selected_destination_text = "Andaman Islands"
+
+    return (
+        selected_destination_text,
+        selected_destination_text,
+        _format_daily_island_plan(int(number_of_days)),
+        arrival_date,
+        departure_date,
+        travel_month,
+        flexible_travel_dates,
+        int(number_of_days),
+        int(number_of_nights),
+    )
+
+
 def _build_request(form_data: dict[str, object]) -> TripRequest:
     return TripRequest(
         customer_name=str(form_data["customer_name"]).strip(),
@@ -116,6 +386,8 @@ def _build_request(form_data: dict[str, object]) -> TripRequest:
         customer_email=str(form_data["customer_email"]).strip(),
         customer_phone_number=str(form_data["customer_phone_number"]).strip(),
         destination=str(form_data["destination"]).strip(),
+        selected_destinations=str(form_data["selected_destinations"]).strip(),
+        daily_island_plan=str(form_data["daily_island_plan"]).strip(),
         number_of_nights=int(form_data["number_of_nights"]),
         number_of_days=int(form_data["number_of_days"]),
         arrival_date=str(form_data["arrival_date"]),
@@ -238,6 +510,18 @@ def render_app() -> None:
     if "itinerary_versions" not in st.session_state:
         st.session_state.itinerary_versions = []
 
+    (
+        destination_text,
+        selected_destination_text,
+        daily_island_plan,
+        arrival_date,
+        departure_date,
+        travel_month,
+        flexible_travel_dates,
+        number_of_days,
+        number_of_nights,
+    ) = _render_travel_planner()
+
     st.markdown(f'<div class="app-brand">{BRAND_NAME}</div>', unsafe_allow_html=True)
     st.title(APP_TITLE)
     st.markdown(f'<div class="app-subtitle">{APP_SUBTITLE}</div>', unsafe_allow_html=True)
@@ -260,24 +544,30 @@ def render_app() -> None:
             top_left, top_right = st.columns(2)
             with top_left:
                 customer_name = st.text_input("Customer Name", placeholder="Enter customer name")
-                lead_id = st.text_input("Lead ID", placeholder="Enter lead ID")
-                customer_nationality = st.text_input("Customer Nationality", placeholder="Enter nationality")
+                lead_id = st.text_input("Lead ID", placeholder="DT-2026-001")
+                customer_nationality = _select_with_custom(
+                    "Customer Nationality",
+                    NATIONALITIES,
+                    "Indian",
+                    "Enter nationality",
+                )
             with top_right:
-                customer_country = st.text_input("Customer Country", placeholder="Enter country")
+                try:
+                    import pycountry
+
+                    country_options = sorted({country.name for country in pycountry.countries})
+                    if "India" not in country_options:
+                        country_options.insert(0, "India")
+                except Exception:
+                    country_options = COUNTRIES_FALLBACK
+                customer_country = _select_with_custom(
+                    "Customer Country",
+                    country_options,
+                    "India",
+                    "Enter country",
+                )
                 customer_email = st.text_input("Customer Email", placeholder="Enter email")
                 customer_phone_number = st.text_input("Customer Phone Number", placeholder="Enter phone number")
-
-        with st.expander("Travel Information", expanded=True):
-            top_left, top_right = st.columns(2)
-            with top_left:
-                destination = st.text_input("Destination", value="Andaman Islands")
-                number_of_days = st.number_input("Number of Days", min_value=1, value=7, step=1)
-                arrival_date = st.date_input("Arrival Date")
-                travel_month = st.selectbox("Travel Month", MONTHS, index=0)
-            with top_right:
-                number_of_nights = st.number_input("Number of Nights", min_value=1, value=6, step=1)
-                departure_date = st.date_input("Departure Date")
-                flexible_travel_dates = st.toggle("Flexible Travel Dates", value=False)
 
         with st.expander("Travel Party", expanded=True):
             top_left, top_right = st.columns(2)
@@ -363,7 +653,9 @@ def render_app() -> None:
             "customer_country": customer_country,
             "customer_email": customer_email,
             "customer_phone_number": customer_phone_number,
-            "destination": destination,
+            "destination": destination_text,
+            "selected_destinations": selected_destination_text,
+            "daily_island_plan": daily_island_plan,
             "number_of_nights": number_of_nights,
             "number_of_days": number_of_days,
             "arrival_date": arrival_date,
@@ -394,7 +686,7 @@ def render_app() -> None:
         }
     )
 
-    if customer_name.strip() or special_requests.strip() or destination.strip():
+    if customer_name.strip() or special_requests.strip() or destination_text.strip():
         _render_recommendations(request)
 
     if submitted:

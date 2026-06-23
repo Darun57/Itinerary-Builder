@@ -10,6 +10,8 @@ class TripRequest:
     customer_email: str
     customer_phone_number: str
     destination: str
+    selected_destinations: str
+    daily_island_plan: str
     number_of_nights: int
     number_of_days: int
     arrival_date: str
