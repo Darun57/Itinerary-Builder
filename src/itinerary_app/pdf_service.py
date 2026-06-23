@@ -218,6 +218,71 @@ def _extract_highlights(itinerary_text: str, request: TripRequest) -> dict[str, 
     return {"highlights": highlights[:5], "destinations": destinations[:5], "premium": premium_experiences[:5]}
 
 
+def _destination_insights() -> dict[str, dict[str, str]]:
+    return {
+        "port blair": {
+            "title": "DID YOU KNOW?",
+            "body": "Port Blair is the gateway to the islands and the natural base for heritage experiences like Cellular Jail and curated city sightseeing.",
+        },
+        "swaraj dweep": {
+            "title": "LOCAL RECOMMENDATION",
+            "body": "Swaraj Dweep is best enjoyed with an unhurried pace so guests can combine Radhanagar Beach, resort downtime, and selective water activities.",
+        },
+        "shaheed dweep": {
+            "title": "TRAVEL ADVICE",
+            "body": "Shaheed Dweep works beautifully for low-stress beach days, gentle reef viewing, and a calm island rhythm.",
+        },
+        "baratang": {
+            "title": "INSIDER TIP",
+            "body": "Baratang is most rewarding when treated as an early start day trip, especially for mangrove channels and limestone cave access.",
+        },
+    }
+
+
+def _generic_luxury_advice() -> dict[str, str]:
+    return {
+        "title": "TRAVEL ADVICE",
+        "body": "Keep luxury itineraries spacious, with clear transfer buffers and one signature experience per day for the smoothest guest experience.",
+    }
+
+
+def render_destination_insight_box(story: list, styles: dict[str, ParagraphStyle], destination: str) -> None:
+    insights = _destination_insights()
+    key = str(destination or "").strip().lower()
+    selected = None
+    for lookup, data in insights.items():
+        if lookup in key:
+            selected = data
+            break
+    if selected is None:
+        selected = _generic_luxury_advice()
+
+    box = Table(
+        [
+            [
+                Paragraph(_escape_text(selected["title"]), styles["section_title"]),
+                Paragraph(_escape_text(selected["body"]), styles["fine"]),
+            ]
+        ],
+        colWidths=[1.5 * inch, PAGE_INNER_WIDTH - 1.5 * inch - 10],
+    )
+    box.setStyle(
+        TableStyle(
+            [
+                ("BACKGROUND", (0, 0), (-1, -1), COLORS["soft_white"]),
+                ("BOX", (0, 0), (-1, -1), 0.8, COLORS["gold"]),
+                ("INNERGRID", (0, 0), (-1, -1), 0.35, COLORS["line"]),
+                ("VALIGN", (0, 0), (-1, -1), "TOP"),
+                ("LEFTPADDING", (0, 0), (-1, -1), 10),
+                ("RIGHTPADDING", (0, 0), (-1, -1), 10),
+                ("TOPPADDING", (0, 0), (-1, -1), 10),
+                ("BOTTOMPADDING", (0, 0), (-1, -1), 10),
+            ]
+        )
+    )
+    story.append(KeepTogether([Spacer(1, 0.08 * inch), box, Spacer(1, 0.08 * inch)]))
+
+
 def get_destination_image(destination: str):
     return get_destination_image_path(destination) or _build_cover_image()
 
@@ -416,6 +481,7 @@ def render_day_page(story: list, styles: dict[str, ParagraphStyle], day_section:
             story.append(Paragraph(_escape_text(label), styles["label"]))
         story.append(Paragraph(content, styles["body"]))
         story.append(Spacer(1, 0.02 * inch))
+    render_destination_insight_box(story, styles, destination)
     story.append(Spacer(1, 0.08 * inch))
     story.append(HRFlowable(width="100%", thickness=0.4, color=COLORS["soft_grey"]))
     story.append(Spacer(1, 0.04 * inch))

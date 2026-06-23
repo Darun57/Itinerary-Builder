@@ -11,6 +11,63 @@ from itinerary_app.pdf_service import generate_luxury_pdf
 
 TRIP_TYPES = ["Family", "Honeymoon", "Friends", "Corporate", "Solo"]
 BUDGET_CATEGORIES = ["Budget", "Premium", "Luxury"]
+MONTHS = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+]
+TRAVEL_STYLES = [
+    "Relaxation",
+    "Adventure",
+    "Luxury",
+    "Family Bonding",
+    "Photography",
+    "Culture",
+    "Wellness",
+    "Honeymoon",
+    "Nature Exploration",
+]
+TRIP_PACES = ["Relaxed", "Balanced", "Fast-Paced"]
+HOTEL_CATEGORIES = ["3 Star", "4 Star", "5 Star", "Ultra Luxury"]
+ROOM_TYPES = ["Standard", "Deluxe", "Premium", "Suite", "Villa"]
+ROOM_VIEWS = ["No Preference", "Garden View", "Pool View", "Sea View"]
+TRANSFER_TYPES = ["Shared", "Private", "Luxury Private"]
+FERRY_OPTIONS = ["Makruzz", "Nautika", "Green Ocean", "Government Ferry"]
+MEAL_PLANS = ["Breakfast Only", "MAP", "AP"]
+FOOD_PREFERENCES = ["Vegetarian", "Non Vegetarian", "Jain", "Vegan"]
+ACTIVITY_PREFERENCES = [
+    "Scuba Diving",
+    "Snorkeling",
+    "Sea Walk",
+    "Glass Bottom Boat",
+    "Parasailing",
+    "Kayaking",
+    "Jet Ski",
+    "Sunset Cruise",
+    "Candlelight Dinner",
+    "Spa Experience",
+    "Trekking",
+    "Fishing",
+    "Island Hopping",
+    "Photography Tour",
+]
+SPECIAL_OCCASIONS = ["Honeymoon", "Anniversary", "Birthday Celebration", "Proposal", "Family Celebration"]
+ACCESSIBILITY_REQUIREMENTS = ["Senior Citizen Friendly", "Wheelchair Friendly", "Infant Friendly"]
+RESTRICTIONS_EXCLUSIONS = [
+    "No Water Activities",
+    "No Early Morning Activities",
+    "No Long Road Journeys",
+    "No Adventure Activities",
+]
 MODEL_OPTIONS = [
     "gemini-3.1-flash-lite",
     "gemini-2.5-flash-lite",
@@ -44,16 +101,47 @@ def _resolve_api_key() -> str:
     return entered_key
 
 
+def _join_selected(values: object) -> str:
+    if isinstance(values, list):
+        return ", ".join(str(value).strip() for value in values if str(value).strip())
+    return str(values).strip()
+
+
 def _build_request(form_data: dict[str, object]) -> TripRequest:
     return TripRequest(
         customer_name=str(form_data["customer_name"]).strip(),
+        lead_id=str(form_data["lead_id"]).strip(),
+        customer_nationality=str(form_data["customer_nationality"]).strip(),
+        customer_country=str(form_data["customer_country"]).strip(),
+        customer_email=str(form_data["customer_email"]).strip(),
+        customer_phone_number=str(form_data["customer_phone_number"]).strip(),
         destination=str(form_data["destination"]).strip(),
         number_of_nights=int(form_data["number_of_nights"]),
         number_of_days=int(form_data["number_of_days"]),
+        arrival_date=str(form_data["arrival_date"]),
+        departure_date=str(form_data["departure_date"]),
+        travel_month=str(form_data["travel_month"]),
+        flexible_travel_dates=bool(form_data["flexible_travel_dates"]),
         trip_type=str(form_data["trip_type"]),
         budget_category=str(form_data["budget_category"]),
         number_of_adults=int(form_data["number_of_adults"]),
         number_of_children=int(form_data["number_of_children"]),
+        number_of_infants=int(form_data["number_of_infants"]),
+        number_of_senior_citizens=int(form_data["number_of_senior_citizens"]),
+        travel_style=", ".join(form_data["travel_style"]) if isinstance(form_data["travel_style"], list) else str(form_data["travel_style"]),
+        trip_pace=str(form_data["trip_pace"]),
+        hotel_category_preference=str(form_data["hotel_category_preference"]),
+        room_type_preference=str(form_data["room_type_preference"]),
+        room_view_preference=str(form_data["room_view_preference"]),
+        transfer_type=str(form_data["transfer_type"]),
+        preferred_ferries=_join_selected(form_data["preferred_ferries"]),
+        meal_plan=str(form_data["meal_plan"]),
+        food_preferences=_join_selected(form_data["food_preferences"]),
+        preferred_activities=_join_selected(form_data["preferred_activities"]),
+        special_occasions=_join_selected(form_data["special_occasions"]),
+        accessibility_requirements=_join_selected(form_data["accessibility_requirements"]),
+        restrictions_exclusions=_join_selected(form_data["restrictions_exclusions"]),
+        internal_staff_notes=str(form_data["internal_staff_notes"]).strip(),
         special_requests=str(form_data["special_requests"]).strip(),
     )
 
@@ -168,44 +256,140 @@ def render_app() -> None:
 
     with st.form("itinerary_form", clear_on_submit=False):
         st.subheader("Trip details")
-        top_left, top_right = st.columns(2)
+        with st.expander("Customer Information", expanded=True):
+            top_left, top_right = st.columns(2)
+            with top_left:
+                customer_name = st.text_input("Customer Name", placeholder="Enter customer name")
+                lead_id = st.text_input("Lead ID", placeholder="Enter lead ID")
+                customer_nationality = st.text_input("Customer Nationality", placeholder="Enter nationality")
+            with top_right:
+                customer_country = st.text_input("Customer Country", placeholder="Enter country")
+                customer_email = st.text_input("Customer Email", placeholder="Enter email")
+                customer_phone_number = st.text_input("Customer Phone Number", placeholder="Enter phone number")
 
-        with top_left:
-            customer_name = st.text_input("Customer Name", placeholder="Enter customer name")
-            destination = st.text_input("Destination", value="Andaman Islands")
-            trip_type = st.selectbox("Trip Type", TRIP_TYPES, index=0)
+        with st.expander("Travel Information", expanded=True):
+            top_left, top_right = st.columns(2)
+            with top_left:
+                destination = st.text_input("Destination", value="Andaman Islands")
+                number_of_days = st.number_input("Number of Days", min_value=1, value=7, step=1)
+                arrival_date = st.date_input("Arrival Date")
+                travel_month = st.selectbox("Travel Month", MONTHS, index=0)
+            with top_right:
+                number_of_nights = st.number_input("Number of Nights", min_value=1, value=6, step=1)
+                departure_date = st.date_input("Departure Date")
+                flexible_travel_dates = st.toggle("Flexible Travel Dates", value=False)
 
-        with top_right:
-            number_of_nights = st.number_input("Number of Nights", min_value=1, value=6, step=1)
-            number_of_days = st.number_input("Number of Days", min_value=1, value=7, step=1)
-            budget_category = st.selectbox("Budget Category", BUDGET_CATEGORIES, index=2)
+        with st.expander("Travel Party", expanded=True):
+            top_left, top_right = st.columns(2)
+            with top_left:
+                number_of_adults = st.number_input("Adults", min_value=0, value=2, step=1)
+                number_of_infants = st.number_input("Infants", min_value=0, value=0, step=1)
+            with top_right:
+                number_of_children = st.number_input("Children", min_value=0, value=0, step=1)
+                number_of_senior_citizens = st.number_input("Senior Citizens", min_value=0, value=0, step=1)
 
-        bottom_left, bottom_right = st.columns(2)
+        with st.expander("Trip Style", expanded=True):
+            top_left, top_right = st.columns(2)
+            with top_left:
+                trip_type = st.selectbox("Trip Type", TRIP_TYPES, index=0)
+                budget_category = st.selectbox("Budget Category", BUDGET_CATEGORIES, index=2)
+            with top_right:
+                travel_style = st.multiselect("Travel Style", TRAVEL_STYLES, default=["Luxury"])
+                trip_pace = st.selectbox("Trip Pace", TRIP_PACES, index=1)
 
-        with bottom_left:
-            number_of_adults = st.number_input("Number of Adults", min_value=0, value=2, step=1)
+        with st.expander("Accommodation Preferences", expanded=True):
+            top_left, top_right = st.columns(2)
+            with top_left:
+                hotel_category_preference = st.selectbox("Hotel Category", HOTEL_CATEGORIES, index=2)
+                room_type_preference = st.selectbox("Room Type", ROOM_TYPES, index=1)
+            with top_right:
+                room_view_preference = st.selectbox("Room View Preference", ROOM_VIEWS, index=0)
 
-        with bottom_right:
-            number_of_children = st.number_input("Number of Children", min_value=0, value=0, step=1)
+        with st.expander("Transport Preferences", expanded=False):
+            top_left, top_right = st.columns(2)
+            with top_left:
+                transfer_type = st.selectbox("Transfer Type", TRANSFER_TYPES, index=1)
+            with top_right:
+                preferred_ferries = st.multiselect("Preferred Ferry", FERRY_OPTIONS, default=[])
 
-        special_requests = st.text_area(
-            "Special Requests",
-            placeholder="Scuba diving, candlelight dinner, senior citizen friendly, adventure activities, relaxation focused...",
-            height=130,
-        )
+        with st.expander("Meal Preferences", expanded=False):
+            top_left, top_right = st.columns(2)
+            with top_left:
+                meal_plan = st.selectbox("Meal Plan", MEAL_PLANS, index=0)
+            with top_right:
+                food_preferences = st.multiselect("Food Preference", FOOD_PREFERENCES, default=[])
+
+        with st.expander("Activity Preferences", expanded=False):
+            preferred_activities = st.multiselect("Activities", ACTIVITY_PREFERENCES, default=[])
+
+        with st.expander("Special Occasions", expanded=False):
+            special_occasions = st.multiselect("Special Occasions", SPECIAL_OCCASIONS, default=[])
+
+        with st.expander("Accessibility Requirements", expanded=False):
+            accessibility_requirements = st.multiselect(
+                "Accessibility Requirements",
+                ACCESSIBILITY_REQUIREMENTS,
+                default=[],
+            )
+
+        with st.expander("Restrictions / Exclusions", expanded=False):
+            restrictions_exclusions = st.multiselect(
+                "Restrictions / Exclusions",
+                RESTRICTIONS_EXCLUSIONS,
+                default=[],
+            )
+
+        with st.expander("Special Requests", expanded=False):
+            special_requests = st.text_area(
+                "Special Requests",
+                placeholder="Scuba diving, candlelight dinner, senior citizen friendly, adventure activities, relaxation focused...",
+                height=130,
+            )
+
+        with st.expander("Internal Staff Notes", expanded=False):
+            internal_staff_notes = st.text_area(
+                "Internal Staff Notes",
+                placeholder="VIP Guest, Repeat Customer, High Budget Client, Needs Sea View Rooms...",
+                height=160,
+            )
 
         submitted = st.form_submit_button("Generate Professional Itinerary", use_container_width=True, type="primary")
 
     request = _build_request(
         {
             "customer_name": customer_name,
+            "lead_id": lead_id,
+            "customer_nationality": customer_nationality,
+            "customer_country": customer_country,
+            "customer_email": customer_email,
+            "customer_phone_number": customer_phone_number,
             "destination": destination,
             "number_of_nights": number_of_nights,
             "number_of_days": number_of_days,
+            "arrival_date": arrival_date,
+            "departure_date": departure_date,
+            "travel_month": travel_month,
+            "flexible_travel_dates": flexible_travel_dates,
             "trip_type": trip_type,
             "budget_category": budget_category,
             "number_of_adults": number_of_adults,
             "number_of_children": number_of_children,
+            "number_of_infants": number_of_infants,
+            "number_of_senior_citizens": number_of_senior_citizens,
+            "travel_style": travel_style,
+            "trip_pace": trip_pace,
+            "hotel_category_preference": hotel_category_preference,
+            "room_type_preference": room_type_preference,
+            "room_view_preference": room_view_preference,
+            "transfer_type": transfer_type,
+            "preferred_ferries": preferred_ferries,
+            "meal_plan": meal_plan,
+            "food_preferences": food_preferences,
+            "preferred_activities": preferred_activities,
+            "special_occasions": special_occasions,
+            "accessibility_requirements": accessibility_requirements,
+            "restrictions_exclusions": restrictions_exclusions,
+            "internal_staff_notes": internal_staff_notes,
             "special_requests": special_requests,
         }
     )
