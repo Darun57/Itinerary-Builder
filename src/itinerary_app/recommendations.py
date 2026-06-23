@@ -1,4 +1,5 @@
 from collections.abc import Callable
+import re
 
 import pandas as pd
 
@@ -73,8 +74,24 @@ def _request_text(request: TripRequest) -> str:
     return " ".join(
         [
             request.destination,
+            request.selected_destinations,
+            request.daily_island_plan,
             request.trip_type,
             request.budget_category,
+            request.travel_style,
+            request.trip_pace,
+            request.hotel_category_preference,
+            request.room_type_preference,
+            request.room_view_preference,
+            request.transfer_type,
+            request.preferred_ferries,
+            request.meal_plan,
+            request.food_preferences,
+            request.preferred_activities,
+            request.special_occasions,
+            request.accessibility_requirements,
+            request.restrictions_exclusions,
+            request.internal_staff_notes,
             request.special_requests,
         ]
     ).lower()
@@ -109,6 +126,27 @@ def _append_reason(reasons: list[str], reason: str, score: int) -> int:
     return score
 
 
+def _split_requested_values(text: str) -> list[str]:
+    values = []
+    for chunk in str(text or "").replace("\n", ",").split(","):
+        cleaned = chunk.strip().lower()
+        if cleaned and cleaned != "none":
+            values.append(cleaned)
+    return values
+
+
+def _clean_destination_label(text: str) -> str:
+    return re.sub(r"\s*\([^)]*\)", "", str(text or "")).strip()
+
+
+def _requested_locations(text: str) -> set[str]:
+    return {
+        _normalize(_clean_destination_label(value))
+        for value in _split_requested_values(text)
+        if _clean_destination_label(value)
+    }
+
+
 def _rank_rows(
     frame: pd.DataFrame,
     result_columns: list[str],
@@ -136,7 +174,23 @@ def recommend_hotels(request: TripRequest) -> pd.DataFrame:
     request_text = _request_text(request)
     budget = _normalize(request.budget_category)
     trip_type = _normalize(request.trip_type)
-    destination = _normalize(request.destination)
+    category_preference = _normalize(request.hotel_category_preference)
+    preferred_locations = _requested_locations(request.destination)
+    preferred_locations.update(_requested_locations(request.selected_destinations))
+    preferred_locations.update(
+        _normalize(_clean_destination_label(value.split(":")[-1]))
+        for value in _split_requested_values(request.daily_island_plan)
+        if _clean_destination_label(value.split(":")[-1])
+    )
+    hotels = hotels[hotels["availability_status"].fillna("Available").str.lower() != "fully booked"].copy()
+    if preferred_locations:
+        location_mask = hotels["location"].astype(str).str.lower().isin(preferred_locations)
+        if location_mask.any():
+            hotels = hotels[location_mask].copy()
+    if category_preference:
+        category_mask = hotels["category"].astype(str).str.lower() == category_preference
+        if category_mask.any():
+            hotels = hotels[category_mask].copy()
 
     def score_row(row: pd.Series) -> tuple[int, list[str]]:
         score = 0
@@ -146,20 +200,29 @@ def recommend_hotels(request: TripRequest) -> pd.DataFrame:
         suitable_for = _normalize(row["suitable_for"])
         description = _normalize(row["description"])
         price = float(row["nightly_price"] or 0)
+        availability = _normalize(row.get("availability_status") or "available")
 
-        if destination and (destination in location or location in destination):
+        if availability == "limited availability":
+            score += _append_reason(reasons, "limited availability but still bookable", 4)
+        if preferred_locations and location in preferred_locations:
             score += _append_reason(reasons, "destination/location match", 25)
         if trip_type and trip_type in suitable_for:
             score += _append_reason(reasons, "suited to trip type", 30)
-        if budget and budget == category:
-            score += _append_reason(reasons, "matches budget category", 25)
+        if category_preference and category == category_preference:
+            score += _append_reason(reasons, "matches selected hotel category", 45)
+        elif budget == "budget" and category in {"3 star", "4 star"}:
+            score += _append_reason(reasons, "budget-friendly hotel fit", 20)
+        elif budget == "premium" and category in {"4 star", "5 star"}:
+            score += _append_reason(reasons, "premium hotel fit", 20)
+        elif budget == "luxury" and category in {"5 star", "ultra luxury"}:
+            score += _append_reason(reasons, "luxury hotel fit", 25)
 
         score += _budget_price_score(price, budget)
         if budget:
             reasons.append("price aligned with budget")
 
         if _contains_any(request_text, HONEYMOON_TERMS) and (
-            "honeymoon" in suitable_for or "boutique" in description or category == "luxury"
+            "honeymoon" in suitable_for or "boutique" in description or category in {"5 star", "ultra luxury"}
         ):
             score += _append_reason(reasons, "strong honeymoon fit", 25)
         if _contains_any(request_text, FAMILY_TERMS) and "family" in suitable_for:
@@ -173,7 +236,17 @@ def recommend_hotels(request: TripRequest) -> pd.DataFrame:
 
         return score, reasons
 
-    return _rank_rows(hotels, HOTEL_RESULT_COLUMNS, score_row, limit=3)
+    if hotels.empty:
+        hotels = load_hotels()
+        hotels = hotels[hotels["availability_status"].fillna("Available").str.lower() != "fully booked"].copy()
+
+    limit = min(6, max(1, len(hotels)))
+    ranked = _rank_rows(hotels, HOTEL_RESULT_COLUMNS, score_row, limit=limit)
+    if ranked.empty:
+        fallback = load_hotels()
+        fallback = fallback[fallback["availability_status"].fillna("Available").str.lower() != "fully booked"].copy()
+        return _rank_rows(fallback, HOTEL_RESULT_COLUMNS, score_row, limit=limit)
+    return ranked
 
 
 def recommend_activities(request: TripRequest) -> pd.DataFrame:

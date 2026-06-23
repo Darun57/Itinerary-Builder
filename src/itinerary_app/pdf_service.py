@@ -65,6 +65,56 @@ ITINERARY_KEYWORDS = {
     "north bay": "North Bay and Ross Island",
     "ross island": "North Bay and Ross Island",
 }
+MONTH_SEASONS = {
+    "december": "winter",
+    "january": "winter",
+    "february": "winter",
+    "march": "summer",
+    "april": "summer",
+    "may": "summer",
+    "june": "monsoon",
+    "july": "monsoon",
+    "august": "monsoon",
+    "september": "monsoon",
+    "october": "shoulder",
+    "november": "shoulder",
+}
+SEASONAL_TIPS = {
+    "winter": "December to February is ideal for scuba, beach time, and sunset experiences with calmer conditions.",
+    "summer": "March to May suits early-start sightseeing, beach downtime, and a relaxed midday resort pace.",
+    "monsoon": "June to September may bring occasional rain showers, so flexible transfer buffers and scenic indoor moments help.",
+    "shoulder": "October and November usually offer balanced weather, making them a strong window for mixed sightseeing and beach plans.",
+}
+DESTINATION_INSIGHT_TIPS = {
+    "port blair": [
+        "Port Blair works best as a heritage-led base, especially when Cellular Jail and museum visits are clustered together.",
+        "Use Port Blair for a smooth arrival or departure day and keep the pace light before island transfers.",
+    ],
+    "swaraj dweep": [
+        "Swaraj Dweep suits a premium beach rhythm, combining Radhanagar Beach, selected water activities, and resort downtime.",
+        "For Swaraj Dweep, the best flow is usually one signature beach experience paired with a slower luxury afternoon.",
+    ],
+    "shaheed dweep": [
+        "Shaheed Dweep shines with calm beach time, Natural Bridge visits, and unhurried scenic movement.",
+        "Keep Shaheed Dweep soft and relaxed so guests can enjoy its quieter beaches without rushing between points.",
+    ],
+    "baratang": [
+        "Baratang is strongest as an early-start day, especially for limestone caves, mangrove channels, and nature-focused transfers.",
+        "Plan Baratang with generous road and boat buffers so the experience feels smooth rather than rushed.",
+    ],
+    "diglipur": [
+        "Diglipur is ideal for longer north-island exploration, including Ross & Smith Islands and Saddle Peak experiences.",
+        "Use Diglipur when the itinerary needs a nature-first detour with more scenic breathing room.",
+    ],
+}
+ACTIVITY_INSIGHT_TIPS = {
+    "scuba": "Scuba and snorkeling are best kept on days with calm sequencing and minimal transfer pressure.",
+    "snorkel": "Snorkeling pairs well with beach time and a single major excursion rather than too many back-to-back activities.",
+    "sunset cruise": "Sunset cruises work beautifully as the evening anchor after a light sightseeing day.",
+    "glass bottom boat": "Glass bottom boat rides are a gentle way to add marine experience without a demanding itinerary pace.",
+    "bridge": "Natural-formation visits benefit from early starts and comfortable footwear planning.",
+    "trek": "Trekking days should be protected with time buffers so the guest experience stays polished and unhurried.",
+}
 
 
 def _load_font(font_name: str, candidates: list[str]) -> str:
@@ -134,6 +184,75 @@ def _build_styles() -> dict[str, ParagraphStyle]:
     }
 
 
+def _split_values(text: str) -> list[str]:
+    values: list[str] = []
+    for chunk in re.split(r"[,\n]", str(text or "")):
+        cleaned = chunk.strip()
+        if not cleaned or cleaned.lower() == "none":
+            continue
+        values.append(cleaned)
+    return values
+
+
+def _clean_destination_label(text: str) -> str:
+    cleaned = re.sub(r"\s*\([^)]*\)", "", str(text or "")).strip()
+    return re.sub(r"\s+", " ", cleaned)
+
+
+def _normalize_destination_key(text: str) -> str:
+    return _clean_destination_label(text).lower()
+
+
+def _extract_activity_terms(text: str) -> list[str]:
+    activity_terms = []
+    lower_text = str(text or "").lower()
+    for keyword, label in ITINERARY_KEYWORDS.items():
+        if keyword in lower_text and label not in activity_terms:
+            activity_terms.append(label)
+    return activity_terms
+
+
+def _season_from_month(month: str) -> str:
+    return MONTH_SEASONS.get(str(month or "").strip().lower(), "shoulder")
+
+
+def _seasonal_advice(month: str, destination: str, activity_terms: list[str]) -> str:
+    season = _season_from_month(month)
+    base = SEASONAL_TIPS[season]
+    destination_key = _normalize_destination_key(destination)
+    destination_tip = ""
+    for key, tips in DESTINATION_INSIGHT_TIPS.items():
+        if key in destination_key:
+            destination_tip = tips[0]
+            if len(tips) > 1 and activity_terms:
+                destination_tip = tips[1]
+            break
+    activity_tip = ""
+    for term in activity_terms:
+        lower_term = term.lower()
+        if "scuba" in lower_term or "snorkel" in lower_term:
+            activity_tip = ACTIVITY_INSIGHT_TIPS["scuba"]
+            break
+        if "sunset" in lower_term:
+            activity_tip = ACTIVITY_INSIGHT_TIPS["sunset cruise"]
+            break
+        if "glass bottom" in lower_term:
+            activity_tip = ACTIVITY_INSIGHT_TIPS["glass bottom boat"]
+            break
+        if "bridge" in lower_term:
+            activity_tip = ACTIVITY_INSIGHT_TIPS["bridge"]
+            break
+        if "trek" in lower_term:
+            activity_tip = ACTIVITY_INSIGHT_TIPS["trek"]
+            break
+    pieces = [base]
+    if destination_tip:
+        pieces.append(destination_tip)
+    if activity_tip and activity_tip not in pieces:
+        pieces.append(activity_tip)
+    return " ".join(pieces)
+
+
 def sanitize_itinerary_text(itinerary_text: str) -> str:
     cleaned_lines = []
     for line in itinerary_text.splitlines():
@@ -187,84 +306,85 @@ def split_itinerary_into_days(itinerary_text: str) -> list[dict[str, object]]:
     return sections
 
 
-def _extract_highlights(itinerary_text: str, request: TripRequest) -> dict[str, list[str]]:
-    highlights: list[str] = []
+def _extract_highlights(itinerary_text: str, request: TripRequest) -> dict[str, list[str] | str | int]:
     destinations: list[str] = []
-    premium_experiences: list[str] = []
-    for raw_line in itinerary_text.splitlines():
-        line = raw_line.strip()
-        lower_line = line.lower()
-        if lower_line.startswith("day "):
-            continue
-        for keyword, label in ITINERARY_KEYWORDS.items():
-            if keyword in lower_line and label not in highlights:
-                highlights.append(label)
-                break
-        if "port blair" in lower_line and "Port Blair" not in destinations:
-            destinations.append("Port Blair")
-        if "swaraj dweep" in lower_line and "Swaraj Dweep" not in destinations:
-            destinations.append("Swaraj Dweep")
-        if "shaheed dweep" in lower_line and "Shaheed Dweep" not in destinations:
-            destinations.append("Shaheed Dweep")
-        if "baratang" in lower_line and "Baratang" not in destinations:
-            destinations.append("Baratang")
-        if any(term in lower_line for term in ["scuba", "sunset", "ferry", "island", "show"]):
-            premium_experiences.append(line)
-    if not highlights:
-        highlights = ["Curated sightseeing", "Luxury island pacing", "Scenic ferry movement", "Premium leisure moments", "Guest-ready itinerary flow"]
+    for value in _split_values(request.selected_destinations):
+        destination_label = _clean_destination_label(value)
+        if destination_label and destination_label not in destinations:
+            destinations.append(destination_label)
     if not destinations:
-        destinations = [request.destination or "Andaman Islands"]
-    premium_experiences = premium_experiences[:5] or ["Luxury timing and destination flow"]
-    return {"highlights": highlights[:5], "destinations": destinations[:5], "premium": premium_experiences[:5]}
+        for raw_line in _split_values(request.daily_island_plan):
+            for part in raw_line.split(":")[-1].split(","):
+                destination_label = _clean_destination_label(part)
+                if destination_label and destination_label not in destinations:
+                    destinations.append(destination_label)
+    if not destinations:
+        for raw_line in itinerary_text.splitlines():
+            lower_line = raw_line.lower()
+            for keyword in [
+                "port blair",
+                "swaraj dweep",
+                "shaheed dweep",
+                "baratang",
+                "diglipur",
+                "ross island",
+                "north bay",
+                "jolly buoy",
+                "red skin",
+                "chidiya tapu",
+                "wandoor",
+                "long island",
+                "little andaman",
+            ]:
+                if keyword in lower_line:
+                    destination_label = _clean_destination_label(keyword.title())
+                    if destination_label not in destinations:
+                        destinations.append(destination_label)
+    if not destinations:
+        destinations = [_clean_destination_label(request.destination or "Andaman Islands")]
 
+    activities = [value for value in _split_values(request.preferred_activities)]
+    if not activities:
+        activities = _extract_activity_terms(itinerary_text)
+    if not activities:
+        activities = ["Curated sightseeing", "Luxury pacing", "Scenic transfers"]
 
-def _destination_insights() -> dict[str, dict[str, str]]:
+    travel_style = _split_values(request.travel_style)
+    hotel_category = request.hotel_category_preference or "Luxury"
+
     return {
-        "port blair": {
-            "title": "DID YOU KNOW?",
-            "body": "Port Blair is the gateway to the islands and the natural base for heritage experiences like Cellular Jail and curated city sightseeing.",
-        },
-        "swaraj dweep": {
-            "title": "LOCAL RECOMMENDATION",
-            "body": "Swaraj Dweep is best enjoyed with an unhurried pace so guests can combine Radhanagar Beach, resort downtime, and selective water activities.",
-        },
-        "shaheed dweep": {
-            "title": "TRAVEL ADVICE",
-            "body": "Shaheed Dweep works beautifully for low-stress beach days, gentle reef viewing, and a calm island rhythm.",
-        },
-        "baratang": {
-            "title": "INSIDER TIP",
-            "body": "Baratang is most rewarding when treated as an early start day trip, especially for mangrove channels and limestone cave access.",
-        },
+        "destinations": destinations[:6],
+        "activities": activities[:6],
+        "travel_style": travel_style[:3] or ["Luxury"],
+        "number_of_days": request.number_of_days,
+        "number_of_nights": request.number_of_nights,
+        "hotel_category": hotel_category,
     }
 
 
-def _generic_luxury_advice() -> dict[str, str]:
-    return {
-        "title": "TRAVEL ADVICE",
-        "body": "Keep luxury itineraries spacious, with clear transfer buffers and one signature experience per day for the smoothest guest experience.",
-    }
-
-
-def render_destination_insight_box(story: list, styles: dict[str, ParagraphStyle], destination: str) -> None:
-    insights = _destination_insights()
-    key = str(destination or "").strip().lower()
-    selected = None
-    for lookup, data in insights.items():
-        if lookup in key:
-            selected = data
-            break
-    if selected is None:
-        selected = _generic_luxury_advice()
+def render_destination_insight_box(
+    story: list,
+    styles: dict[str, ParagraphStyle],
+    request: TripRequest,
+    destination: str,
+    day_number: int,
+    day_section: dict[str, object],
+) -> None:
+    day_titles = ["INSIDER TIP", "DID YOU KNOW?", "LOCAL RECOMMENDATION", "TRAVEL ADVICE"]
+    selected_title = day_titles[(max(day_number, 1) - 1) % len(day_titles)]
+    activity_terms = _extract_activity_terms(" ".join(str(item.get("content") or "") for item in day_section.get("items", [])))
+    if not activity_terms:
+        activity_terms = _split_values(request.preferred_activities)
+    advice = _seasonal_advice(request.travel_month, destination, activity_terms)
 
     box = Table(
         [
             [
-                Paragraph(_escape_text(selected["title"]), styles["section_title"]),
-                Paragraph(_escape_text(selected["body"]), styles["fine"]),
+                Paragraph(_escape_text(selected_title), styles["section_title"]),
+                Paragraph(_escape_text(advice), styles["fine"]),
             ]
         ],
-        colWidths=[1.5 * inch, PAGE_INNER_WIDTH - 1.5 * inch - 10],
+        colWidths=[1.7 * inch, PAGE_INNER_WIDTH - 1.7 * inch - 10],
     )
     box.setStyle(
         TableStyle(
@@ -347,22 +467,23 @@ def render_highlights_page(story: list, styles: dict[str, ParagraphStyle], reque
     story.append(Spacer(1, 0.08 * inch))
     story.append(HRFlowable(width="24%", thickness=1.0, color=COLORS["gold"], hAlign="CENTER"))
     story.append(Spacer(1, 0.18 * inch))
-    story.append(Paragraph("Premium Experiences", styles["section_title"]))
-    for item in highlights["highlights"]:
-        story.append(Paragraph(f"✓ {_escape_text(item)}", styles["highlight_body"]))
-    story.append(Spacer(1, 0.12 * inch))
     story.append(Paragraph("Destinations Covered", styles["section_title"]))
     for item in highlights["destinations"]:
-        story.append(Paragraph(f"• {_escape_text(item)}", styles["highlight_body"]))
-    story.append(Spacer(1, 0.12 * inch))
-    story.append(Paragraph("Number of Days and Nights", styles["section_title"]))
-    story.append(Paragraph(_escape_text(f"{request.number_of_days} Days | {request.number_of_nights} Nights"), styles["highlight_body"]))
+        story.append(Paragraph(f"\u2022 {_escape_text(item)}", styles["highlight_body"]))
     story.append(Spacer(1, 0.12 * inch))
     story.append(Paragraph("Top Activities", styles["section_title"]))
-    for item in highlights["premium"]:
-        story.append(Paragraph(f"• {_escape_text(item)}", styles["highlight_body"]))
+    for item in highlights["activities"]:
+        story.append(Paragraph(f"\u2022 {_escape_text(item)}", styles["highlight_body"]))
+    story.append(Spacer(1, 0.12 * inch))
+    story.append(Paragraph("Travel Style", styles["section_title"]))
+    story.append(Paragraph(_escape_text(", ".join(highlights["travel_style"])), styles["highlight_body"]))
+    story.append(Spacer(1, 0.12 * inch))
+    story.append(Paragraph("Number of Days", styles["section_title"]))
+    story.append(Paragraph(_escape_text(f"{highlights['number_of_days']} Days | {highlights['number_of_nights']} Nights"), styles["highlight_body"]))
+    story.append(Spacer(1, 0.12 * inch))
+    story.append(Paragraph("Hotel Category", styles["section_title"]))
+    story.append(Paragraph(_escape_text(str(highlights["hotel_category"])), styles["highlight_body"]))
     story.append(PageBreak())
-
 
 def _hotel_stay_text(hotel_row: dict[str, object], destinations_frame) -> str:
     location = str(hotel_row.get("location") or "").strip()
@@ -373,33 +494,49 @@ def _hotel_stay_text(hotel_row: dict[str, object], destinations_frame) -> str:
         if minimum_days and maximum_days:
             return f"{minimum_days} to {maximum_days} nights"
     category = str(hotel_row.get("category") or "").strip()
-    if category.lower() == "luxury":
+    if category.lower() == "ultra luxury":
+        return "3 to 4 nights"
+    if category.lower() == "5 star":
         return "2 to 3 nights"
-    if category.lower() == "premium":
+    if category.lower() == "4 star":
         return "1 to 2 nights"
     return "1 night"
 
 
-def _hotel_card_flowable(hotel_row: dict[str, object], destination_stays_frame) -> Table:
+def _hotel_card_flowable(hotel_row: dict[str, object], destination_stays_frame, card_width: float) -> Table:
     hotel_name = str(hotel_row.get("hotel_name") or "").strip()
     location = str(hotel_row.get("location") or "").strip()
     category = str(hotel_row.get("category") or "").strip()
     description = str(hotel_row.get("description") or "").strip()
     stay_text = _hotel_stay_text(hotel_row, destination_stays_frame)
     image_path = get_hotel_image_path(hotel_name)
-    image_cell: list = []
     if image_path:
-        image_cell.append(Image(str(image_path), width=2.55 * inch, height=1.55 * inch))
+        image_flowable = Image(str(image_path), width=card_width - 14, height=1.45 * inch)
     else:
-        image_cell.append(Spacer(1, 1.55 * inch))
+        image_flowable = Spacer(1, 1.45 * inch)
     details = [
-        Paragraph(_escape_text(f"{hotel_name} ★★★★★"), ParagraphStyle("hotel_card_name", fontName=_font_map()["heading"], fontSize=14, leading=17, textColor=COLORS["gold"], spaceAfter=4)),
-        Paragraph(_escape_text(location), ParagraphStyle("hotel_card_meta", fontName=_font_map()["body_bold"], fontSize=10.2, leading=14, textColor=COLORS["dark"], spaceAfter=3)),
-        Paragraph(_escape_text(category), ParagraphStyle("hotel_card_meta2", fontName=_font_map()["body"], fontSize=9.6, leading=13, textColor=COLORS["soft_grey"], spaceAfter=4)),
-        Paragraph(_escape_text(description), ParagraphStyle("hotel_card_body", fontName=_font_map()["body"], fontSize=9.6, leading=13, textColor=COLORS["body"], spaceAfter=4)),
-        Paragraph(_escape_text(f"Recommended Stay: {stay_text}"), ParagraphStyle("hotel_card_stay", fontName=_font_map()["body_bold"], fontSize=9.6, leading=13, textColor=COLORS["dark"], spaceAfter=0)),
+        Paragraph(
+            _escape_text(f"{hotel_name} \u2605\u2605\u2605\u2605\u2605"),
+            ParagraphStyle("hotel_card_name", fontName=_font_map()["heading"], fontSize=13.5, leading=16, textColor=COLORS["gold"], spaceAfter=4),
+        ),
+        Paragraph(
+            _escape_text(location),
+            ParagraphStyle("hotel_card_meta", fontName=_font_map()["body_bold"], fontSize=10.1, leading=13.5, textColor=COLORS["dark"], spaceAfter=3),
+        ),
+        Paragraph(
+            _escape_text(category),
+            ParagraphStyle("hotel_card_meta2", fontName=_font_map()["body"], fontSize=9.5, leading=13, textColor=COLORS["soft_grey"], spaceAfter=4),
+        ),
+        Paragraph(
+            _escape_text(description),
+            ParagraphStyle("hotel_card_body", fontName=_font_map()["body"], fontSize=9.4, leading=12.8, textColor=COLORS["body"], spaceAfter=4),
+        ),
+        Paragraph(
+            _escape_text(f"Recommended Stay: {stay_text}"),
+            ParagraphStyle("hotel_card_stay", fontName=_font_map()["body_bold"], fontSize=9.4, leading=12.8, textColor=COLORS["dark"], spaceAfter=0),
+        ),
     ]
-    card = Table([[image_cell[0], details]], colWidths=[2.6 * inch, 3.2 * inch])
+    card = Table([[image_flowable], [details]], colWidths=[card_width])
     card.setStyle(
         TableStyle(
             [
@@ -428,42 +565,32 @@ def render_luxury_stays_page(story: list, styles: dict[str, ParagraphStyle], req
     story.append(HRFlowable(width="24%", thickness=1.0, color=COLORS["gold"], hAlign="CENTER"))
     story.append(Spacer(1, 0.18 * inch))
 
-    rows = []
-    current_row = []
-    for _, hotel_row in hotel_frame.iterrows():
-        current_row.append(_hotel_card_flowable(hotel_row.to_dict(), destinations_frame))
-        if len(current_row) == 2:
-            rows.append(current_row)
-            current_row = []
-    if current_row:
-        current_row.append(Spacer(1, 0.01 * inch))
-        rows.append(current_row)
-
-    table_rows = []
-    for row in rows:
-        if len(row) == 1:
-            table_rows.append([row[0], Spacer(1, 0.01 * inch)])
-        else:
-            table_rows.append(row)
-
-    if table_rows:
-        grid = Table(table_rows, colWidths=[PAGE_INNER_WIDTH / 2 - 6, PAGE_INNER_WIDTH / 2 - 6], hAlign="CENTER")
-        grid.setStyle(
+    card_width = (PAGE_INNER_WIDTH - 12) / 2
+    hotel_rows = [row.to_dict() for _, row in hotel_frame.iterrows()]
+    for index in range(0, len(hotel_rows), 2):
+        left_card = _hotel_card_flowable(hotel_rows[index], destinations_frame, card_width)
+        right_card = (
+            _hotel_card_flowable(hotel_rows[index + 1], destinations_frame, card_width)
+            if index + 1 < len(hotel_rows)
+            else Spacer(1, 0.01 * inch)
+        )
+        row_table = Table([[left_card, right_card]], colWidths=[card_width, card_width], hAlign="CENTER")
+        row_table.setStyle(
             TableStyle(
                 [
                     ("VALIGN", (0, 0), (-1, -1), "TOP"),
                     ("LEFTPADDING", (0, 0), (-1, -1), 0),
-                    ("RIGHTPADDING", (0, 0), (-1, -1), 0),
+                    ("RIGHTPADDING", (0, 0), (-1, -1), 6),
                     ("TOPPADDING", (0, 0), (-1, -1), 0),
                     ("BOTTOMPADDING", (0, 0), (-1, -1), 12),
                 ]
             )
         )
-        story.append(grid)
+        story.append(row_table)
     story.append(PageBreak())
 
 
-def render_day_page(story: list, styles: dict[str, ParagraphStyle], day_section: dict[str, object], destination: str) -> None:
+def render_day_page(story: list, styles: dict[str, ParagraphStyle], request: TripRequest, day_section: dict[str, object], destination: str, day_number: int) -> None:
     heading = str(day_section["heading"])
     clean_heading = re.sub(r"^day\s*", "DAY ", heading, flags=re.IGNORECASE)
     story.append(Spacer(1, 0.04 * inch))
@@ -481,7 +608,7 @@ def render_day_page(story: list, styles: dict[str, ParagraphStyle], day_section:
             story.append(Paragraph(_escape_text(label), styles["label"]))
         story.append(Paragraph(content, styles["body"]))
         story.append(Spacer(1, 0.02 * inch))
-    render_destination_insight_box(story, styles, destination)
+    render_destination_insight_box(story, styles, request, destination, day_number, day_section)
     story.append(Spacer(1, 0.08 * inch))
     story.append(HRFlowable(width="100%", thickness=0.4, color=COLORS["soft_grey"]))
     story.append(Spacer(1, 0.04 * inch))
@@ -542,7 +669,7 @@ def generate_luxury_pdf(request: TripRequest, itinerary_text: str) -> bytes:
     render_luxury_stays_page(story, styles, request)
     day_sections = split_itinerary_into_days(cleaned_itinerary)
     for index, section in enumerate(day_sections):
-        render_day_page(story, styles, section, destination=request.destination)
+        render_day_page(story, styles, request, section, destination=request.destination, day_number=index + 1)
         if index != len(day_sections) - 1:
             story.append(PageBreak())
     render_terms_pages(story, styles)

@@ -48,6 +48,14 @@ def _empty_frame(columns: list[str]) -> pd.DataFrame:
 
 
 def _load_csv(filename: str, expected_columns: list[str]) -> pd.DataFrame:
+    return _load_csv_with_optional(filename, expected_columns, [])
+
+
+def _load_csv_with_optional(
+    filename: str,
+    expected_columns: list[str],
+    optional_columns: list[str],
+) -> pd.DataFrame:
     path = DATA_DIR / filename
     if not path.exists():
         return _empty_frame(expected_columns)
@@ -64,11 +72,15 @@ def _load_csv(filename: str, expected_columns: list[str]) -> pd.DataFrame:
         missing_text = ", ".join(missing_columns)
         raise ValueError(f"{path} is missing required columns: {missing_text}")
 
-    return frame[expected_columns]
+    available_columns = expected_columns + [column for column in optional_columns if column in frame.columns]
+    return frame[available_columns]
 
 
 def load_hotels() -> pd.DataFrame:
-    return _load_csv("hotels.csv", HOTEL_COLUMNS)
+    frame = _load_csv_with_optional("hotels.csv", HOTEL_COLUMNS, ["availability_status"])
+    if "availability_status" not in frame.columns:
+        frame["availability_status"] = "Available"
+    return frame[HOTEL_COLUMNS + ["availability_status"]]
 
 
 def load_activities() -> pd.DataFrame:

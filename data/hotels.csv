@@ -1,6 +1,99 @@
-hotel_id,hotel_name,location,category,nightly_price,suitable_for,description
-HTL-PB-001,SeaShell Port Blair,Port Blair,Luxury,9500,"honeymoon;family;premium","Upscale city hotel suited for arrival nights and relaxed bay-view stays."
-HTL-PB-002,Hotel Sentinel,Port Blair,Premium,6200,"family;corporate;couples","Reliable central hotel with easy access to Cellular Jail and airport transfers."
-HTL-HL-001,Barefoot at Havelock,Swaraj Dweep,Luxury,14500,"honeymoon;nature;premium","Boutique island resort close to Radhanagar Beach with a quiet nature-first feel."
-HTL-HL-002,Symphony Palms Beach Resort,Swaraj Dweep,Premium,7800,"family;friends;beach","Beachside resort option for guests who want easy access to cafes and water activities."
-HTL-NL-001,SeaShell Neil,Shaheed Dweep,Premium,7200,"honeymoon;family;relaxation","Comfortable island stay ideal for slow-paced Neil Island itineraries."
+hotel_id,hotel_name,location,category,nightly_price,suitable_for,description,availability_status
+
+HTL-PB-001,SeaShell Port Blair,Port Blair,5 Star,9500,"honeymoon;family;premium","Upscale city hotel suited for arrival nights and relaxed bay-view stays.",Available
+HTL-PB-002,Welcomhotel Bay Island,Port Blair,5 Star,12000,"honeymoon;family;premium","Premium waterfront stay with polished service and easy access to the city.",Available
+HTL-PB-003,Sinclairs Bayview,Port Blair,5 Star,9800,"family;corporate;couples","Well-positioned stay with bay views and convenient city transfers.",Available
+HTL-PB-004,Mansha Regency,Port Blair,4 Star,6500,"family;corporate","Comfortable city hotel ideal for practical Port Blair arrivals.",Limited Availability
+HTL-PB-005,Lemon Tree Hotel,Port Blair,4 Star,7000,"family;corporate;business","Reliable central hotel with modern comfort and smooth airport access.",Available
+HTL-PB-006,Hotel Sentinel,Port Blair,3 Star,5200,"family;corporate;budget","Well-established city hotel offering comfortable stays with convenient access to major attractions.",Available
+HTL-PB-007,TSG Emerald View,Port Blair,3 Star,4800,"family;friends;budget","Comfortable mid-range property suitable for family holidays and short city stays.",Available
+HTL-PB-008,Hotel Shompen,Port Blair,3 Star,4500,"family;corporate;budget","Government-run hotel offering practical accommodation near the city center.",Available
+HTL-PB-009,Hotel Driftwood,Port Blair,2 Star,2800,"budget;friends;backpackers","Affordable stay providing basic amenities and easy access to local sightseeing.",Available
+HTL-PB-010,Hotel Blue Sea,Port Blair,2 Star,2500,"budget;family;backpackers","Economical accommodation ideal for travelers seeking value-focused island stays.",Available
+HTL-PB-011,Aberdeen Bay Hotel,Port Blair,4 Star,7600,"family;corporate;premium","Comfortable city hotel with central access and a polished stay experience.",Available
+HTL-PB-012,Hotel Hilltop International,Port Blair,4 Star,7200,"family;business;premium","Practical premium stay with convenient access to Port Blair sightseeing.",Available
+HTL-PB-013,Hotel Atlas,Port Blair,3 Star,4300,"family;budget;corporate","Simple and reliable hotel suited for short city stays and transit nights.",Available
+HTL-PB-014,Hotel Sea Breeze,Port Blair,2 Star,2600,"budget;backpackers;family","Affordable stay with basic comfort for value-focused Port Blair trips.",Available
+HTL-PB-015,Silver Sand Sea Princess Beach Resort,Port Blair,5 Star,11500,"honeymoon;family;premium","Beachfront luxury resort with private beach access and premium guest experience.",Available
+HTL-PB-016,Sea Shell Coral Cove,Port Blair,4 Star,8500,"honeymoon;family;premium","Luxury city-edge resort with pool, beach access, and polished service.",Available
+HTL-PB-017,Silver Sand Sentinel,Port Blair,4 Star,8000,"family;corporate;premium","Comfortable upscale city hotel with easy access to Port Blair sightseeing.",Available
+HTL-PB-018,Hotel TSG Grand,Port Blair,3 Star,4600,"family;budget;corporate","Practical mid-range hotel with central access and reliable service.",Available
+HTL-PB-019,J Hotel,Port Blair,3 Star,3900,"family;budget;transit","Simple and reliable city stay for short Port Blair trips and transit nights.",Available
+HTL-PB-015,Silver Sand Sea Princess Beach Resort,Port Blair,5 Star,11500,"honeymoon;family;premium","Beachside luxury resort with sea views, refined service, and a premium resort feel.",Available
+HTL-PB-016,Sea Shell Coral Cove,Port Blair,4 Star,8500,"honeymoon;family;premium","Green, stylish resort with polished service and convenient access to Port Blair sightseeing.",Available
+HTL-PB-017,Peerless Resort Port Blair,Port Blair,4 Star,7800,"family;couples;premium","Seaside resort with calm surroundings, sea-view rooms, and a relaxed holiday atmosphere.",Available
+HTL-PB-018,Zone Connect by The Park Port Blair,Port Blair,4 Star,7600,"family;business;premium","Contemporary 4-star hotel with backwater views and modern city convenience.",Available
+HTL-PB-019,The Eden Birdline,Port Blair,4 Star,7200,"family;couples;premium","Elegant city hotel with clean rooms, pool, and easy access to attractions.",Available
+
+HTL-HL-001,Taj Exotica Resort & Spa,Swaraj Dweep,Ultra Luxury,32000,"honeymoon;luxury;premium","Signature luxury island resort for premium beach-focused itineraries.",Available
+HTL-HL-002,SeaShell Havelock,Swaraj Dweep,5 Star,14500,"honeymoon;family;beach","Popular luxury resort with easy beach access and a polished guest experience.",Available
+HTL-HL-003,Symphony Palms,Swaraj Dweep,5 Star,10800,"family;friends;beach","Beachside resort option with relaxed island energy and convenient water activity access.",Available
+HTL-HL-004,Silver Sand Beach Resort,Swaraj Dweep,5 Star,12500,"honeymoon;family;premium","Refined beach resort suited to slower luxury island stays.",Available
+HTL-HL-005,Havelock Island Beach Resort,Swaraj Dweep,3 Star,6500,"family;beach;budget","Popular beachfront property offering comfortable accommodation close to island activities.",Available
+HTL-HL-006,TSG Blue Resort,Swaraj Dweep,3 Star,5800,"family;friends;budget","Relaxed resort with easy access to beaches and water sports facilities.",Available
+HTL-HL-007,Gold India Beach Resort,Swaraj Dweep,3 Star,5200,"family;budget;couples","Mid-range beach resort suitable for family holidays and relaxed island experiences.",Available
+HTL-HL-008,Emerald Gecko Resort,Swaraj Dweep,2 Star,3500,"budget;backpackers;nature","Nature-inspired accommodation designed for budget-conscious island explorers.",Available
+HTL-HL-009,Green Valley Resort,Swaraj Dweep,2 Star,3200,"budget;family;friends","Affordable resort offering simple comforts near major beaches.",Available
+HTL-HL-010,Dolphin Beach Resort,Swaraj Dweep,4 Star,9400,"honeymoon;family;beach","Relaxed beach resort with convenient access to island activities and scenic shoreline stays.",Available
+HTL-HL-011,Plaza Beach Resort,Swaraj Dweep,4 Star,8500,"family;friends;beach","Comfortable beach resort suitable for leisure-focused island itineraries.",Available
+HTL-HL-012,Coral Cove Resort,Swaraj Dweep,3 Star,6100,"family;budget;couples","Mid-range resort offering a pleasant base for beach and activity-oriented stays.",Available
+HTL-HL-013,Island Reef Inn,Swaraj Dweep,2 Star,3400,"budget;backpackers;friends","Budget-friendly island inn ideal for short and simple Havelock stays.",Available
+HTL-HL-014,De Foret,Swaraj Dweep,4 Star,9800,"honeymoon;family;premium","Forest-and-beach stay with a premium island feel and easy access to beaches.",Available
+HTL-HL-015,Bowfins Resorts,Swaraj Dweep,4 Star,9200,"family;couples;premium","Relaxed island resort suitable for premium leisure itineraries.",Available
+HTL-HL-016,Ocean Tree Beach Resort & Spa,Swaraj Dweep,4 Star,10500,"honeymoon;family;premium","Beach resort with spa-style relaxation and polished island ambience.",Available
+HTL-HL-017,The Wild Orchid Resort,Swaraj Dweep,3 Star,6700,"family;budget;couples","Eco-style resort suited to comfortable mid-range Havelock stays.",Available
+HTL-HL-018,Matsya Island Retreat,Swaraj Dweep,3 Star,6000,"family;friends;budget","Mid-range retreat for guests who prefer a quieter island base.",Available
+HTL-HL-014,Sea Shell Resort & Spa, Havelock,Swaraj Dweep,5 Star,15500,"honeymoon;family;beach","Popular luxury beach resort with polished rooms and strong island appeal.",Available
+HTL-HL-015,Coral Reef Resort & Spa, Havelock,Swaraj Dweep,5 Star,13800,"honeymoon;family;premium","Refined beachfront resort suited to premium island itineraries.",Available
+HTL-HL-016,Munjoh Ocean Resort,Swaraj Dweep,5 Star,16000,"honeymoon;luxury;premium","Luxury resort with a private, relaxed atmosphere ideal for high-end stays.",Available
+HTL-HL-017,Haywizz Havelock Island Resort,Swaraj Dweep,4 Star,9200,"family;friends;beach","Large resort with pool and comfortable island facilities.",Available
+HTL-HL-018,Barefoot at Havelock,Swaraj Dweep,5 Star,21000,"honeymoon;luxury;nature","Nature-forward luxury stay with an exclusive and immersive island feel.",Available
+
+HTL-NL-001,SeaShell Neil,Shaheed Dweep,5 Star,9800,"honeymoon;family;relaxation","Comfortable island stay ideal for slow-paced Neil Island itineraries.",Available
+HTL-NL-002,Silver Sand Neil,Shaheed Dweep,5 Star,9200,"honeymoon;family;beach","Elegant Neil Island stay with a relaxed beach-oriented atmosphere.",Available
+HTL-NL-003,Symphony Summer Sands,Shaheed Dweep,5 Star,10500,"honeymoon;couples;premium","Relaxed island property designed for scenic beach downtime.",Available
+HTL-NL-004,TSG Aura Resort,Shaheed Dweep,3 Star,5600,"family;couples;budget","Comfortable island resort ideal for relaxed Neil Island vacations.",Available
+HTL-NL-005,Pearl Park Beach Resort,Shaheed Dweep,3 Star,5100,"family;beach;budget","Beach-oriented resort offering a peaceful atmosphere and convenient island access.",Available
+HTL-NL-006,Hotel Amullya,Shaheed Dweep,3 Star,4500,"family;budget;friends","Practical island stay suitable for short leisure trips and sightseeing.",Available
+HTL-NL-007,Blue Bird Residency,Shaheed Dweep,2 Star,2800,"budget;backpackers;friends","Simple accommodation providing affordable access to Neil Island attractions.",Available
+HTL-NL-008,Coral Garden Resort,Shaheed Dweep,2 Star,3000,"budget;family;nature","Budget-friendly resort designed for nature lovers and relaxed beach stays.",Available
+HTL-NL-009,SeaShell Pearl,Shaheed Dweep,4 Star,7600,"family;honeymoon;premium","Elegant Neil Island stay with a quieter atmosphere and comfortable amenities.",Available
+HTL-NL-010,Reef Valley Resort,Shaheed Dweep,4 Star,7100,"family;couples;beach","Relaxed resort with a calm setting suited to premium island downtime.",Available
+HTL-NL-011,Shoreline Retreat,Shaheed Dweep,3 Star,4700,"family;budget;friends","Practical island resort for scenic yet value-conscious Neil trips.",Available
+HTL-NL-012,Ocean Palm Guesthouse,Shaheed Dweep,2 Star,2900,"budget;backpackers;nature","Basic guesthouse for travelers seeking affordable island accommodation.",Available
+HTL-NL-013,Coconhuts Beach Resort Neil Island,Shaheed Dweep,3 Star,5200,"family;budget;beach","Beach-oriented island stay with a relaxed and scenic atmosphere.",Available
+HTL-NL-014,Tango Beach Resort,Shaheed Dweep,3 Star,5600,"couples;family;beach","Well-located beach resort near sunset points and calm shoreline experiences.",Available
+HTL-NL-015,Reef Valley Resort,Shaheed Dweep,3 Star,5400,"family;couples;budget","Comfortable resort for relaxed Neil Island stays and sightseeing.",Available
+HTL-NL-016,CS Empire,Shaheed Dweep,3 Star,5000,"family;budget;friends","Simple island accommodation suitable for practical short stays.",Available
+HTL-NL-017,Vacation Village Resort,Shaheed Dweep,3 Star,5800,"family;couples;budget","Quiet resort option for leisurely Neil Island itineraries.",Available
+HTL-NL-013,Coconhuts Beach Resort Neil Island,Shaheed Dweep,3 Star,5200,"family;budget;beach","Beach-facing resort with a relaxed and scenic Neil Island atmosphere.",Available
+HTL-NL-014,Tango Beach Resort,Shaheed Dweep,3 Star,5600,"couples;family;beach","Well-located beach resort near sunset points and calm shoreline experiences.",Available
+HTL-NL-015,Reef Valley Resort,Shaheed Dweep,3 Star,5400,"family;couples;budget","Comfortable resort for relaxed Neil Island stays and sightseeing.",Available
+HTL-NL-016,CS Empire,Shaheed Dweep,3 Star,5000,"family;budget;friends","Simple island accommodation suitable for practical short stays.",Available
+HTL-NL-017,Vacation Village Resort - Neil Island,Shaheed Dweep,3 Star,5800,"family;couples;budget","Quiet resort option for leisurely Neil Island itineraries.",Available
+
+HTL-DG-001,Pristine Beach Resort,Diglipur,4 Star,6200,"nature;family;premium","Practical resort for north island exploration and longer scenic stays.",Available
+HTL-DG-002,Saddle Peak View Resort,Diglipur,3 Star,4200,"nature;budget;family","Simple base for Diglipur nature itineraries and island excursions.",Available
+HTL-DG-003,Turtle Resort,Diglipur,3 Star,4600,"nature;family;budget","Comfortable resort ideal for travelers exploring northern Andaman attractions.",Available
+HTL-DG-004,Avis Island Resort,Diglipur,3 Star,4300,"nature;family;friends","Pleasant mid-range stay suited for nature-focused itineraries.",Available
+HTL-DG-005,Kalipur Eco Village,Diglipur,3 Star,3900,"nature;eco;budget","Eco-focused accommodation offering peaceful surroundings near Kalipur Beach.",Available
+HTL-DG-006,Ross and Smith Guest House,Diglipur,2 Star,2500,"budget;nature;backpackers","Basic accommodation for guests exploring Ross and Smith Islands.",Available
+HTL-DG-007,Saddle Peak Homestay,Diglipur,2 Star,2200,"budget;nature;family","Affordable homestay experience for travelers seeking authentic local hospitality.",Available
+HTL-DG-008,North Bay Eco Resort,Diglipur,4 Star,6900,"nature;family;premium","Comfortable resort for north Andaman exploration with scenic surroundings.",Available
+HTL-DG-009,Emerald Lagoon Resort,Diglipur,4 Star,6600,"nature;family;premium","Premium nature stay for guests exploring Diglipur and nearby islands.",Available
+HTL-DG-010,Forest View Residency,Diglipur,3 Star,4400,"nature;budget;family","Reliable mid-range stay for scenic Diglipur itineraries.",Available
+HTL-DG-011,Island Nest Homestay,Diglipur,2 Star,2400,"budget;backpackers;nature","Affordable homestay option for simple stays in northern Andaman.",Available
+HTL-DG-012,Karthika Inn,Diglipur,3 Star,3800,"nature;family;budget","Practical north island stay with basic comforts and convenient access to local sights.",Available
+HTL-DG-013,Hotel Landfall,Diglipur,3 Star,4200,"nature;family;budget","Well-located Diglipur hotel suited for Ross and Smith Island access.",Available
+HTL-DG-014,Hotel Adhi,Diglipur,3 Star,3600,"nature;budget;family","Budget-friendly Diglipur stay with simple amenities and local convenience.",Available
+HTL-DG-015,Gold Coast Resort,Diglipur,2 Star,3400,"budget;nature;family","Affordable base for North Andaman nature itineraries and short stays.",Available
+HTL-DG-016,Bliss Holiday Resorts and Restaurants,Diglipur,2 Star,3000,"budget;nature;family","Value accommodation option for travelers exploring Diglipur and nearby nature spots.",Available
+HTL-DG-012,kARTHIKA INN,Diglipur,3 Star,3800,"nature;family;budget","Practical north-island stay with simple comforts and convenient local access.",Available
+HTL-DG-013,Hotel Adhi,Diglipur,3 Star,4300,"nature;family;budget","Reliable Diglipur stay suited to nature-focused itineraries.",Available
+HTL-DG-014,Hotel Landfall,Diglipur,3 Star,3600,"nature;budget;family","Budget-friendly base for Diglipur sightseeing and island movement.",Available
+HTL-DG-015,Gold Coast Resort,Diglipur,3 Star,4200,"nature;family;premium","Popular resort-style stay for north Andaman exploration.",Available
+HTL-DG-016,Bliss Holiday Resorts And Restaurants,Diglipur,3 Star,4500,"nature;family;budget","Well-liked stay with restaurant facilities and a relaxed local vibe.",Available
+
+
+
+
