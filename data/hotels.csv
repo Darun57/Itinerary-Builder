@@ -1,0 +1,6 @@
+hotel_id,hotel_name,location,category,nightly_price,suitable_for,description
+HTL-PB-001,SeaShell Port Blair,Port Blair,Luxury,9500,"honeymoon;family;premium","Upscale city hotel suited for arrival nights and relaxed bay-view stays."
+HTL-PB-002,Hotel Sentinel,Port Blair,Premium,6200,"family;corporate;couples","Reliable central hotel with easy access to Cellular Jail and airport transfers."
+HTL-HL-001,Barefoot at Havelock,Swaraj Dweep,Luxury,14500,"honeymoon;nature;premium","Boutique island resort close to Radhanagar Beach with a quiet nature-first feel."
+HTL-HL-002,Symphony Palms Beach Resort,Swaraj Dweep,Premium,7800,"family;friends;beach","Beachside resort option for guests who want easy access to cafes and water activities."
+HTL-NL-001,SeaShell Neil,Shaheed Dweep,Premium,7200,"honeymoon;family;relaxation","Comfortable island stay ideal for slow-paced Neil Island itineraries."

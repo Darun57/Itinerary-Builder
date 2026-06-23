@@ -1,0 +1,6 @@
+ferry_id,operator,from_location,to_location,departure_time,arrival_time,duration
+FRY-001,Makruzz,Port Blair,Swaraj Dweep,08:00,09:30,1 hour 30 minutes
+FRY-002,Green Ocean,Swaraj Dweep,Shaheed Dweep,10:30,11:30,1 hour
+FRY-003,Makruzz,Shaheed Dweep,Port Blair,15:30,17:00,1 hour 30 minutes
+FRY-004,Nautika,Port Blair,Shaheed Dweep,07:30,09:15,1 hour 45 minutes
+FRY-005,Green Ocean,Swaraj Dweep,Port Blair,15:00,17:00,2 hours
