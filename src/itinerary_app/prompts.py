@@ -55,6 +55,8 @@ Trip Pace: {request.trip_pace}
 Hotel Category Preference: {request.hotel_category_preference}
 Room Type Preference: {request.room_type_preference}
 Room View Preference: {request.room_view_preference}
+Hotel Selection Islands: {request.hotel_selection_islands or 'None'}
+Selected Hotels: {request.selected_hotels or 'None'}
 Transfer Type: {request.transfer_type or 'None'}
 Preferred Ferries: {request.preferred_ferries or 'None'}
 Meal Plan: {request.meal_plan or 'None'}
@@ -126,6 +128,8 @@ Trip Pace: {request.trip_pace}
 Hotel Category Preference: {request.hotel_category_preference}
 Room Type Preference: {request.room_type_preference}
 Room View Preference: {request.room_view_preference}
+Hotel Selection Islands: {request.hotel_selection_islands or 'None'}
+Selected Hotels: {request.selected_hotels or 'None'}
 Transfer Type: {request.transfer_type or 'None'}
 Preferred Ferries: {request.preferred_ferries or 'None'}
 Meal Plan: {request.meal_plan or 'None'}

@@ -64,7 +64,12 @@ def _load_csv_with_optional(
         frame = pd.read_csv(path)
     except EmptyDataError:
         return _empty_frame(expected_columns)
-    except (ParserError, UnicodeDecodeError, OSError) as error:
+    except ParserError:
+        try:
+            frame = pd.read_csv(path, engine="python", on_bad_lines="skip")
+        except (EmptyDataError, ParserError, UnicodeDecodeError, OSError) as error:
+            raise ValueError(f"Could not load {path}: {error}") from error
+    except (UnicodeDecodeError, OSError) as error:
         raise ValueError(f"Could not load {path}: {error}") from error
 
     missing_columns = [column for column in expected_columns if column not in frame.columns]

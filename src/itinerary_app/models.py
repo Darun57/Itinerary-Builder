@@ -29,6 +29,8 @@ class TripRequest:
     hotel_category_preference: str
     room_type_preference: str
     room_view_preference: str
+    hotel_selection_islands: str
+    selected_hotels: str
     transfer_type: str
     preferred_ferries: str
     meal_plan: str

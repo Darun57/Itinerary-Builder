@@ -485,30 +485,49 @@ def render_highlights_page(story: list, styles: dict[str, ParagraphStyle], reque
     story.append(Paragraph(_escape_text(str(highlights["hotel_category"])), styles["highlight_body"]))
     story.append(PageBreak())
 
-def _hotel_stay_text(hotel_row: dict[str, object], destinations_frame) -> str:
+def _count_location_days(text: str, location: str) -> int:
+    location_key = _normalize_destination_key(location)
+    if not location_key:
+        return 0
+
+    count = 0
+    for line in _split_values(text):
+        if location_key in _normalize_destination_key(line):
+            count += 1
+    return count
+
+
+def _count_location_days_in_itinerary(itinerary_text: str, location: str) -> int:
+    location_key = _normalize_destination_key(location)
+    if not location_key:
+        return 0
+
+    count = 0
+    for day_section in split_itinerary_into_days(itinerary_text):
+        day_text = " ".join(
+            [str(day_section.get("heading") or ""), " ".join(str(item.get("content") or "") for item in day_section.get("items", []))]
+        ).lower()
+        if location_key in day_text:
+            count += 1
+    return count
+
+
+def _hotel_stay_text(hotel_row: dict[str, object], request: TripRequest, itinerary_text: str) -> str:
     location = str(hotel_row.get("location") or "").strip()
-    matches = destinations_frame[destinations_frame["destination_name"].str.lower() == location.lower()] if not destinations_frame.empty else None
-    if matches is not None and not matches.empty:
-        minimum_days = str(matches.iloc[0].get("minimum_days") or "").strip()
-        maximum_days = str(matches.iloc[0].get("maximum_days") or "").strip()
-        if minimum_days and maximum_days:
-            return f"{minimum_days} to {maximum_days} nights"
-    category = str(hotel_row.get("category") or "").strip()
-    if category.lower() == "ultra luxury":
-        return "3 to 4 nights"
-    if category.lower() == "5 star":
-        return "2 to 3 nights"
-    if category.lower() == "4 star":
-        return "1 to 2 nights"
-    return "1 night"
+    stay_days = _count_location_days(request.daily_island_plan, location)
+    if stay_days == 0 and itinerary_text:
+        stay_days = _count_location_days_in_itinerary(itinerary_text, location)
+    if stay_days > 0:
+        return f"{stay_days} Night" if stay_days == 1 else f"{stay_days} Nights"
+    return "As Per Itinerary"
 
 
-def _hotel_card_flowable(hotel_row: dict[str, object], destination_stays_frame, card_width: float) -> Table:
+def _hotel_card_flowable(hotel_row: dict[str, object], request: TripRequest, itinerary_text: str, card_width: float) -> Table:
     hotel_name = str(hotel_row.get("hotel_name") or "").strip()
     location = str(hotel_row.get("location") or "").strip()
     category = str(hotel_row.get("category") or "").strip()
     description = str(hotel_row.get("description") or "").strip()
-    stay_text = _hotel_stay_text(hotel_row, destination_stays_frame)
+    stay_text = _hotel_stay_text(hotel_row, request, itinerary_text)
     image_path = get_hotel_image_path(hotel_name)
     if image_path:
         image_flowable = Image(str(image_path), width=card_width - 14, height=1.45 * inch)
@@ -532,7 +551,7 @@ def _hotel_card_flowable(hotel_row: dict[str, object], destination_stays_frame, 
             ParagraphStyle("hotel_card_body", fontName=_font_map()["body"], fontSize=9.4, leading=12.8, textColor=COLORS["body"], spaceAfter=4),
         ),
         Paragraph(
-            _escape_text(f"Recommended Stay: {stay_text}"),
+            _escape_text(f"Stay Duration: {stay_text}"),
             ParagraphStyle("hotel_card_stay", fontName=_font_map()["body_bold"], fontSize=9.4, leading=12.8, textColor=COLORS["dark"], spaceAfter=0),
         ),
     ]
@@ -554,11 +573,10 @@ def _hotel_card_flowable(hotel_row: dict[str, object], destination_stays_frame, 
     return card
 
 
-def render_luxury_stays_page(story: list, styles: dict[str, ParagraphStyle], request: TripRequest) -> None:
+def render_luxury_stays_page(story: list, styles: dict[str, ParagraphStyle], request: TripRequest, itinerary_text: str) -> None:
     hotel_frame = recommend_hotels(request)
     if hotel_frame.empty:
         return
-    destinations_frame = load_destinations()
     story.append(Paragraph("YOUR LUXURY STAYS", styles["highlights_title"]))
     story.append(Paragraph("Elegant stays selected from Darun Tourism inventory.", styles["highlights_subtitle"]))
     story.append(Spacer(1, 0.08 * inch))
@@ -568,9 +586,9 @@ def render_luxury_stays_page(story: list, styles: dict[str, ParagraphStyle], req
     card_width = (PAGE_INNER_WIDTH - 12) / 2
     hotel_rows = [row.to_dict() for _, row in hotel_frame.iterrows()]
     for index in range(0, len(hotel_rows), 2):
-        left_card = _hotel_card_flowable(hotel_rows[index], destinations_frame, card_width)
+        left_card = _hotel_card_flowable(hotel_rows[index], request, itinerary_text, card_width)
         right_card = (
-            _hotel_card_flowable(hotel_rows[index + 1], destinations_frame, card_width)
+            _hotel_card_flowable(hotel_rows[index + 1], request, itinerary_text, card_width)
             if index + 1 < len(hotel_rows)
             else Spacer(1, 0.01 * inch)
         )
@@ -666,7 +684,7 @@ def generate_luxury_pdf(request: TripRequest, itinerary_text: str) -> bytes:
     story: list = []
     render_cover_page(story, styles, request, trip_title)
     render_highlights_page(story, styles, request, cleaned_itinerary)
-    render_luxury_stays_page(story, styles, request)
+    render_luxury_stays_page(story, styles, request, cleaned_itinerary)
     day_sections = split_itinerary_into_days(cleaned_itinerary)
     for index, section in enumerate(day_sections):
         render_day_page(story, styles, request, section, destination=request.destination, day_number=index + 1)

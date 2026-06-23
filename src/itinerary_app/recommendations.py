@@ -83,6 +83,8 @@ def _request_text(request: TripRequest) -> str:
             request.hotel_category_preference,
             request.room_type_preference,
             request.room_view_preference,
+            request.hotel_selection_islands,
+            request.selected_hotels,
             request.transfer_type,
             request.preferred_ferries,
             request.meal_plan,
@@ -175,14 +177,19 @@ def recommend_hotels(request: TripRequest) -> pd.DataFrame:
     budget = _normalize(request.budget_category)
     trip_type = _normalize(request.trip_type)
     category_preference = _normalize(request.hotel_category_preference)
-    preferred_locations = _requested_locations(request.destination)
+    preferred_locations = _requested_locations(request.hotel_selection_islands or request.destination)
     preferred_locations.update(_requested_locations(request.selected_destinations))
     preferred_locations.update(
         _normalize(_clean_destination_label(value.split(":")[-1]))
         for value in _split_requested_values(request.daily_island_plan)
         if _clean_destination_label(value.split(":")[-1])
     )
+    selected_hotels = {value.lower() for value in _split_requested_values(request.selected_hotels)}
     hotels = hotels[hotels["availability_status"].fillna("Available").str.lower() != "fully booked"].copy()
+    if selected_hotels:
+        selected_mask = hotels["hotel_name"].astype(str).str.lower().isin(selected_hotels)
+        if selected_mask.any():
+            hotels = hotels[selected_mask].copy()
     if preferred_locations:
         location_mask = hotels["location"].astype(str).str.lower().isin(preferred_locations)
         if location_mask.any():

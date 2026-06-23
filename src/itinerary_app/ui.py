@@ -5,6 +5,7 @@ import streamlit as st
 
 from itinerary_app.company_knowledge import build_recommendation_bundle
 from itinerary_app.config import APP_SUBTITLE, APP_TITLE, BRAND_NAME, DEFAULT_MODEL
+from itinerary_app.data_loader import load_hotels
 from itinerary_app.google_service import generate_itinerary_stream
 from itinerary_app.models import TripRequest
 from itinerary_app.pdf_service import generate_luxury_pdf
@@ -41,6 +42,8 @@ TRIP_PACES = ["Relaxed", "Balanced", "Fast-Paced"]
 HOTEL_CATEGORIES = ["3 Star", "4 Star", "5 Star", "Ultra Luxury"]
 ROOM_TYPES = ["Standard", "Deluxe", "Premium", "Suite", "Villa"]
 ROOM_VIEWS = ["No Preference", "Garden View", "Pool View", "Sea View"]
+HOTEL_ISLAND_OPTIONS = ["Port Blair", "Swaraj Dweep", "Shaheed Dweep", "Diglipur"]
+HOTEL_CATEGORY_FILTERS = ["2 Star", "3 Star", "4 Star", "5 Star", "Ultra Luxury"]
 TRANSFER_TYPES = ["Shared", "Private", "Luxury Private"]
 FERRY_OPTIONS = ["Makruzz", "Nautika", "Green Ocean", "Government Ferry"]
 MEAL_PLANS = ["Breakfast Only", "MAP", "AP"]
@@ -273,6 +276,10 @@ def _join_selected(values: object) -> str:
     return str(values).strip()
 
 
+def _normalize_location(value: object) -> str:
+    return str(value or "").strip().lower()
+
+
 def _select_with_custom(label: str, options: list[str], default_value: str, custom_placeholder: str) -> str:
     selected = st.selectbox(label, options, index=options.index(default_value) if default_value in options else 0)
     if selected == "Custom...":
@@ -291,6 +298,49 @@ def _default_daily_destinations(day_number: int) -> list[str]:
         7: ["Port Blair"],
     }
     return templates.get(day_number, ["Port Blair"])
+
+
+def _filtered_hotels(hotel_islands: list[str], category: str) -> list[dict[str, str]]:
+    hotels = load_hotels()
+    if hotels.empty:
+        return []
+
+    hotels = hotels[hotels["availability_status"].fillna("Available").str.lower() != "fully booked"].copy()
+    if hotel_islands:
+        island_keys = {_normalize_location(island) for island in hotel_islands}
+        hotels = hotels[hotels["location"].astype(str).str.lower().isin(island_keys)].copy()
+    if category:
+        hotels = hotels[hotels["category"].astype(str).str.lower() == category.lower()].copy()
+
+    if hotels.empty:
+        return []
+
+    return [
+        {
+            "hotel_name": str(row["hotel_name"]).strip(),
+            "location": str(row["location"]).strip(),
+            "category": str(row["category"]).strip(),
+            "description": str(row.get("description") or "").strip(),
+        }
+        for _, row in hotels.iterrows()
+    ]
+
+
+def _hotel_option_label(hotel: dict[str, str]) -> str:
+    return f'{hotel["hotel_name"]} — {hotel["location"]} ({hotel["category"]})'
+
+
+def _sync_selected_hotels(hotel_options: list[dict[str, str]]) -> list[str]:
+    available_names = [hotel["hotel_name"] for hotel in hotel_options]
+    selected = st.session_state.get("selected_hotels", [])
+    if isinstance(selected, list):
+        selected = [name for name in selected if name in available_names]
+    else:
+        selected = []
+    if not selected and available_names and "selected_hotels" not in st.session_state:
+        selected = available_names[: min(3, len(available_names))]
+    st.session_state.selected_hotels = selected
+    return selected
 
 
 def _sync_daily_plan_state(number_of_days: int) -> None:
@@ -405,6 +455,8 @@ def _build_request(form_data: dict[str, object]) -> TripRequest:
         hotel_category_preference=str(form_data["hotel_category_preference"]),
         room_type_preference=str(form_data["room_type_preference"]),
         room_view_preference=str(form_data["room_view_preference"]),
+        hotel_selection_islands=_join_selected(form_data["hotel_selection_islands"]),
+        selected_hotels=_join_selected(form_data["selected_hotels"]),
         transfer_type=str(form_data["transfer_type"]),
         preferred_ferries=_join_selected(form_data["preferred_ferries"]),
         meal_plan=str(form_data["meal_plan"]),
@@ -590,10 +642,40 @@ def render_app() -> None:
         with st.expander("Accommodation Preferences", expanded=True):
             top_left, top_right = st.columns(2)
             with top_left:
-                hotel_category_preference = st.selectbox("Hotel Category", HOTEL_CATEGORIES, index=2)
                 room_type_preference = st.selectbox("Room Type", ROOM_TYPES, index=1)
             with top_right:
                 room_view_preference = st.selectbox("Room View Preference", ROOM_VIEWS, index=0)
+
+        with st.expander("Hotel Selection", expanded=True):
+            top_left, top_right = st.columns(2)
+            with top_left:
+                hotel_selection_islands = st.multiselect(
+                    "Destination Islands",
+                    HOTEL_ISLAND_OPTIONS,
+                    default=[island for island in HOTEL_ISLAND_OPTIONS if island in st.session_state.get("selected_destinations", ["Port Blair"])] or ["Port Blair"],
+                    help="Choose the islands that should control the hotel inventory filter.",
+                )
+            with top_right:
+                hotel_category_preference = st.selectbox("Hotel Category", HOTEL_CATEGORY_FILTERS, index=2)
+
+            available_hotels = _filtered_hotels(hotel_selection_islands, hotel_category_preference)
+            selected_hotel_names = _sync_selected_hotels(available_hotels)
+            hotel_name_options = [hotel["hotel_name"] for hotel in available_hotels]
+
+            if hotel_name_options:
+                st.multiselect(
+                    "Available Hotels",
+                    hotel_name_options,
+                    key="selected_hotels",
+                    default=selected_hotel_names,
+                    help="Only hotels matching the selected islands, category, and availability are shown.",
+                )
+                st.caption("Matching hotels")
+                for hotel in available_hotels[:6]:
+                    st.markdown(f"- {_hotel_option_label(hotel)}")
+            else:
+                st.session_state.selected_hotels = []
+                st.caption("No matching hotels found for the current island and category filters.")
 
         with st.expander("Transport Preferences", expanded=False):
             top_left, top_right = st.columns(2)
@@ -673,6 +755,8 @@ def render_app() -> None:
             "hotel_category_preference": hotel_category_preference,
             "room_type_preference": room_type_preference,
             "room_view_preference": room_view_preference,
+            "hotel_selection_islands": hotel_selection_islands,
+            "selected_hotels": st.session_state.get("selected_hotels", []),
             "transfer_type": transfer_type,
             "preferred_ferries": preferred_ferries,
             "meal_plan": meal_plan,
