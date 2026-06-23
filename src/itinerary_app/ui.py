@@ -1,6 +1,7 @@
 import os
 from datetime import timedelta
 
+import pandas as pd
 import streamlit as st
 
 from itinerary_app.company_knowledge import build_recommendation_bundle
@@ -280,6 +281,16 @@ def _normalize_location(value: object) -> str:
     return str(value or "").strip().lower()
 
 
+def _normalize_island_name(value: object) -> str:
+    text = _normalize_location(value)
+    if not text:
+        return ""
+    for island in HOTEL_ISLAND_OPTIONS:
+        if _normalize_location(island) in text or text in _normalize_location(island):
+            return island
+    return ""
+
+
 def _select_with_custom(label: str, options: list[str], default_value: str, custom_placeholder: str) -> str:
     selected = st.selectbox(label, options, index=options.index(default_value) if default_value in options else 0)
     if selected == "Custom...":
@@ -305,12 +316,17 @@ def _filtered_hotels(hotel_islands: list[str], category: str) -> list[dict[str, 
     if hotels.empty:
         return []
 
-    hotels = hotels[hotels["availability_status"].fillna("Available").str.lower() != "fully booked"].copy()
-    if hotel_islands:
-        island_keys = {_normalize_location(island) for island in hotel_islands}
-        hotels = hotels[hotels["location"].astype(str).str.lower().isin(island_keys)].copy()
+    island_keys = [_normalize_location(island) for island in hotel_islands if _normalize_location(island)]
+    location_series = hotels["location"].astype(str).str.lower()
+    category_series = hotels["category"].astype(str).str.lower()
+    availability_series = hotels["availability_status"].fillna("Available").astype(str).str.lower()
+
+    filter_mask = availability_series.ne("fully booked")
+    if island_keys:
+        filter_mask = filter_mask & location_series.isin(island_keys)
     if category:
-        hotels = hotels[hotels["category"].astype(str).str.lower() == category.lower()].copy()
+        filter_mask = filter_mask & category_series.eq(category.lower())
+    hotels = hotels[filter_mask].copy()
 
     if hotels.empty:
         return []
@@ -343,6 +359,15 @@ def _sync_selected_hotels(hotel_options: list[dict[str, str]]) -> list[str]:
     return selected
 
 
+def _hotel_islands_from_destinations(destinations: list[str]) -> list[str]:
+    islands: list[str] = []
+    for destination in destinations:
+        island = _normalize_island_name(destination)
+        if island and island not in islands:
+            islands.append(island)
+    return islands
+
+
 def _sync_daily_plan_state(number_of_days: int) -> None:
     previous_day_count = int(st.session_state.get("daily_plan_day_count", 0))
     if previous_day_count != number_of_days:
@@ -373,7 +398,7 @@ def _format_daily_island_plan(number_of_days: int) -> str:
     return "\n".join(lines)
 
 
-def _render_travel_planner() -> tuple[str, str, str, object, object, object, bool, int, int]:
+def _render_travel_planner() -> tuple[list[str], str, str, object, object, object, bool, int, int]:
     with st.expander("Travel Information", expanded=True):
         top_left, top_right = st.columns(2)
         with top_left:
@@ -415,7 +440,7 @@ def _render_travel_planner() -> tuple[str, str, str, object, object, object, boo
         selected_destination_text = "Andaman Islands"
 
     return (
-        selected_destination_text,
+        selected_destinations,
         selected_destination_text,
         _format_daily_island_plan(int(number_of_days)),
         arrival_date,
@@ -563,8 +588,8 @@ def render_app() -> None:
         st.session_state.itinerary_versions = []
 
     (
+        selected_destination_choices,
         destination_text,
-        selected_destination_text,
         daily_island_plan,
         arrival_date,
         departure_date,
@@ -649,12 +674,18 @@ def render_app() -> None:
         with st.expander("Hotel Selection", expanded=True):
             top_left, top_right = st.columns(2)
             with top_left:
-                hotel_selection_islands = st.multiselect(
-                    "Destination Islands",
-                    HOTEL_ISLAND_OPTIONS,
-                    default=[island for island in HOTEL_ISLAND_OPTIONS if island in st.session_state.get("selected_destinations", ["Port Blair"])] or ["Port Blair"],
-                    help="Choose the islands that should control the hotel inventory filter.",
-                )
+                use_manual_island_entry = st.toggle("Enter hotel islands manually", value=False)
+                if use_manual_island_entry:
+                    hotel_selection_islands = st.multiselect(
+                        "Destination Islands",
+                        HOTEL_ISLAND_OPTIONS,
+                        default=[island for island in HOTEL_ISLAND_OPTIONS if island in _hotel_islands_from_destinations(selected_destination_choices)] or ["Port Blair"],
+                        key="manual_hotel_islands",
+                        help="Choose the islands that should control the hotel inventory filter.",
+                    )
+                else:
+                    hotel_selection_islands = _hotel_islands_from_destinations(selected_destination_choices)
+                    st.info(f"Linked islands: {', '.join(hotel_selection_islands) if hotel_selection_islands else 'Port Blair'}")
             with top_right:
                 hotel_category_preference = st.selectbox("Hotel Category", HOTEL_CATEGORY_FILTERS, index=2)
 
@@ -736,7 +767,7 @@ def render_app() -> None:
             "customer_email": customer_email,
             "customer_phone_number": customer_phone_number,
             "destination": destination_text,
-            "selected_destinations": selected_destination_text,
+            "selected_destinations": destination_text,
             "daily_island_plan": daily_island_plan,
             "number_of_nights": number_of_nights,
             "number_of_days": number_of_days,

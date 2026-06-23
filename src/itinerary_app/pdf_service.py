@@ -14,7 +14,6 @@ from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.platypus import (
     HRFlowable,
     Image,
-    KeepTogether,
     PageBreak,
     Paragraph,
     SimpleDocTemplate,
@@ -27,7 +26,6 @@ from itinerary_app.config import BRAND_NAME
 from itinerary_app.image_loader import get_destination_image_path, get_hotel_image_path
 from itinerary_app.models import TripRequest
 from itinerary_app.recommendations import recommend_hotels
-from itinerary_app.data_loader import load_destinations
 
 
 COLORS = {
@@ -64,56 +62,6 @@ ITINERARY_KEYWORDS = {
     "glass bottom boat": "Glass Bottom Boat Ride",
     "north bay": "North Bay and Ross Island",
     "ross island": "North Bay and Ross Island",
-}
-MONTH_SEASONS = {
-    "december": "winter",
-    "january": "winter",
-    "february": "winter",
-    "march": "summer",
-    "april": "summer",
-    "may": "summer",
-    "june": "monsoon",
-    "july": "monsoon",
-    "august": "monsoon",
-    "september": "monsoon",
-    "october": "shoulder",
-    "november": "shoulder",
-}
-SEASONAL_TIPS = {
-    "winter": "December to February is ideal for scuba, beach time, and sunset experiences with calmer conditions.",
-    "summer": "March to May suits early-start sightseeing, beach downtime, and a relaxed midday resort pace.",
-    "monsoon": "June to September may bring occasional rain showers, so flexible transfer buffers and scenic indoor moments help.",
-    "shoulder": "October and November usually offer balanced weather, making them a strong window for mixed sightseeing and beach plans.",
-}
-DESTINATION_INSIGHT_TIPS = {
-    "port blair": [
-        "Port Blair works best as a heritage-led base, especially when Cellular Jail and museum visits are clustered together.",
-        "Use Port Blair for a smooth arrival or departure day and keep the pace light before island transfers.",
-    ],
-    "swaraj dweep": [
-        "Swaraj Dweep suits a premium beach rhythm, combining Radhanagar Beach, selected water activities, and resort downtime.",
-        "For Swaraj Dweep, the best flow is usually one signature beach experience paired with a slower luxury afternoon.",
-    ],
-    "shaheed dweep": [
-        "Shaheed Dweep shines with calm beach time, Natural Bridge visits, and unhurried scenic movement.",
-        "Keep Shaheed Dweep soft and relaxed so guests can enjoy its quieter beaches without rushing between points.",
-    ],
-    "baratang": [
-        "Baratang is strongest as an early-start day, especially for limestone caves, mangrove channels, and nature-focused transfers.",
-        "Plan Baratang with generous road and boat buffers so the experience feels smooth rather than rushed.",
-    ],
-    "diglipur": [
-        "Diglipur is ideal for longer north-island exploration, including Ross & Smith Islands and Saddle Peak experiences.",
-        "Use Diglipur when the itinerary needs a nature-first detour with more scenic breathing room.",
-    ],
-}
-ACTIVITY_INSIGHT_TIPS = {
-    "scuba": "Scuba and snorkeling are best kept on days with calm sequencing and minimal transfer pressure.",
-    "snorkel": "Snorkeling pairs well with beach time and a single major excursion rather than too many back-to-back activities.",
-    "sunset cruise": "Sunset cruises work beautifully as the evening anchor after a light sightseeing day.",
-    "glass bottom boat": "Glass bottom boat rides are a gentle way to add marine experience without a demanding itinerary pace.",
-    "bridge": "Natural-formation visits benefit from early starts and comfortable footwear planning.",
-    "trek": "Trekking days should be protected with time buffers so the guest experience stays polished and unhurried.",
 }
 
 
@@ -177,10 +125,19 @@ def _build_styles() -> dict[str, ParagraphStyle]:
         "fine": ParagraphStyle("fine", parent=base_styles["BodyText"], fontName=fonts["body"], fontSize=9.5, leading=14, textColor=COLORS["soft_grey"], spaceAfter=4),
         "highlights_title": ParagraphStyle("highlights_title", parent=base_styles["Heading2"], fontName=fonts["heading"], fontSize=21, leading=26, alignment=TA_CENTER, textColor=COLORS["dark"], spaceAfter=10),
         "highlights_subtitle": ParagraphStyle("highlights_subtitle", parent=base_styles["BodyText"], fontName=fonts["body"], fontSize=10.5, leading=15, alignment=TA_CENTER, textColor=COLORS["soft_grey"], spaceAfter=4),
-        "highlight_body": ParagraphStyle("highlight_body", parent=base_styles["BodyText"], fontName=fonts["body"], fontSize=10, leading=14, textColor=COLORS["body"], leftIndent=8, spaceAfter=6),
+        "highlight_heading": ParagraphStyle("highlight_heading", parent=base_styles["Heading3"], fontName=fonts["body_bold"], fontSize=10.5, leading=13, textColor=COLORS["gold"], spaceAfter=3),
+        "highlight_value": ParagraphStyle("highlight_value", parent=base_styles["BodyText"], fontName=fonts["body_bold"], fontSize=10, leading=13.5, textColor=COLORS["dark"], spaceAfter=4),
+        "highlight_body": ParagraphStyle("highlight_body", parent=base_styles["BodyText"], fontName=fonts["body"], fontSize=9.8, leading=13.8, textColor=COLORS["body"], spaceAfter=0),
         "hotel_name": ParagraphStyle("hotel_name", parent=base_styles["Heading3"], fontName=fonts["heading"], fontSize=15, leading=18, textColor=COLORS["gold"], spaceAfter=3),
         "hotel_meta": ParagraphStyle("hotel_meta", parent=base_styles["BodyText"], fontName=fonts["body_bold"], fontSize=10.2, leading=14, textColor=COLORS["dark"], spaceAfter=3),
         "hotel_body": ParagraphStyle("hotel_body", parent=base_styles["BodyText"], fontName=fonts["body"], fontSize=9.8, leading=13.5, textColor=COLORS["body"], spaceAfter=4),
+        "policy_title": ParagraphStyle("policy_title", parent=base_styles["Heading2"], fontName=fonts["heading"], fontSize=20, leading=25, alignment=TA_CENTER, textColor=COLORS["dark"], spaceAfter=8),
+        "policy_intro": ParagraphStyle("policy_intro", parent=base_styles["BodyText"], fontName=fonts["body"], fontSize=10, leading=14, alignment=TA_CENTER, textColor=COLORS["soft_grey"], spaceAfter=4),
+        "policy_card_title": ParagraphStyle("policy_card_title", parent=base_styles["Heading3"], fontName=fonts["body_bold"], fontSize=10.2, leading=13, textColor=COLORS["dark"], spaceAfter=3),
+        "policy_card_body": ParagraphStyle("policy_card_body", parent=base_styles["BodyText"], fontName=fonts["body"], fontSize=8.8, leading=11.5, textColor=COLORS["body"], spaceAfter=0),
+        "policy_price": ParagraphStyle("policy_price", parent=base_styles["BodyText"], fontName=fonts["body_bold"], fontSize=9.2, leading=12, textColor=COLORS["gold"], spaceAfter=2),
+        "policy_badge": ParagraphStyle("policy_badge", parent=base_styles["BodyText"], fontName=fonts["body_bold"], fontSize=7.8, leading=10, textColor=COLORS["gold"], spaceAfter=2),
+        "policy_number": ParagraphStyle("policy_number", parent=base_styles["BodyText"], fontName=fonts["heading"], fontSize=14, leading=17, textColor=COLORS["gold"], spaceAfter=2),
     }
 
 
@@ -192,6 +149,29 @@ def _split_values(text: str) -> list[str]:
             continue
         values.append(cleaned)
     return values
+
+
+def _unique_values(values: list[str]) -> list[str]:
+    unique: list[str] = []
+    seen: set[str] = set()
+    for value in values:
+        cleaned = str(value or "").strip()
+        if not cleaned:
+            continue
+        key = cleaned.lower()
+        if key not in seen:
+            unique.append(cleaned)
+            seen.add(key)
+    return unique
+
+
+def _format_list(values: list[str], fallback: str = "As selected") -> str:
+    unique = _unique_values(values)
+    if not unique:
+        return fallback
+    if len(unique) == 1:
+        return unique[0]
+    return f"{', '.join(unique[:-1])} and {unique[-1]}"
 
 
 def _clean_destination_label(text: str) -> str:
@@ -210,47 +190,6 @@ def _extract_activity_terms(text: str) -> list[str]:
         if keyword in lower_text and label not in activity_terms:
             activity_terms.append(label)
     return activity_terms
-
-
-def _season_from_month(month: str) -> str:
-    return MONTH_SEASONS.get(str(month or "").strip().lower(), "shoulder")
-
-
-def _seasonal_advice(month: str, destination: str, activity_terms: list[str]) -> str:
-    season = _season_from_month(month)
-    base = SEASONAL_TIPS[season]
-    destination_key = _normalize_destination_key(destination)
-    destination_tip = ""
-    for key, tips in DESTINATION_INSIGHT_TIPS.items():
-        if key in destination_key:
-            destination_tip = tips[0]
-            if len(tips) > 1 and activity_terms:
-                destination_tip = tips[1]
-            break
-    activity_tip = ""
-    for term in activity_terms:
-        lower_term = term.lower()
-        if "scuba" in lower_term or "snorkel" in lower_term:
-            activity_tip = ACTIVITY_INSIGHT_TIPS["scuba"]
-            break
-        if "sunset" in lower_term:
-            activity_tip = ACTIVITY_INSIGHT_TIPS["sunset cruise"]
-            break
-        if "glass bottom" in lower_term:
-            activity_tip = ACTIVITY_INSIGHT_TIPS["glass bottom boat"]
-            break
-        if "bridge" in lower_term:
-            activity_tip = ACTIVITY_INSIGHT_TIPS["bridge"]
-            break
-        if "trek" in lower_term:
-            activity_tip = ACTIVITY_INSIGHT_TIPS["trek"]
-            break
-    pieces = [base]
-    if destination_tip:
-        pieces.append(destination_tip)
-    if activity_tip and activity_tip not in pieces:
-        pieces.append(activity_tip)
-    return " ".join(pieces)
 
 
 def sanitize_itinerary_text(itinerary_text: str) -> str:
@@ -306,101 +245,115 @@ def split_itinerary_into_days(itinerary_text: str) -> list[dict[str, object]]:
     return sections
 
 
-def _extract_highlights(itinerary_text: str, request: TripRequest) -> dict[str, list[str] | str | int]:
+def _daily_plan_places(daily_island_plan: str) -> list[str]:
+    places: list[str] = []
+    for raw_line in str(daily_island_plan or "").splitlines():
+        if ":" in raw_line:
+            raw_line = raw_line.split(":", 1)[1]
+        for value in _split_values(raw_line):
+            label = _clean_destination_label(value)
+            if label:
+                places.append(label)
+    return _unique_values(places)
+
+
+def _extract_itinerary_destinations(itinerary_text: str) -> list[str]:
     destinations: list[str] = []
-    for value in _split_values(request.selected_destinations):
-        destination_label = _clean_destination_label(value)
-        if destination_label and destination_label not in destinations:
-            destinations.append(destination_label)
-    if not destinations:
-        for raw_line in _split_values(request.daily_island_plan):
-            for part in raw_line.split(":")[-1].split(","):
-                destination_label = _clean_destination_label(part)
-                if destination_label and destination_label not in destinations:
-                    destinations.append(destination_label)
-    if not destinations:
-        for raw_line in itinerary_text.splitlines():
-            lower_line = raw_line.lower()
-            for keyword in [
-                "port blair",
-                "swaraj dweep",
-                "shaheed dweep",
-                "baratang",
-                "diglipur",
-                "ross island",
-                "north bay",
-                "jolly buoy",
-                "red skin",
-                "chidiya tapu",
-                "wandoor",
-                "long island",
-                "little andaman",
-            ]:
-                if keyword in lower_line:
-                    destination_label = _clean_destination_label(keyword.title())
-                    if destination_label not in destinations:
-                        destinations.append(destination_label)
+    for raw_line in itinerary_text.splitlines():
+        lower_line = raw_line.lower()
+        for keyword in [
+            "port blair",
+            "swaraj dweep",
+            "shaheed dweep",
+            "baratang",
+            "diglipur",
+            "ross island",
+            "north bay",
+            "jolly buoy",
+            "red skin",
+            "chidiya tapu",
+            "wandoor",
+            "long island",
+            "little andaman",
+        ]:
+            if keyword in lower_line:
+                destinations.append(_clean_destination_label(keyword.title()))
+    return _unique_values(destinations)
+
+
+def _highlight_data(itinerary_text: str, request: TripRequest) -> dict[str, object]:
+    destinations = _unique_values(
+        [_clean_destination_label(value) for value in _split_values(request.selected_destinations)]
+        + _daily_plan_places(request.daily_island_plan)
+        + _extract_itinerary_destinations(itinerary_text)
+    )
     if not destinations:
         destinations = [_clean_destination_label(request.destination or "Andaman Islands")]
 
-    activities = [value for value in _split_values(request.preferred_activities)]
-    if not activities:
-        activities = _extract_activity_terms(itinerary_text)
-    if not activities:
-        activities = ["Curated sightseeing", "Luxury pacing", "Scenic transfers"]
-
-    travel_style = _split_values(request.travel_style)
-    hotel_category = request.hotel_category_preference or "Luxury"
+    activities = _unique_values(_split_values(request.preferred_activities) + _extract_activity_terms(itinerary_text))
+    travel_style = _unique_values(_split_values(request.travel_style) + _split_values(request.trip_type))
+    selected_hotels = _unique_values(_split_values(request.selected_hotels))
+    meal_preferences = _unique_values([request.meal_plan] + _split_values(request.food_preferences))
+    transport_preferences = _unique_values([request.transfer_type] + _split_values(request.preferred_ferries))
+    special_occasions = _unique_values(_split_values(request.special_occasions))
 
     return {
-        "destinations": destinations[:6],
-        "activities": activities[:6],
-        "travel_style": travel_style[:3] or ["Luxury"],
-        "number_of_days": request.number_of_days,
-        "number_of_nights": request.number_of_nights,
-        "hotel_category": hotel_category,
+        "destinations": destinations,
+        "activities": activities,
+        "travel_style": travel_style,
+        "hotel_category": str(request.hotel_category_preference or request.budget_category or "Selected").strip(),
+        "selected_hotels": selected_hotels,
+        "meal_preferences": meal_preferences,
+        "transport_preferences": transport_preferences,
+        "special_occasions": special_occasions,
+        "duration": f"{request.number_of_days} Days / {request.number_of_nights} Nights",
+        "pace": str(request.trip_pace or "Balanced").strip(),
+        "budget": str(request.budget_category or "").strip(),
     }
 
 
-def render_destination_insight_box(
-    story: list,
-    styles: dict[str, ParagraphStyle],
-    request: TripRequest,
-    destination: str,
-    day_number: int,
-    day_section: dict[str, object],
-) -> None:
-    day_titles = ["INSIDER TIP", "DID YOU KNOW?", "LOCAL RECOMMENDATION", "TRAVEL ADVICE"]
-    selected_title = day_titles[(max(day_number, 1) - 1) % len(day_titles)]
-    activity_terms = _extract_activity_terms(" ".join(str(item.get("content") or "") for item in day_section.get("items", [])))
-    if not activity_terms:
-        activity_terms = _split_values(request.preferred_activities)
-    advice = _seasonal_advice(request.travel_month, destination, activity_terms)
+def _highlight_sections(itinerary_text: str, request: TripRequest) -> list[dict[str, str]]:
+    data = _highlight_data(itinerary_text, request)
+    destinations = _format_list(data["destinations"], request.destination or "Selected Andaman destinations")
+    activities = _format_list(data["activities"], "Activities selected during itinerary planning")
+    travel_style = _format_list(data["travel_style"], request.trip_type or "Luxury")
+    hotels = _format_list(data["selected_hotels"], f"{data['hotel_category']} hotel inventory")
+    meals = _format_list(data["meal_preferences"], "Meal preferences as selected by staff")
+    transport = _format_list(data["transport_preferences"], "Transfers as selected by staff")
+    occasions = _format_list(data["special_occasions"], "Guest celebration preferences")
 
-    box = Table(
-        [
-            [
-                Paragraph(_escape_text(selected_title), styles["section_title"]),
-                Paragraph(_escape_text(advice), styles["fine"]),
-            ]
-        ],
-        colWidths=[1.7 * inch, PAGE_INNER_WIDTH - 1.7 * inch - 10],
-    )
-    box.setStyle(
-        TableStyle(
-            [
-                ("BACKGROUND", (0, 0), (-1, -1), COLORS["soft_white"]),
-                ("BOX", (0, 0), (-1, -1), 0.8, COLORS["gold"]),
-                ("INNERGRID", (0, 0), (-1, -1), 0.35, COLORS["line"]),
-                ("VALIGN", (0, 0), (-1, -1), "TOP"),
-                ("LEFTPADDING", (0, 0), (-1, -1), 10),
-                ("RIGHTPADDING", (0, 0), (-1, -1), 10),
-                ("TOPPADDING", (0, 0), (-1, -1), 10),
-                ("BOTTOMPADDING", (0, 0), (-1, -1), 10),
-            ]
-        )
-    )
-    story.append(KeepTogether([Spacer(1, 0.08 * inch), box, Spacer(1, 0.08 * inch)]))
+    return [
+        {
+            "title": "DESTINATIONS COVERED",
+            "value": destinations,
+            "description": f"{destinations} shape the routing for this {data['duration']} journey. The sequence follows the selected island plan so the proposal stays aligned with the staff itinerary design.",
+        },
+        {
+            "title": "TOP ACTIVITIES",
+            "value": activities,
+            "description": f"This itinerary features {activities} based on the guest activity preferences and itinerary text. Each experience is positioned to support the selected trip type without overloading the day flow.",
+        },
+        {
+            "title": "TRAVEL STYLE",
+            "value": f"{travel_style} | {data['pace']} Pace",
+            "description": f"The proposal follows a {travel_style} style with a {data['pace'].lower()} pace. The day structure balances comfort, flexibility and memorable moments for the selected travel party.",
+        },
+        {
+            "title": "HOTEL EXPERIENCE",
+            "value": f"{data['hotel_category']} | {hotels}",
+            "description": f"Selected stays are drawn from {hotels} with the requested {data['hotel_category']} positioning. The hotel experience is matched to the route, selected islands and desired comfort standard.",
+        },
+        {
+            "title": "TRANSPORT EXPERIENCE",
+            "value": transport,
+            "description": f"Transfers are planned around {transport} for smooth island connectivity. The routing supports the selected destinations, travel month and overall guest pace.",
+        },
+        {
+            "title": "DINING AND OCCASIONS",
+            "value": f"{meals} | {occasions}",
+            "description": f"Meal planning reflects {meals} and the selected guest occasion details. These preferences help the proposal feel personal while keeping the final itinerary concise and staff-editable.",
+        },
+    ]
 
 
 def get_destination_image(destination: str):
@@ -460,29 +413,46 @@ def render_cover_page(story: list, styles: dict[str, ParagraphStyle], request: T
 
 
 def render_highlights_page(story: list, styles: dict[str, ParagraphStyle], request: TripRequest, itinerary_text: str) -> None:
-    highlights = _extract_highlights(itinerary_text, request)
+    sections = _highlight_sections(itinerary_text, request)
     story.append(Spacer(1, 0.1 * inch))
     story.append(Paragraph("TRIP HIGHLIGHTS", styles["highlights_title"]))
-    story.append(Paragraph("A concise overview of the key experiences shaping this luxury proposal.", styles["highlights_subtitle"]))
+    story.append(Paragraph("A data-driven overview of the selected guest journey.", styles["highlights_subtitle"]))
     story.append(Spacer(1, 0.08 * inch))
     story.append(HRFlowable(width="24%", thickness=1.0, color=COLORS["gold"], hAlign="CENTER"))
     story.append(Spacer(1, 0.18 * inch))
-    story.append(Paragraph("Destinations Covered", styles["section_title"]))
-    for item in highlights["destinations"]:
-        story.append(Paragraph(f"\u2022 {_escape_text(item)}", styles["highlight_body"]))
-    story.append(Spacer(1, 0.12 * inch))
-    story.append(Paragraph("Top Activities", styles["section_title"]))
-    for item in highlights["activities"]:
-        story.append(Paragraph(f"\u2022 {_escape_text(item)}", styles["highlight_body"]))
-    story.append(Spacer(1, 0.12 * inch))
-    story.append(Paragraph("Travel Style", styles["section_title"]))
-    story.append(Paragraph(_escape_text(", ".join(highlights["travel_style"])), styles["highlight_body"]))
-    story.append(Spacer(1, 0.12 * inch))
-    story.append(Paragraph("Number of Days", styles["section_title"]))
-    story.append(Paragraph(_escape_text(f"{highlights['number_of_days']} Days | {highlights['number_of_nights']} Nights"), styles["highlight_body"]))
-    story.append(Spacer(1, 0.12 * inch))
-    story.append(Paragraph("Hotel Category", styles["section_title"]))
-    story.append(Paragraph(_escape_text(str(highlights["hotel_category"])), styles["highlight_body"]))
+
+    card_width = (PAGE_INNER_WIDTH - 12) / 2
+    rows = []
+    for index in range(0, len(sections), 2):
+        row = []
+        for section in sections[index : index + 2]:
+            content = [
+                Paragraph(_escape_text(section["title"]), styles["highlight_heading"]),
+                Paragraph(_escape_text(section["value"]), styles["highlight_value"]),
+                Paragraph(_escape_text(section["description"]), styles["highlight_body"]),
+            ]
+            row.append(content)
+        if len(row) == 1:
+            row.append("")
+        rows.append(row)
+
+    table = Table(rows, colWidths=[card_width, card_width], hAlign="CENTER")
+    table.setStyle(
+        TableStyle(
+            [
+                ("BACKGROUND", (0, 0), (-1, -1), COLORS["card"]),
+                ("BOX", (0, 0), (-1, -1), 0.7, COLORS["line"]),
+                ("INNERGRID", (0, 0), (-1, -1), 0.35, COLORS["line"]),
+                ("VALIGN", (0, 0), (-1, -1), "TOP"),
+                ("LEFTPADDING", (0, 0), (-1, -1), 10),
+                ("RIGHTPADDING", (0, 0), (-1, -1), 10),
+                ("TOPPADDING", (0, 0), (-1, -1), 10),
+                ("BOTTOMPADDING", (0, 0), (-1, -1), 10),
+                ("ROWBACKGROUNDS", (0, 0), (-1, -1), [COLORS["card"], COLORS["soft_white"]]),
+            ]
+        )
+    )
+    story.append(table)
     story.append(PageBreak())
 
 def _count_location_days(text: str, location: str) -> int:
@@ -617,33 +587,390 @@ def render_day_page(story: list, styles: dict[str, ParagraphStyle], request: Tri
     story.append(Spacer(1, 0.1 * inch))
     story.append(Paragraph(f"Journey to {_escape_text(destination)}", styles["section_title"]))
     story.append(Spacer(1, 0.04 * inch))
-    story.append(Image(get_destination_image(destination), width=6.15 * inch, height=2.55 * inch))
-    story.append(Spacer(1, 0.14 * inch))
+    story.append(Image(get_destination_image(destination), width=6.15 * inch, height=2.75 * inch))
+    story.append(Spacer(1, 0.2 * inch))
     for item in day_section["items"]:
         label = str(item["label"] or "").strip()
         content = _escape_text(str(item["content"] or "").strip())
         if label:
             story.append(Paragraph(_escape_text(label), styles["label"]))
         story.append(Paragraph(content, styles["body"]))
-        story.append(Spacer(1, 0.02 * inch))
-    render_destination_insight_box(story, styles, request, destination, day_number, day_section)
-    story.append(Spacer(1, 0.08 * inch))
+        story.append(Spacer(1, 0.08 * inch))
+        story.append(HRFlowable(width="100%", thickness=0.25, color=COLORS["line"]))
+        story.append(Spacer(1, 0.08 * inch))
+    story.append(Spacer(1, 0.12 * inch))
     story.append(HRFlowable(width="100%", thickness=0.4, color=COLORS["soft_grey"]))
     story.append(Spacer(1, 0.04 * inch))
 
 
+FIXED_POLICY_SECTIONS = [
+    (
+        "THINGS TO DO IN ANDAMAN",
+        [
+            "Shore Scuba Diving - Starting from ₹3,500 per person. Experience the underwater world under the supervision of certified diving professionals.",
+            "Boat Scuba Diving - Starting from ₹5,500 per person. Explore vibrant coral reefs and marine life at selected dive sites.",
+            "Shore Snorkelling - Starting from ₹3,000 per person. Enjoy a guided surface-level coral viewing experience.",
+            "Boat Snorkelling - Starting from ₹5,000 per person. Discover pristine marine ecosystems at exclusive offshore locations.",
+            "Sea Walk Experience - Starting from ₹3,800 per person. Walk comfortably on the seabed and witness marine life up close.",
+            "New Flyboard Adventure - Starting from ₹4,500 per person. Experience the thrill of soaring above the sea using high-powered water jets.",
+            "New Underwater Scooter Ride - Starting from ₹6,500 per person. Explore the underwater world effortlessly without prior swimming experience.",
+            "Sea Kart Adventure - Starting from ₹3,500 per person. Self-drive a high-speed watercraft across the turquoise waters.",
+            "Jet Ski Ride - Starting from ₹1,000 per person. Enjoy an exhilarating ride across the crystal-clear sea.",
+            "Glass Bottom Boat Ride - Starting from ₹1,200 per person. Observe colourful corals and marine life without entering the water.",
+            "Semi-Submarine Experience - Starting from ₹1,850 per person. Enjoy panoramic underwater views in air-conditioned comfort.",
+            "Parasailing - Starting from ₹3,500 per person. Experience breathtaking aerial views of the islands and coastline.",
+            "Banana Boat Ride - Starting from ₹800 per person. A fun-filled water activity ideal for families and groups.",
+            "Sofa Ride - Starting from ₹1,000 per person. Enjoy a thrilling inflatable water ride with friends and family.",
+            "Speed Boat Ride - Starting from ₹1,000 per person. Experience an exciting high-speed journey across the sea.",
+            "Day Kayaking - Starting from ₹3,500 per person. Paddle through calm waters surrounded by scenic island landscapes.",
+            "Night Mangrove Kayaking - Starting from ₹3,500 per person. Explore mangrove forests under the night sky for a unique island experience.",
+            "Sport Fishing Excursion - Starting from ₹8,000 per person. Enjoy deep-sea angling experiences with experienced local crews.",
+            "Dolphin Watching Tour - Starting from ₹4,000 per person. Witness playful dolphins in their natural habitat.",
+            "Bird Watching Excursion - Starting from ₹2,500 per person. Discover the diverse avian life of the Andaman Islands.",
+            "Saddle Peak Trek - Starting from ₹2,500 per person. Trek to the highest point in the Andaman Islands for spectacular views.",
+            "Limestone Cave Excursion - Starting from ₹1,500 per person. Explore fascinating limestone formations amidst dense mangrove forests.",
+            "Mud Volcano Excursion - Starting from ₹1,500 per person. Visit one of the rare geological attractions of the islands.",
+            "Bioluminescence Experience - Starting from ₹4,500 per person. Witness the magical glow of marine organisms during night excursions.",
+            "Sunset Cruise Experience - Starting from ₹5,000 per person. Enjoy spectacular sunset views while cruising through island waters.",
+            "Private Yacht Charter - Starting from ₹35,000 per charter. Experience luxury cruising with complete privacy and personalised services.",
+            "Beachside Candlelight Dinner - Starting from ₹7,500 per couple. Celebrate special moments in an intimate beach setting.",
+            "Photography Tour - Starting from ₹3,500 per person. Capture the breathtaking landscapes and hidden gems of the Andaman Islands.",
+            "Note: All activities are subject to weather conditions, operational feasibility, safety guidelines, and permissions granted by the concerned authorities.",
+        ],
+    ),
+    (
+        "PAYMENT POLICY",
+        [
+            "Booking Confirmation: All reservations shall be processed only upon receipt of a written confirmation from the guest along with the required advance payment.",
+            "Advance Payment: To secure hotels, ferries, cruises, and other travel services, an advance payment must be made within the stipulated time communicated by the company.",
+            "Tentative Reservations: All bookings shall remain on a tentative basis until the advance payment is received and acknowledged by the company.",
+            "Availability Clause: Hotel rooms, ferry tickets, cruises, and other travel services are subject to availability at the time of confirmation.",
+            "Balance Payment: The remaining balance amount must be settled prior to the commencement of the tour as per the agreed payment schedule.",
+            "Short Notice Bookings: For bookings made within 30 days of the arrival date, 100% payment may be required at the time of confirmation.",
+            "Peak Season Policy: During peak travel periods, festive seasons, Christmas, and New Year, special payment conditions and supplementary charges may apply.",
+            "Rate Validity: All package rates are subject to change without prior notice until the booking is formally confirmed.",
+            "Final Documentation: Final vouchers, travel documents, ferry tickets, and confirmation letters shall be issued only after receipt of full payment.",
+            "Mode of Payment: Payments may be made through bank transfer, UPI, or other approved payment methods as communicated by the company.",
+            "Additional Charges: Any increase in government taxes, entrance fees, fuel surcharges, or supplier charges arising after confirmation shall be payable additionally by the guest.",
+            "Refund Processing: Any eligible refund shall be processed only after receiving the refund amount from the respective service providers and shall be subject to applicable cancellation policies.",
+        ],
+    ),
+    (
+        "CANCELLATION POLICY",
+        [
+            "30 Days or More Prior to Arrival: Cancellations made 30 days or more before the scheduled arrival date shall attract a cancellation charge of 10% of the total package cost as administrative and processing fees.",
+            "20 to 29 Days Prior to Arrival: Cancellations made between 20 and 29 days before the arrival date shall attract a cancellation charge of 50% of the total package cost.",
+            "Less Than 20 Days Prior to Arrival: Cancellations made within 20 days of the arrival date shall attract a cancellation charge of 100% of the total package cost.",
+            "No Show Policy: Failure to arrive on the scheduled date without prior notification shall be treated as a No Show, and no refund shall be applicable.",
+            "Peak Season Bookings: Bookings falling during Christmas, New Year, long weekends, and festive periods may be subject to separate cancellation policies as specified at the time of confirmation.",
+            "Flight and Ferry Cancellations: Cancellation charges for flights, ferries, cruises, or any third-party services shall be governed strictly by the respective service provider's policies.",
+            "Unused Services: No refund shall be provided for any unused accommodation, meals, sightseeing, transfers, activities, or other services included in the package.",
+            "Force Majeure: No refund shall be applicable for cancellations or amendments arising due to natural calamities, adverse weather conditions, government restrictions, pandemics, political disturbances, or any circumstances beyond the control of the company.",
+            "Refund Processing: Eligible refunds, if any, shall be processed only after receiving the refund amount from the respective suppliers and may take 15 to 30 working days from the date of approval.",
+            "Amendment Charges: Any amendment to confirmed bookings shall be subject to availability and may attract additional charges as applicable.",
+        ],
+    ),
+    (
+        "TERMS & CONDITIONS",
+        [
+            "Booking Confirmation: All bookings are subject to availability and shall be considered confirmed only upon receipt of the required advance payment and written confirmation from the company.",
+            "Hotel Availability: In the event that the confirmed hotel becomes unavailable due to operational reasons, maintenance, or overbooking, a similar category hotel shall be provided without prior notice.",
+            "Check-In and Check-Out: Standard hotel check-in and check-out timings shall be governed by the respective hotel policies and may vary from property to property.",
+            "Transportation Services: Vehicle services shall operate strictly as per the approved itinerary. Any additional usage beyond the scheduled itinerary shall attract supplementary charges.",
+            "Ferry Operations: Ferry schedules are subject to weather conditions, operational feasibility, technical reasons, and directives issued by the concerned authorities. The company shall not be held responsible for any changes or cancellations.",
+            "Sightseeing Operations: All sightseeing tours and activities are subject to weather conditions, government permissions, operational feasibility, and local authority regulations.",
+            "Weather Conditions: The Andaman Islands are subject to changing weather conditions. Certain activities and sightseeing locations may be modified, rescheduled, or cancelled in the interest of guest safety.",
+            "Guest Responsibility: Guests are requested to take care of their personal belongings. The company shall not be liable for any loss, theft, or damage to personal property during the tour.",
+            "Travel Documents: Guests are responsible for carrying valid government-issued photo identification and any other documents required for travel.",
+            "Foreign Nationals: Foreign nationals are required to carry valid passports, visas, and any permits required by the Government of India or local authorities.",
+            "Force Majeure: The company shall not be responsible for delays, cancellations, losses, injuries, accidents, natural calamities, pandemics, strikes, political disturbances, or any circumstances beyond its reasonable control.",
+            "Itinerary Amendments: The company reserves the right to amend, modify, reroute, or reschedule any component of the itinerary due to operational requirements or unforeseen circumstances.",
+            "Liability Limitation: The company acts only as an intermediary between guests and service providers and shall not be liable for deficiencies in services provided by hotels, transport operators, activity providers, or any third-party suppliers.",
+            "No Refund Policy: No refund shall be applicable for missed sightseeing, unused services, early departures, or any services not availed by the guest.",
+            "Acceptance Clause: By confirming the booking, guests acknowledge that they have read, understood, and accepted all the terms, conditions, payment policies, and cancellation policies stated herein.",
+        ],
+    ),
+]
+
+
+THINGS_TO_DO_CATEGORIES = [
+    ("SCUBA EXPERIENCES", [
+        ("Shore Scuba Diving", "₹3,500 per person", "Underwater discovery guided by certified diving professionals.", False),
+        ("Boat Scuba Diving", "₹5,500 per person", "Coral reef exploration at selected dive sites.", False),
+        ("Shore Snorkelling", "₹3,000 per person", "Guided surface-level coral viewing from the shore.", False),
+        ("Boat Snorkelling", "₹5,000 per person", "Offshore marine discovery in pristine island waters.", False),
+        ("Sea Walk Experience", "₹3,800 per person", "A comfortable seabed walk with close marine encounters.", False),
+    ]),
+    ("WATER SPORTS", [
+        ("Flyboard Adventure", "₹4,500 per person", "High-powered water-jet adventure above the sea.", True),
+        ("Underwater Scooter Ride", "₹6,500 per person", "Effortless underwater exploration without prior swimming experience.", True),
+        ("Sea Kart Adventure", "₹3,500 per person", "Self-drive watercraft experience across turquoise waters.", False),
+        ("Jet Ski Ride", "₹1,000 per person", "A short, exhilarating ride across crystal-clear sea.", False),
+        ("Parasailing", "₹3,500 per person", "Aerial island and coastline views from above.", False),
+        ("Banana Boat Ride", "₹800 per person", "A lively group water activity for families and friends.", False),
+        ("Sofa Ride", "₹1,000 per person", "A thrilling inflatable water ride for groups.", False),
+        ("Speed Boat Ride", "₹1,000 per person", "High-speed sea movement with scenic coastal views.", False),
+    ]),
+    ("PREMIUM EXPERIENCES", [
+        ("Glass Bottom Boat Ride", "₹1,200 per person", "Coral and marine viewing without entering the water.", False),
+        ("Semi-Submarine Experience", "₹1,850 per person", "Panoramic underwater viewing in air-conditioned comfort.", False),
+        ("Sunset Cruise Experience", "₹5,000 per person", "A refined cruise experience during the golden evening hour.", False),
+        ("Private Yacht Charter", "₹35,000 per charter", "Private luxury cruising with personalised service.", False),
+    ]),
+    ("ADVENTURE ACTIVITIES", [
+        ("Day Kayaking", "₹3,500 per person", "Scenic paddling through calm island waters.", False),
+        ("Night Mangrove Kayaking", "₹3,500 per person", "A rare night experience through mangrove channels.", False),
+        ("Sport Fishing Excursion", "₹8,000 per person", "Deep-sea angling with experienced local crews.", False),
+        ("Saddle Peak Trek", "₹2,500 per person", "A trek to the highest point in the Andaman Islands.", False),
+    ]),
+    ("ROMANTIC EXPERIENCES", [
+        ("Beachside Candlelight Dinner", "₹7,500 per couple", "An intimate beach setting for special celebrations.", False),
+        ("Photography Tour", "₹3,500 per person", "A curated visual journey through scenic island locations.", False),
+    ]),
+    ("NATURE EXPERIENCES", [
+        ("Dolphin Watching Tour", "₹4,000 per person", "A chance to observe dolphins in their natural habitat.", False),
+        ("Bird Watching Excursion", "₹2,500 per person", "Guided discovery of the islands' diverse avian life.", False),
+        ("Limestone Cave Excursion", "₹1,500 per person", "Limestone formations reached through dense mangrove scenery.", False),
+        ("Mud Volcano Excursion", "₹1,500 per person", "A rare geological attraction within the islands.", False),
+        ("Bioluminescence Experience", "₹4,500 per person", "A night excursion to witness glowing marine organisms.", False),
+    ]),
+]
+
+PAYMENT_POLICY_CARDS = [
+    ("Booking Confirmation", "Written confirmation and the required advance payment are required to process reservations."),
+    ("Advance Payment", "Hotels, ferries, cruises, and travel services are secured only after timely advance payment."),
+    ("Tentative Reservations", "All bookings remain tentative until payment is received and acknowledged by the company."),
+    ("Availability Clause", "Rooms, ferry seats, cruises, and services remain subject to availability at confirmation."),
+    ("Balance Payment", "The remaining balance must be settled before tour commencement as per the agreed schedule."),
+    ("Short Notice Bookings", "Bookings made within 30 days of arrival may require 100% payment at confirmation."),
+    ("Peak Season Policy", "Festive periods, Christmas, and New Year may attract special terms and supplements."),
+    ("Rate Validity", "Package rates may change without notice until the booking is formally confirmed."),
+    ("Final Documentation", "Travel documents, ferry tickets, vouchers, and confirmations are issued after full payment."),
+    ("Mode of Payment", "Payments may be made by bank transfer, UPI, or other approved payment methods."),
+    ("Additional Charges", "Tax, entrance fee, fuel, or supplier increases after confirmation are payable by the guest."),
+    ("Refund Processing", "Eligible refunds are processed after supplier refunds are received and policy terms are applied."),
+]
+
+CANCELLATION_TIMELINE = [
+    ("30+ Days Before Arrival", "10% Charges", "Administrative and processing fees apply."),
+    ("20-29 Days Before Arrival", "50% Charges", "Mid-window cancellation charges apply."),
+    ("Less Than 20 Days", "100% Charges", "Full package cancellation charges apply."),
+    ("No Show", "100% Charges", "No refund is applicable without prior notification."),
+]
+
+CANCELLATION_DETAIL_CARDS = [
+    ("Peak Season Bookings", "Christmas, New Year, long weekends, and festive periods may carry separate cancellation conditions."),
+    ("Flight and Ferry Cancellations", "Flights, ferries, cruises, and third-party services follow the respective supplier policies."),
+    ("Unused Services", "Unused accommodation, meals, sightseeing, transfers, activities, or services are non-refundable."),
+    ("Force Majeure", "No refund applies for events beyond company control, including weather, restrictions, or disruptions."),
+    ("Refund Processing", "Eligible refunds may take 15 to 30 working days after supplier approval and receipt."),
+    ("Amendment Charges", "Confirmed booking amendments remain subject to availability and applicable supplementary charges."),
+]
+
+TERMS_CONDITION_CARDS = [
+    ("Booking Confirmation", "All bookings are subject to availability and confirmed only after advance payment and written company confirmation."),
+    ("Hotel Availability", "If a confirmed hotel becomes unavailable due to operational reasons, maintenance, or overbooking, a similar category hotel shall be provided."),
+    ("Check-In and Check-Out", "Hotel check-in and check-out timings are governed by individual hotel policies and may vary by property."),
+    ("Transportation Services", "Vehicle services operate strictly as per the approved itinerary. Additional usage attracts supplementary charges."),
+    ("Ferry Operations", "Ferry schedules remain subject to weather, operations, technical reasons, and authority directives."),
+    ("Sightseeing Operations", "Sightseeing tours and activities are subject to weather, permissions, operational feasibility, and local regulations."),
+    ("Weather Conditions", "Activities and locations may be modified, rescheduled, or cancelled in the interest of guest safety."),
+    ("Guest Responsibility", "Guests are responsible for their personal belongings during the tour."),
+    ("Travel Documents", "Guests must carry valid government-issued photo identification and any required travel documents."),
+    ("Foreign Nationals", "Foreign nationals must carry valid passports, visas, and applicable Government of India or local permits."),
+    ("Force Majeure", "The company is not responsible for delays, cancellations, losses, injuries, or events beyond reasonable control."),
+    ("Itinerary Amendments", "The company may amend, reroute, modify, or reschedule itinerary components due to operational requirements."),
+    ("Liability Limitation", "The company acts as an intermediary and is not liable for deficiencies by hotels, transport operators, activity providers, or third-party suppliers."),
+    ("No Refund Policy", "No refund applies for missed sightseeing, unused services, early departures, or services not availed by the guest."),
+    ("Acceptance Clause", "By confirming the booking, guests accept all terms, conditions, payment policies, and cancellation policies stated herein."),
+]
+
+INCLUSION_ITEMS = [
+    "Accommodation in selected category hotels or resorts as confirmed in the final itinerary.",
+    "Daily breakfast wherever included by the respective hotel or resort.",
+    "All airport, hotel, sightseeing, and jetty transfers by private air-conditioned vehicle as per the itinerary.",
+    "Premium inter-island ferry tickets as specified in the confirmed travel plan.",
+    "All sightseeing experiences and excursions expressly mentioned in the final itinerary.",
+    "Entry permits, parking charges, and applicable government taxes related to included services.",
+    "Dedicated local assistance throughout the tour for a smooth on-ground experience.",
+    "Similar category hotels may be provided in case of operational constraints or supplier availability changes.",
+    "Vehicle assistance during medical emergencies, subject to local conditions and accessibility.",
+    "Applicable taxes as per current government regulations.",
+]
+
+EXCLUSION_ITEMS = [
+    "Personal expenses of any nature.",
+    "Laundry, room service, telephone calls, and minibar charges.",
+    "Tips, porterage, camera fees, and other discretionary guest expenses.",
+    "Optional tours, activities, or experiences not expressly mentioned in the itinerary.",
+    "Vehicle services during leisure periods or outside the confirmed sightseeing schedule.",
+    "Additional expenses arising from delays, cancellations, weather disruptions, or force majeure events.",
+    "Travel insurance, unless specifically mentioned as included.",
+    "Peak season supplements, festive surcharges, and special event premiums unless included in writing.",
+    "Celebration arrangements, decor, cakes, bouquets, or private dining experiences unless explicitly mentioned.",
+    "Any item or service not expressly specified under the Inclusions section.",
+]
+
+
+def _render_policy_page_title(story: list, styles: dict[str, ParagraphStyle], title: str, subtitle: str) -> None:
+    story.append(Spacer(1, 0.05 * inch))
+    story.append(Paragraph(_escape_text(title), styles["policy_title"]))
+    story.append(Paragraph(_escape_text(subtitle), styles["policy_intro"]))
+    story.append(Spacer(1, 0.08 * inch))
+    story.append(HRFlowable(width="24%", thickness=1.0, color=COLORS["gold"], hAlign="CENTER"))
+    story.append(Spacer(1, 0.2 * inch))
+
+
+def _card_table(content: list, width: float, background=COLORS["card"]) -> Table:
+    table = Table([[content]], colWidths=[width])
+    table.setStyle(
+        TableStyle(
+            [
+                ("BACKGROUND", (0, 0), (-1, -1), background),
+                ("BOX", (0, 0), (-1, -1), 0.65, COLORS["line"]),
+                ("VALIGN", (0, 0), (-1, -1), "TOP"),
+                ("LEFTPADDING", (0, 0), (-1, -1), 9),
+                ("RIGHTPADDING", (0, 0), (-1, -1), 9),
+                ("TOPPADDING", (0, 0), (-1, -1), 9),
+                ("BOTTOMPADDING", (0, 0), (-1, -1), 9),
+            ]
+        )
+    )
+    return table
+
+
+def _render_card_grid(story: list, cards: list, columns: int = 2, gap: float = 12) -> None:
+    card_width = (PAGE_INNER_WIDTH - gap * (columns - 1)) / columns
+    rows = []
+    for index in range(0, len(cards), columns):
+        row = cards[index : index + columns]
+        while len(row) < columns:
+            row.append(Spacer(1, 0.01 * inch))
+        rows.append(row)
+    table = Table(rows, colWidths=[card_width] * columns, hAlign="CENTER")
+    table.setStyle(
+        TableStyle(
+            [
+                ("VALIGN", (0, 0), (-1, -1), "TOP"),
+                ("LEFTPADDING", (0, 0), (-1, -1), 0),
+                ("RIGHTPADDING", (0, 0), (-1, -1), gap / 2),
+                ("TOPPADDING", (0, 0), (-1, -1), 0),
+                ("BOTTOMPADDING", (0, 0), (-1, -1), 10),
+            ]
+        )
+    )
+    story.append(table)
+
+
+def render_things_to_do_page(story: list, styles: dict[str, ParagraphStyle]) -> None:
+    _render_policy_page_title(story, styles, "THINGS TO DO IN ANDAMAN", "Signature island experiences curated for elevated Andaman journeys.")
+    category_width = (PAGE_INNER_WIDTH - 14) / 2
+    category_cards = []
+    for category, items in THINGS_TO_DO_CATEGORIES:
+        content = [Paragraph(_escape_text(category), styles["policy_card_title"]), HRFlowable(width="100%", thickness=0.45, color=COLORS["gold"]), Spacer(1, 0.06 * inch)]
+        for name, price, description, is_new in items:
+            content.append(Paragraph(_escape_text(f"{'NEW  ' if is_new else ''}{name}"), styles["policy_card_title" if is_new else "policy_card_body"]))
+            content.append(Paragraph(_escape_text(f"Starting from {price}"), styles["policy_price"]))
+            content.append(Paragraph(_escape_text(description), styles["policy_card_body"]))
+            content.append(Spacer(1, 0.06 * inch))
+        category_cards.append(_card_table(content, category_width))
+    _render_card_grid(story, category_cards, columns=2, gap=14)
+    story.append(_card_table([Paragraph(_escape_text("All activities are subject to weather conditions, operational feasibility, safety guidelines, and permissions granted by the concerned authorities."), styles["policy_card_body"])], PAGE_INNER_WIDTH, COLORS["soft_white"]))
+    story.append(PageBreak())
+
+
+def render_payment_policy_page(story: list, styles: dict[str, ParagraphStyle]) -> None:
+    _render_policy_page_title(story, styles, "PAYMENT POLICY", "Clear confirmation standards for a seamless luxury travel experience.")
+    card_width = (PAGE_INNER_WIDTH - 12) / 3
+    cards = [_card_table([Paragraph(_escape_text(title), styles["policy_card_title"]), Paragraph(_escape_text(body), styles["policy_card_body"])], card_width, COLORS["soft_white"] if index % 2 else COLORS["card"]) for index, (title, body) in enumerate(PAYMENT_POLICY_CARDS)]
+    _render_card_grid(story, cards, columns=3, gap=12)
+    story.append(PageBreak())
+
+
+def render_cancellation_policy_page(story: list, styles: dict[str, ParagraphStyle]) -> None:
+    _render_policy_page_title(story, styles, "CANCELLATION POLICY", "A transparent timeline for cancellation charges and supplier conditions.")
+    timeline_width = (PAGE_INNER_WIDTH - 18) / 4
+    timeline_cards = [_card_table([Paragraph(_escape_text(label), styles["policy_card_title"]), Paragraph(_escape_text(charge), styles["policy_price"]), Paragraph(_escape_text(body), styles["policy_card_body"])], timeline_width, COLORS["card"]) for label, charge, body in CANCELLATION_TIMELINE]
+    _render_card_grid(story, timeline_cards, columns=4, gap=6)
+    story.append(Spacer(1, 0.12 * inch))
+    detail_width = (PAGE_INNER_WIDTH - 12) / 2
+    detail_cards = [_card_table([Paragraph(_escape_text(title), styles["policy_card_title"]), Paragraph(_escape_text(body), styles["policy_card_body"])], detail_width, COLORS["soft_white"]) for title, body in CANCELLATION_DETAIL_CARDS]
+    _render_card_grid(story, detail_cards, columns=2, gap=12)
+    story.append(PageBreak())
+
+
+def render_terms_conditions_pages(story: list, styles: dict[str, ParagraphStyle]) -> None:
+    _render_policy_page_title(story, styles, "TERMS & CONDITIONS", "Essential travel terms presented for clarity before confirmation.")
+    card_width = (PAGE_INNER_WIDTH - 12) / 2
+    term_cards = []
+    for index, (title, body) in enumerate(TERMS_CONDITION_CARDS, start=1):
+        term_cards.append(_card_table([Paragraph(_escape_text(f"{index:02d}. {title}"), styles["policy_card_title"]), Paragraph(_escape_text(body), styles["policy_card_body"])], card_width, COLORS["card"] if index % 2 else COLORS["soft_white"]))
+        if index == 8:
+            _render_card_grid(story, term_cards, columns=2, gap=12)
+            term_cards = []
+            story.append(PageBreak())
+            _render_policy_page_title(story, styles, "TERMS & CONDITIONS", "Continuation of guest responsibilities and operational conditions.")
+    if term_cards:
+        _render_card_grid(story, term_cards, columns=2, gap=12)
+    story.append(PageBreak())
+
+
+def _icon_list_card(title: str, icon: str, items: list[str], styles: dict[str, ParagraphStyle], width: float, background) -> Table:
+    content = [Paragraph(_escape_text(title), styles["policy_card_title"]), HRFlowable(width="100%", thickness=0.45, color=COLORS["gold"]), Spacer(1, 0.08 * inch)]
+    for item in items:
+        content.append(Paragraph(_escape_text(f"{icon} {item}"), styles["policy_card_body"]))
+        content.append(Spacer(1, 0.05 * inch))
+    return _card_table(content, width, background)
+
+
+def render_inclusions_exclusions_page(story: list, styles: dict[str, ParagraphStyle]) -> None:
+    _render_policy_page_title(story, styles, "INCLUSIONS & EXCLUSIONS", "A concise service summary for guest review and confirmation.")
+    column_width = (PAGE_INNER_WIDTH - 14) / 2
+    inclusions = _icon_list_card("INCLUSIONS", "✓", INCLUSION_ITEMS, styles, column_width, COLORS["card"])
+    exclusions = _icon_list_card("EXCLUSIONS", "✗", EXCLUSION_ITEMS, styles, column_width, COLORS["soft_white"])
+    table = Table([[inclusions, exclusions]], colWidths=[column_width, column_width], hAlign="CENTER")
+    table.setStyle(TableStyle([("VALIGN", (0, 0), (-1, -1), "TOP"), ("LEFTPADDING", (0, 0), (-1, -1), 0), ("RIGHTPADDING", (0, 0), (-1, -1), 7), ("TOPPADDING", (0, 0), (-1, -1), 0), ("BOTTOMPADDING", (0, 0), (-1, -1), 0)]))
+    story.append(table)
+    story.append(Spacer(1, 0.18 * inch))
+    story.append(Paragraph("Contact Details", styles["section_title"]))
+    story.append(Paragraph("Darun Tourism", styles["fine"]))
+    story.append(Paragraph("Luxury Andaman itinerary planning and guest experience support", styles["fine"]))
+    story.append(Paragraph("Please add final operational contact details before sending to guests if required.", styles["fine"]))
+
+
 def render_terms_pages(story: list, styles: dict[str, ParagraphStyle]) -> None:
     story.append(PageBreak())
+    render_things_to_do_page(story, styles)
+    render_payment_policy_page(story, styles)
+    render_cancellation_policy_page(story, styles)
+    render_terms_conditions_pages(story, styles)
+    render_inclusions_exclusions_page(story, styles)
+    return
+
     sections = {
         "Inclusions": [
-            "Curated day-wise itinerary planning aligned with guest preferences and destination pacing.",
-            "Suggested sightseeing flow designed for a polished premium travel experience.",
-            "Presentation format suitable for internal review before guest sharing.",
+            "Accommodation in selected category hotels or resorts as confirmed in the final itinerary.",
+            "Daily breakfast wherever included by the respective hotel or resort.",
+            "All airport, hotel, sightseeing, and jetty transfers by private air-conditioned vehicle as per the itinerary.",
+            "Premium inter-island ferry tickets as specified in the confirmed travel plan.",
+            "All sightseeing experiences and excursions expressly mentioned in the final itinerary.",
+            "Entry permits, parking charges, and applicable government taxes related to included services.",
+            "Dedicated local assistance throughout the tour for a smooth on-ground experience.",
+            "Similar category hotels may be provided in case of operational constraints or supplier availability changes.",
+            "Vehicle assistance during medical emergencies, subject to local conditions and accessibility.",
+            "Applicable taxes as per current government regulations.",
         ],
         "Exclusions": [
-            "Flights, personal expenses, optional experiences, and any service not finally confirmed.",
-            "Meals, entries, or transfers unless specifically included in the approved proposal.",
-            "Supplier-driven changes arising from weather, operations, or availability constraints.",
+            "Personal expenses of any nature.",
+            "Laundry, room service, telephone calls, and minibar charges.",
+            "Tips, porterage, camera fees, and other discretionary guest expenses.",
+            "Optional tours, activities, or experiences not expressly mentioned in the itinerary.",
+            "Vehicle services during leisure periods or outside the confirmed sightseeing schedule.",
+            "Additional expenses arising from delays, cancellations, weather disruptions, or force majeure events.",
+            "Travel insurance, unless specifically mentioned as included.",
+            "Peak season supplements, festive surcharges, and special event premiums unless included in writing.",
+            "Celebration arrangements, decor, cakes, bouquets, or private dining experiences unless explicitly mentioned.",
+            "Any item or service not expressly specified under the Inclusions section.",
         ],
         "Terms and Conditions": [
             "The itinerary remains subject to operational feasibility, seasonal conditions, and final service availability.",
@@ -656,12 +983,22 @@ def render_terms_pages(story: list, styles: dict[str, ParagraphStyle]) -> None:
             "Please add final operational contact details before sending to guests if required.",
         ],
     }
-    for heading, lines in sections.items():
+    for heading, lines in FIXED_POLICY_SECTIONS:
         story.append(Paragraph(_escape_text(heading), styles["section_title"]))
         story.append(HRFlowable(width="22%", thickness=1.0, color=COLORS["gold"], hAlign="LEFT"))
         story.append(Spacer(1, 0.12 * inch))
         for line in lines:
-            story.append(Paragraph(_escape_text(line), styles["fine"]))
+            story.append(Paragraph(_escape_text(f"• {line}"), styles["fine"]))
+        story.append(Spacer(1, 0.14 * inch))
+
+    for heading, lines in sections.items():
+        display_heading = heading.upper() if heading in {"Inclusions", "Exclusions"} else heading
+        story.append(Paragraph(_escape_text(display_heading), styles["section_title"]))
+        story.append(HRFlowable(width="22%", thickness=1.0, color=COLORS["gold"], hAlign="LEFT"))
+        story.append(Spacer(1, 0.12 * inch))
+        for line in lines:
+            bullet = "- " if heading in {"Inclusions", "Exclusions"} else ""
+            story.append(Paragraph(_escape_text(f"{bullet}{line}"), styles["fine"]))
         story.append(Spacer(1, 0.14 * inch))
 
 
