@@ -149,6 +149,18 @@ def _requested_locations(text: str) -> set[str]:
     }
 
 
+def _daily_plan_locations(text: str) -> set[str]:
+    locations: set[str] = set()
+    for raw_line in str(text or "").splitlines():
+        if ":" in raw_line:
+            raw_line = raw_line.split(":", 1)[1]
+        for value in _split_requested_values(raw_line):
+            cleaned = _clean_destination_label(value)
+            if cleaned:
+                locations.add(_normalize(cleaned))
+    return locations
+
+
 def _rank_rows(
     frame: pd.DataFrame,
     result_columns: list[str],
@@ -177,13 +189,10 @@ def recommend_hotels(request: TripRequest) -> pd.DataFrame:
     budget = _normalize(request.budget_category)
     trip_type = _normalize(request.trip_type)
     category_preference = _normalize(request.hotel_category_preference)
-    preferred_locations = _requested_locations(request.hotel_selection_islands or request.destination)
-    preferred_locations.update(_requested_locations(request.selected_destinations))
-    preferred_locations.update(
-        _normalize(_clean_destination_label(value.split(":")[-1]))
-        for value in _split_requested_values(request.daily_island_plan)
-        if _clean_destination_label(value.split(":")[-1])
-    )
+    preferred_locations = _daily_plan_locations(request.daily_island_plan)
+    if not preferred_locations:
+        preferred_locations = _requested_locations(request.hotel_selection_islands or request.destination)
+        preferred_locations.update(_requested_locations(request.selected_destinations))
     selected_hotels = {value.lower() for value in _split_requested_values(request.selected_hotels)}
     hotels = hotels[hotels["availability_status"].fillna("Available").str.lower() != "fully booked"].copy()
     if selected_hotels:

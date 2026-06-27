@@ -7,7 +7,7 @@ import streamlit as st
 from itinerary_app.company_knowledge import build_recommendation_bundle
 from itinerary_app.config import APP_SUBTITLE, APP_TITLE, BRAND_NAME, DEFAULT_MODEL
 from itinerary_app.data_loader import load_hotels
-from itinerary_app.google_service import generate_itinerary_stream
+from itinerary_app.google_service import generate_itinerary
 from itinerary_app.models import TripRequest
 from itinerary_app.pdf_service import generate_luxury_pdf
 
@@ -547,13 +547,8 @@ def _generate_itinerary(api_key: str, model: str, request: TripRequest) -> None:
     preview = st.empty()
     with st.spinner("Generating itinerary..."):
         try:
-            itinerary_parts = []
-            for text_chunk in generate_itinerary_stream(api_key=api_key, model=model, request=request):
-                itinerary_parts.append(text_chunk)
-                preview.markdown("".join(itinerary_parts))
-            itinerary = "".join(itinerary_parts).strip()
-            if not itinerary:
-                raise ValueError("Gemini returned an empty itinerary.")
+            itinerary = generate_itinerary(api_key=api_key, model=model, request=request).strip()
+            preview.markdown(itinerary)
         except ValueError as error:
             preview.empty()
             st.error(str(error))

@@ -1,6 +1,8 @@
 from io import BytesIO
 from pathlib import Path
+import logging
 import re
+import random
 
 from PIL import Image as PILImage
 from PIL import ImageDraw
@@ -12,6 +14,7 @@ from reportlab.lib.units import inch
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.platypus import (
+    CondPageBreak,
     HRFlowable,
     Image,
     PageBreak,
@@ -22,10 +25,23 @@ from reportlab.platypus import (
     TableStyle,
 )
 
-from itinerary_app.config import BRAND_NAME
-from itinerary_app.image_loader import get_destination_image_path, get_hotel_image_path
+from itinerary_app.config import BRAND_NAME, DEFAULT_COVER_IMAGE
+from itinerary_app.image_loader import get_destination_image_paths, get_fallback_image_path
 from itinerary_app.models import TripRequest
 from itinerary_app.recommendations import recommend_hotels
+
+
+LOGGER = logging.getLogger(__name__)
+GENERIC_PHRASE_BLACKLIST = (
+    "curated island experiences",
+    "destination mood",
+    "selected travel party",
+    "staff-editable",
+    "smooth coordination",
+    "refined sense of place",
+    "balanced pace",
+    "elegant close to the day",
+)
 
 
 COLORS = {
@@ -218,6 +234,199 @@ def _extract_trip_title(itinerary_text: str, destination: str) -> str:
     return f"{destination} Journey"
 
 
+DAY_CONTEXT_KEYWORDS = [
+    ("corbyn's cove", "Corbyn's Cove Beach", "attractions"),
+    ("corbyn cove", "Corbyn's Cove Beach", "attractions"),
+    ("cellular jail", "Cellular Jail", "attractions"),
+    ("light and sound show", "Cellular Jail Light & Sound Show", "attractions"),
+    ("radhanagar beach", "Radhanagar Beach", "attractions"),
+    ("kala pathar beach", "Kala Pathar Beach", "attractions"),
+    ("kala pathar", "Kala Pathar Beach", "attractions"),
+    ("elephant beach", "Elephant Beach", "attractions"),
+    ("natural rock bridge", "Natural Bridge", "attractions"),
+    ("natural bridge", "Natural Bridge", "attractions"),
+    ("bharatpur beach", "Bharatpur Beach", "attractions"),
+    ("laxmanpur beach", "Laxmanpur Beach", "attractions"),
+    ("chidiya tapu", "Chidiya Tapu", "attractions"),
+    ("ross island", "Ross Island", "destinations"),
+    ("north bay", "North Bay Island", "destinations"),
+    ("swaraj dweep", "Swaraj Dweep", "destinations"),
+    ("havelock island", "Swaraj Dweep", "destinations"),
+    ("havelock", "Swaraj Dweep", "destinations"),
+    ("shaheed dweep", "Shaheed Dweep", "destinations"),
+    ("neil island", "Shaheed Dweep", "destinations"),
+    ("neil", "Shaheed Dweep", "destinations"),
+    ("port blair", "Port Blair", "destinations"),
+    ("diglipur", "Diglipur", "destinations"),
+    ("baratang", "Baratang", "destinations"),
+    ("rangat", "Rangat", "destinations"),
+    ("mayabunder", "Mayabunder", "destinations"),
+    ("little andaman", "Little Andaman", "destinations"),
+    ("scuba diving", "Scuba Diving", "activities"),
+    ("snorkeling", "Snorkeling", "activities"),
+    ("snorkelling", "Snorkeling", "activities"),
+    ("sea walk", "Sea Walk", "activities"),
+    ("glass bottom boat", "Glass Bottom Boat", "activities"),
+    ("parasailing", "Parasailing", "activities"),
+    ("kayaking", "Kayaking", "activities"),
+    ("sunset cruise", "Sunset Cruise", "activities"),
+    ("candlelight dinner", "Candlelight Dinner", "activities"),
+]
+
+PRIMARY_DESTINATION_ORDER = {
+    "attractions": [
+        "Cellular Jail Light & Sound Show",
+        "Cellular Jail",
+        "Ross Island",
+        "North Bay Island",
+        "Radhanagar Beach",
+        "Elephant Beach",
+        "Natural Bridge",
+        "Bharatpur Beach",
+        "Laxmanpur Beach",
+        "Corbyn's Cove Beach",
+        "Chidiya Tapu",
+        "Kala Pathar Beach",
+    ],
+    "destinations": [
+        "Port Blair",
+        "Swaraj Dweep",
+        "Shaheed Dweep",
+        "Baratang",
+        "Diglipur",
+        "Rangat",
+        "Mayabunder",
+        "Little Andaman",
+    ],
+    "activities": [
+        "Scuba Diving",
+        "Snorkeling",
+        "Sea Walk",
+        "Glass Bottom Boat",
+        "Kayaking",
+        "Sunset Cruise",
+        "Candlelight Dinner",
+        "Parasailing",
+    ],
+}
+
+
+def _day_plan_line(request: TripRequest, day_number: int) -> str:
+    pattern = re.compile(rf"^\s*day\s*{day_number}\b[^:]*:\s*(.*)$", re.IGNORECASE)
+    for raw_line in str(request.daily_island_plan or "").splitlines():
+        match = pattern.match(raw_line.strip())
+        if match:
+            return match.group(1).strip()
+    return ""
+
+
+def _day_text_haystack(day_section: dict[str, object], request: TripRequest, day_number: int) -> str:
+    return " ".join(
+        [
+            str(day_section.get("heading") or ""),
+            " ".join(str(item.get("label") or "") for item in day_section.get("items", [])),
+            " ".join(str(item.get("content") or "") for item in day_section.get("items", [])),
+            _day_plan_line(request, day_number),
+        ]
+    ).lower()
+
+
+def _extract_day_context_values(text: str) -> dict[str, list[str]]:
+    values = {"destinations": [], "activities": [], "attractions": []}
+    normalized = text.lower()
+    for keyword, label, group in DAY_CONTEXT_KEYWORDS:
+        if keyword in normalized and label not in values[group]:
+            values[group].append(label)
+    return values
+
+
+def build_day_context(day_section: dict[str, object], request: TripRequest, day_number: int, used_images: set[Path] | None = None) -> dict[str, object]:
+    context_values = _extract_day_context_values(_day_text_haystack(day_section, request, day_number))
+    primary_attractions = [value for value in PRIMARY_DESTINATION_ORDER["attractions"] if value in context_values["attractions"]]
+    primary_islands = [value for value in PRIMARY_DESTINATION_ORDER["destinations"] if value in context_values["destinations"]]
+    primary_activities = [value for value in PRIMARY_DESTINATION_ORDER["activities"] if value in context_values["activities"]]
+    primary_beaches = [value for value in primary_attractions if "Beach" in value]
+    return {
+        "day_number": day_number,
+        "title": str(day_section.get("heading") or f"Day {day_number}"),
+        "destinations": context_values["destinations"],
+        "activities": context_values["activities"],
+        "attractions": context_values["attractions"],
+        "primary_attractions": primary_attractions,
+        "primary_beaches": primary_beaches,
+        "primary_islands": primary_islands,
+        "primary_activities": primary_activities,
+        "used_images": used_images if used_images is not None else set(),
+    }
+
+
+def _primary_day_label(day_context: dict[str, object]) -> str | None:
+    for key in ["primary_attractions", "primary_beaches", "primary_activities", "primary_islands", "attractions", "activities", "destinations"]:
+        values = _unique_values(list(day_context.get(key) or []))
+        if values:
+            return values[0]
+    return None
+
+
+def resolve_day_image(day_context: dict[str, object]) -> Path | None:
+    used_images = day_context.get("used_images")
+    if not isinstance(used_images, set):
+        used_images = set()
+
+    primary_label = _primary_day_label(day_context)
+    if primary_label:
+        candidates = [image_path for image_path in get_destination_image_paths(primary_label) if image_path not in used_images]
+        if candidates:
+            selected_image = random.choice(candidates)
+            used_images.add(selected_image)
+            return selected_image
+        island_candidates = [image_path for island in day_context.get("primary_islands") or [] for image_path in get_destination_image_paths(str(island)) if image_path not in used_images]
+        if island_candidates:
+            selected_image = random.choice(island_candidates)
+            used_images.add(selected_image)
+            return selected_image
+    fallback = get_fallback_image_path()
+    if fallback:
+        used_images.add(fallback)
+        return fallback
+    return None
+
+
+def _join_subtitle_values(values: list[str]) -> str:
+    selected = _unique_values(values)[:2]
+    if not selected:
+        return "the Andaman Islands"
+    return " & ".join(selected)
+
+
+def generate_day_subtitle(day_context: dict[str, object]) -> str:
+    attractions = _unique_values(list(day_context.get("primary_attractions") or []) + list(day_context.get("attractions") or []))
+    beaches = _unique_values(list(day_context.get("primary_beaches") or []))
+    islands = _unique_values(list(day_context.get("primary_islands") or []) + list(day_context.get("destinations") or []))
+    activities = _unique_values(list(day_context.get("primary_activities") or []) + list(day_context.get("activities") or []))
+    title = str(day_context.get("title") or "")
+
+    if "Departure" in title:
+        return "Farewell to the Andaman Islands"
+    if attractions:
+        selected = attractions[:2]
+        if {"Ross Island", "North Bay Island"}.issubset(set(selected)):
+            return "Historic Ross & North Bay Excursion"
+        if len(selected) == 1 and selected[0] in {"Radhanagar Beach", "Elephant Beach", "Kala Pathar Beach", "Bharatpur Beach", "Laxmanpur Beach", "Corbyn's Cove Beach", "Chidiya Tapu"}:
+            return f"Sunset at {selected[0]}"
+        if len(selected) == 2:
+            return f"{selected[0]} & {selected[1]} Experience"
+        return f"Journey to {selected[0]}"
+    if beaches:
+        return f"Sunset at {beaches[0]}"
+    if activities:
+        selected = activities[:2]
+        return f"{_join_subtitle_values(selected)} Experience"
+    if islands:
+        return f"Journey to {_join_subtitle_values(islands[:2])}"
+    return "Journey through the Andaman Islands"
+
+
 def split_itinerary_into_days(itinerary_text: str) -> list[dict[str, object]]:
     sections: list[dict[str, object]] = []
     current_day: dict[str, object] | None = None
@@ -314,51 +523,66 @@ def _highlight_data(itinerary_text: str, request: TripRequest) -> dict[str, obje
 
 def _highlight_sections(itinerary_text: str, request: TripRequest) -> list[dict[str, str]]:
     data = _highlight_data(itinerary_text, request)
-    destinations = _format_list(data["destinations"], request.destination or "Selected Andaman destinations")
-    activities = _format_list(data["activities"], "Activities selected during itinerary planning")
+    destinations = _format_list(data["destinations"], request.destination or "Andaman Islands")
+    activities = _format_list(data["activities"], request.preferred_activities or "Selected activities")
     travel_style = _format_list(data["travel_style"], request.trip_type or "Luxury")
-    hotels = _format_list(data["selected_hotels"], f"{data['hotel_category']} hotel inventory")
-    meals = _format_list(data["meal_preferences"], "Meal preferences as selected by staff")
-    transport = _format_list(data["transport_preferences"], "Transfers as selected by staff")
-    occasions = _format_list(data["special_occasions"], "Guest celebration preferences")
+    hotels = _format_list(data["selected_hotels"], f"{data['hotel_category']} stays")
+    meals = _format_list(data["meal_preferences"], request.meal_plan or "Selected meal plan")
+    transport = _format_list(data["transport_preferences"], request.transfer_type or "Selected transfers")
+    occasions = _format_list(data["special_occasions"], request.special_occasions or "Guest occasions")
 
     return [
         {
             "title": "DESTINATIONS COVERED",
             "value": destinations,
-            "description": f"{destinations} shape the routing for this {data['duration']} journey. The sequence follows the selected island plan so the proposal stays aligned with the staff itinerary design.",
+            "description": f"Explore {destinations} across a carefully sequenced {data['duration']} island journey.",
         },
         {
             "title": "TOP ACTIVITIES",
             "value": activities,
-            "description": f"This itinerary features {activities} based on the guest activity preferences and itinerary text. Each experience is positioned to support the selected trip type without overloading the day flow.",
+            "description": f"Experience {activities} with experiences matched to the selected travel style and guest preferences.",
         },
         {
             "title": "TRAVEL STYLE",
             "value": f"{travel_style} | {data['pace']} Pace",
-            "description": f"The proposal follows a {travel_style} style with a {data['pace'].lower()} pace. The day structure balances comfort, flexibility and memorable moments for the selected travel party.",
+            "description": f"The itinerary follows a {travel_style} style with a {data['pace'].lower()} pace.",
         },
         {
             "title": "HOTEL EXPERIENCE",
             "value": f"{data['hotel_category']} | {hotels}",
-            "description": f"Selected stays are drawn from {hotels} with the requested {data['hotel_category']} positioning. The hotel experience is matched to the route, selected islands and desired comfort standard.",
+            "description": f"Guests will stay in {hotels} with the requested {data['hotel_category']} positioning.",
         },
         {
             "title": "TRANSPORT EXPERIENCE",
             "value": transport,
-            "description": f"Transfers are planned around {transport} for smooth island connectivity. The routing supports the selected destinations, travel month and overall guest pace.",
+            "description": f"Transfers are planned around {transport} for smooth island connectivity.",
         },
         {
             "title": "DINING AND OCCASIONS",
             "value": f"{meals} | {occasions}",
-            "description": f"Meal planning reflects {meals} and the selected guest occasion details. These preferences help the proposal feel personal while keeping the final itinerary concise and staff-editable.",
+            "description": f"Meal planning reflects {meals} and the selected guest occasions.",
         },
     ]
 
 
-def get_destination_image(destination: str):
-    return get_destination_image_path(destination) or _build_cover_image()
-
+def _rewrite_generic_language(text: str, day_context: dict[str, object], request: TripRequest) -> str:
+    rewritten = str(text or "")
+    focus = _context_summary(day_context)
+    replacements = {
+        "curated island experiences": focus,
+        "destination mood": focus,
+        "selected travel party": _party_phrase(request),
+        "staff-editable": "guest-ready",
+        "smooth coordination": f"smooth coordination around {focus}",
+        "refined sense of place": focus,
+        "balanced pace": f"balanced pace through {focus}",
+        "elegant close to the day": f"elegant close to {focus}",
+    }
+    for source, target in replacements.items():
+        rewritten = rewritten.replace(source, target)
+    if focus and focus.lower() not in rewritten.lower():
+        rewritten = f"{rewritten} The route remains anchored by {focus}."
+    return _ensure_sentence(rewritten)
 
 def _page_number(canvas, doc) -> None:
     canvas.saveState()
@@ -399,7 +623,12 @@ def render_cover_page(story: list, styles: dict[str, ParagraphStyle], request: T
     story.append(Paragraph(_escape_text(BRAND_NAME), styles["brand"]))
     story.append(HRFlowable(width="16%", thickness=1.1, color=COLORS["gold"], hAlign="CENTER"))
     story.append(Spacer(1, 0.12 * inch))
-    story.append(Image(get_destination_image(request.destination), width=6.7 * inch, height=3.8 * inch))
+    cover_image = DEFAULT_COVER_IMAGE if DEFAULT_COVER_IMAGE.exists() else get_fallback_image_path()
+    if cover_image:
+        LOGGER.info("[COVER] Using: %s", Path(cover_image).resolve())
+        story.append(Image(str(cover_image), width=6.7 * inch, height=3.8 * inch))
+    else:
+        story.append(Image(_build_cover_image(), width=6.7 * inch, height=3.8 * inch))
     story.append(Spacer(1, 0.3 * inch))
     story.append(Paragraph(_escape_text(trip_title), styles["cover_title"]))
     story.append(Paragraph("Luxury Andaman Travel Proposal", styles["cover_subtitle"]))
@@ -498,11 +727,6 @@ def _hotel_card_flowable(hotel_row: dict[str, object], request: TripRequest, iti
     category = str(hotel_row.get("category") or "").strip()
     description = str(hotel_row.get("description") or "").strip()
     stay_text = _hotel_stay_text(hotel_row, request, itinerary_text)
-    image_path = get_hotel_image_path(hotel_name)
-    if image_path:
-        image_flowable = Image(str(image_path), width=card_width - 14, height=1.45 * inch)
-    else:
-        image_flowable = Spacer(1, 1.45 * inch)
     details = [
         Paragraph(
             _escape_text(f"{hotel_name} \u2605\u2605\u2605\u2605\u2605"),
@@ -525,7 +749,7 @@ def _hotel_card_flowable(hotel_row: dict[str, object], request: TripRequest, iti
             ParagraphStyle("hotel_card_stay", fontName=_font_map()["body_bold"], fontSize=9.4, leading=12.8, textColor=COLORS["dark"], spaceAfter=0),
         ),
     ]
-    card = Table([[image_flowable], [details]], colWidths=[card_width])
+    card = Table([[details]], colWidths=[card_width])
     card.setStyle(
         TableStyle(
             [
@@ -578,29 +802,228 @@ def render_luxury_stays_page(story: list, styles: dict[str, ParagraphStyle], req
     story.append(PageBreak())
 
 
-def render_day_page(story: list, styles: dict[str, ParagraphStyle], request: TripRequest, day_section: dict[str, object], destination: str, day_number: int) -> None:
+def _sentence_count(text: str) -> int:
+    return len([part for part in re.split(r"[.!?]+", str(text or "")) if part.strip()])
+
+
+def _word_count(text: str) -> int:
+    return len(re.findall(r"\b\w+\b", str(text or "")))
+
+
+def _ensure_sentence(text: str) -> str:
+    cleaned = re.sub(r"\s+", " ", str(text or "")).strip()
+    if cleaned and cleaned[-1] not in ".!?":
+        cleaned += "."
+    return cleaned
+
+
+def _request_style_phrase(request: TripRequest) -> str:
+    values = _unique_values(
+        _split_values(request.travel_style)
+        + _split_values(request.trip_type)
+        + _split_values(request.budget_category)
+    )
+    return _format_list(values, "luxury")
+
+
+def _party_phrase(request: TripRequest) -> str:
+    details = [f"{request.number_of_adults} adult guests"]
+    if request.number_of_children:
+        details.append(f"{request.number_of_children} children")
+    if request.number_of_infants:
+        details.append(f"{request.number_of_infants} infants")
+    if request.number_of_senior_citizens:
+        details.append(f"{request.number_of_senior_citizens} senior guests")
+    return _format_list(details, "the guest party")
+
+
+def _hotel_phrase(request: TripRequest) -> str:
+    hotels = _split_values(request.selected_hotels)
+    if hotels:
+        return hotels[0]
+    if request.hotel_category_preference:
+        return f"{request.hotel_category_preference} stays"
+    return "selected island stays"
+
+
+def _context_summary(day_context: dict[str, object]) -> str:
+    values = _unique_values(list(day_context.get("attractions") or []) + list(day_context.get("destinations") or []))
+    return _format_list(values, "the selected island route")
+
+
+def _narrative_additions(label: str, day_context: dict[str, object], request: TripRequest) -> list[str]:
+    focus = _context_summary(day_context)
+    style = _request_style_phrase(request)
+    party = _party_phrase(request)
+    hotel = _hotel_phrase(request)
+    activities = _format_list(list(day_context.get("activities") or []) + _split_values(request.preferred_activities), "curated island experiences")
+    label_key = label.lower()
+
+    if label_key == "morning":
+        return [
+            f"The morning is paced around {focus}, allowing {party} to begin the day with comfort, clear coordination and a refined sense of place.",
+            f"The experience reflects a {style} travel style, with timings kept smooth so sightseeing feels immersive rather than rushed.",
+        ]
+    if label_key == "afternoon":
+        return [
+            f"The afternoon continues with {activities}, selected to match the destination mood and the guests' preferred level of exploration.",
+            f"Transfers and pauses are planned carefully so the day keeps a premium flow while still leaving room for photographs, refreshments and relaxed discovery.",
+        ]
+    if label_key == "evening":
+        return [
+            f"The evening is shaped for an elegant close to the day, with the route returning toward comfort after the main island experiences.",
+            f"Where the occasion calls for it, the pacing can support privacy, family time or a more romantic setting without adding operational pressure.",
+        ]
+    if label_key == "overnight stay":
+        return [
+            f"Overnight arrangements are aligned with {hotel}, keeping the stay comfortable and convenient for the next day's island movement.",
+            f"The evening remains unhurried, giving guests time to rest, refresh and enjoy the selected hospitality standard.",
+        ]
+    return []
+
+
+def _enhance_section_content(label: str, content: str, day_context: dict[str, object], request: TripRequest) -> str:
+    label_key = label.lower().strip()
+    if label_key not in SECTION_LABELS:
+        return _ensure_sentence(content)
+
+    min_words = 30 if label_key == "overnight stay" else 50
+    min_sentences = 2
+    enhanced = _ensure_sentence(content) or _ensure_sentence(f"Experience {_context_summary(day_context)} with a refined Darun Tourism pace")
+    for addition in _narrative_additions(label_key, day_context, request):
+        if _sentence_count(enhanced) >= min_sentences and _word_count(enhanced) >= min_words:
+            break
+        enhanced = f"{enhanced} {_ensure_sentence(addition)}".strip()
+    return _rewrite_generic_language(enhanced, day_context, request)
+
+
+def _fallback_day_item(label: str, day_context: dict[str, object], request: TripRequest) -> str:
+    focus = _context_summary(day_context)
+    style = _request_style_phrase(request)
+    if label.lower().strip() == "morning":
+        return _ensure_sentence(
+            f"The morning opens with a smooth start around {focus}, keeping the journey calm and aligned with the {style.lower()} pace."
+        )
+    if label.lower().strip() == "afternoon":
+        return _ensure_sentence(
+            f"The afternoon continues with sightseeing, photographs, and relaxed guest comfort around {focus}."
+        )
+    if label.lower().strip() == "evening":
+        return _ensure_sentence(
+            f"The evening is reserved for a graceful wind-down after {focus}, easing the day into a polished close."
+        )
+    return _ensure_sentence(
+        f"Overnight arrangements stay comfortable and orderly near {focus}, with room to rest well before the next day's travel or departure schedule."
+    )
+
+
+def _normalize_day_items(day_section: dict[str, object], day_context: dict[str, object], request: TripRequest, is_final_day: bool) -> list[dict[str, str]]:
+    incoming_items = list(day_section.get("items") or [])
+    normalized: dict[str, dict[str, str]] = {}
+    item_order = ["Morning", "Afternoon", "Evening", "Overnight Stay"]
+    final_label = "Overnight / Departure" if is_final_day else "Overnight Stay"
+
+    for item in incoming_items:
+        label = str(item.get("label") or "").strip()
+        content = str(item.get("content") or "").strip()
+        normalized_label = label.lower()
+        if normalized_label in {"morning", "afternoon", "evening", "overnight stay", "overnight", "departure"}:
+            if normalized_label in {"overnight", "departure"}:
+                label = final_label
+            elif normalized_label == "overnight stay" and is_final_day:
+                label = final_label
+            else:
+                label = label.title()
+            normalized[label] = {
+                "label": label,
+                "content": _enhance_section_content(label, content, day_context, request) if content else _fallback_day_item(label, day_context, request),
+            }
+
+    for label in item_order:
+        display_label = final_label if (is_final_day and label == "Overnight Stay") else label
+        if display_label not in normalized:
+            LOGGER.warning("Missing day content for %s; injecting fallback copy.", display_label)
+            normalized[display_label] = {
+                "label": display_label,
+                "content": _fallback_day_item(display_label, day_context, request),
+            }
+
+    return [normalized[label] for label in [label if not (is_final_day and label == "Overnight Stay") else final_label for label in item_order]]
+
+
+def _estimate_day_block_height(items: list[dict[str, str]], has_image: bool) -> float:
+    height = 0.55 * inch  # day heading, divider, subtitle
+    height += 2.75 * inch if has_image else 0.55 * inch
+    for item in items:
+        content_words = max(_word_count(item.get("content") or ""), 1)
+        label_words = max(_word_count(item.get("label") or ""), 1)
+        height += 0.24 * inch
+        height += 0.16 * inch if item.get("label") else 0
+        height += max(0.75 * inch, ((content_words + label_words) / 14.0) * 0.28 * inch)
+        height += 0.16 * inch
+        height += 0.08 * inch
+    height += 0.25 * inch
+    return height
+
+
+def _fallback_day_section(day_number: int, request: TripRequest) -> dict[str, object]:
+    base_destination = _clean_destination_label(request.destination or "Andaman Islands")
+    if day_number == request.number_of_days:
+        heading = f"Day {day_number}: Departure"
+    else:
+        heading = f"Day {day_number}: {base_destination}"
+    return {
+        "heading": heading,
+        "items": [
+            {"label": "Morning", "content": ""},
+            {"label": "Afternoon", "content": ""},
+            {"label": "Evening", "content": ""},
+            {"label": "Overnight Stay", "content": ""},
+        ],
+    }
+
+
+def render_day_page(
+    story: list,
+    styles: dict[str, ParagraphStyle],
+    request: TripRequest,
+    day_section: dict[str, object],
+    destination: str,
+    day_number: int,
+    used_images: set[Path],
+) -> None:
+    day_context = build_day_context(day_section, request, day_number, used_images)
+    subtitle = generate_day_subtitle(day_context)
     heading = str(day_section["heading"])
     clean_heading = re.sub(r"^day\s*", "DAY ", heading, flags=re.IGNORECASE)
-    story.append(Spacer(1, 0.04 * inch))
-    story.append(Paragraph(_escape_text(clean_heading), styles["day_title"]))
-    story.append(HRFlowable(width="100%", thickness=0.7, color=COLORS["line"]))
-    story.append(Spacer(1, 0.1 * inch))
-    story.append(Paragraph(f"Journey to {_escape_text(destination)}", styles["section_title"]))
-    story.append(Spacer(1, 0.04 * inch))
-    story.append(Image(get_destination_image(destination), width=6.15 * inch, height=2.75 * inch))
-    story.append(Spacer(1, 0.2 * inch))
-    for item in day_section["items"]:
+    image_path = resolve_day_image(day_context)
+    items = _normalize_day_items(day_section, day_context, request, day_number == request.number_of_days)
+    day_flowables: list = [
+        Spacer(1, 0.04 * inch),
+        Paragraph(_escape_text(clean_heading), styles["day_title"]),
+        HRFlowable(width="100%", thickness=0.7, color=COLORS["line"]),
+        Spacer(1, 0.1 * inch),
+        Paragraph(_escape_text(subtitle), styles["section_title"]),
+        Spacer(1, 0.04 * inch),
+    ]
+    if image_path:
+        day_flowables.append(Image(str(image_path), width=6.15 * inch, height=2.75 * inch))
+    else:
+        day_flowables.append(Spacer(1, 2.75 * inch))
+    day_flowables.append(Spacer(1, 0.2 * inch))
+    for item in items:
         label = str(item["label"] or "").strip()
         content = _escape_text(str(item["content"] or "").strip())
         if label:
-            story.append(Paragraph(_escape_text(label), styles["label"]))
-        story.append(Paragraph(content, styles["body"]))
-        story.append(Spacer(1, 0.08 * inch))
-        story.append(HRFlowable(width="100%", thickness=0.25, color=COLORS["line"]))
-        story.append(Spacer(1, 0.08 * inch))
-    story.append(Spacer(1, 0.12 * inch))
-    story.append(HRFlowable(width="100%", thickness=0.4, color=COLORS["soft_grey"]))
-    story.append(Spacer(1, 0.04 * inch))
+            day_flowables.append(Paragraph(_escape_text(label), styles["label"]))
+        day_flowables.append(Paragraph(content, styles["body"]))
+        day_flowables.append(Spacer(1, 0.08 * inch))
+        day_flowables.append(HRFlowable(width="100%", thickness=0.25, color=COLORS["line"]))
+        day_flowables.append(Spacer(1, 0.08 * inch))
+    day_flowables.append(Spacer(1, 0.12 * inch))
+    day_flowables.append(HRFlowable(width="100%", thickness=0.4, color=COLORS["soft_grey"]))
+    day_flowables.append(Spacer(1, 0.04 * inch))
+    story.extend(day_flowables)
 
 
 FIXED_POLICY_SECTIONS = [
@@ -1019,14 +1442,34 @@ def generate_luxury_pdf(request: TripRequest, itinerary_text: str) -> bytes:
         bottomMargin=MARGINS["bottom"],
     )
     story: list = []
+    used_images: set[Path] = set()
     render_cover_page(story, styles, request, trip_title)
     render_highlights_page(story, styles, request, cleaned_itinerary)
     render_luxury_stays_page(story, styles, request, cleaned_itinerary)
     day_sections = split_itinerary_into_days(cleaned_itinerary)
-    for index, section in enumerate(day_sections):
-        render_day_page(story, styles, request, section, destination=request.destination, day_number=index + 1)
-        if index != len(day_sections) - 1:
-            story.append(PageBreak())
+    total_trip_days = max(int(request.number_of_days or 0), len(day_sections))
+    if len(day_sections) < total_trip_days:
+        LOGGER.warning("Itinerary only produced %s day sections; expected %s. Filling missing days.", len(day_sections), total_trip_days)
+        for day_number in range(len(day_sections) + 1, total_trip_days + 1):
+            day_sections.append(_fallback_day_section(day_number, request))
+    rendered_day_count = 0
+    for index, section in enumerate(day_sections[:total_trip_days]):
+        if index > 0:
+            day_context = build_day_context(section, request, index + 1, used_images)
+            normalized_items = _normalize_day_items(section, day_context, request, index + 1 == total_trip_days)
+            estimated_height = _estimate_day_block_height(normalized_items, True)
+            story.append(CondPageBreak(estimated_height))
+        render_day_page(
+            story,
+            styles,
+            request,
+            section,
+            destination=request.destination,
+            day_number=index + 1,
+            used_images=used_images,
+        )
+        rendered_day_count += 1
+    assert rendered_day_count == total_trip_days
     render_terms_pages(story, styles)
     document.build(
         story,

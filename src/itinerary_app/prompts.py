@@ -15,6 +15,9 @@ Rules:
 - Match the tone of a premium luxury travel agency.
 - Keep the format easy to edit in a text editor.
 - Include Morning, Afternoon, Evening, and Overnight Stay for every day.
+- Write Morning, Afternoon, and Evening sections as 2-3 polished sentences of 50-80 words.
+- Write Overnight Stay as 2-3 polished sentences of 30-50 words.
+- Avoid one-line descriptions such as "Board ferry" or generic placeholders.
 - Strongly prioritize the selected destinations and daily island plan when planning the route.
 - Use internal staff notes to improve the itinerary, but never mention them in the final customer-facing output.
 - If information is missing, make sensible assumptions without calling attention to gaps.
@@ -80,6 +83,14 @@ Formatting requirements:
   - Evening
   - Overnight Stay
 - Keep each section concise but descriptive.
+- Morning, Afternoon, and Evening must each be 50-80 words across 2-3 complete sentences.
+- Overnight Stay must be 30-50 words across 2-3 complete sentences.
+- Use trip type, travel style, budget, selected hotels, preferred activities, destination, and family composition to make the narrative specific.
+- Family trips should mention family-friendly pace where relevant.
+- Luxury or premium trips should mention comfort, exclusivity, and smooth coordination where relevant.
+- Honeymoon trips should mention privacy and romance where relevant.
+- Adventure trips should mention exploration and active discovery where relevant.
+- Never use one-line section descriptions.
 - Do not add any notes before or after the itinerary.
 - Prefer company-recommended hotels, activities, ferries, and destinations from the context above.
 - Do not invent hotels or activities if the company context already provides suitable options.
@@ -149,7 +160,10 @@ Rules:
 - Start with a Trip Title.
 - Generate Day 1 through Day {request.number_of_days}.
 - Each day must include exactly: Morning, Afternoon, Evening, Overnight Stay.
-- Keep every section to one short sentence.
+- Morning, Afternoon, and Evening must each be 50-80 words across 2-3 complete sentences.
+- Overnight Stay must be 30-50 words across 2-3 complete sentences.
+- Use trip type, travel style, budget, selected hotels, preferred activities, destination, and family composition to make the narrative specific.
+- Never use one-line descriptions or generic placeholders.
 - Prefer company-listed hotels, activities, ferries, and destinations from the context above.
 - Do not invent hotels or activities if company options are already available.
 - Do not include pricing, flight tickets, package costs, booking instructions, or payment language.
