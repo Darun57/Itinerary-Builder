@@ -29,6 +29,7 @@ from itinerary_app.config import BRAND_NAME, DEFAULT_COVER_IMAGE
 from itinerary_app.image_loader import get_destination_image_paths, get_fallback_image_path
 from itinerary_app.models import TripRequest
 from itinerary_app.recommendations import recommend_hotels
+from itinerary_app.trip_context import build_trip_context, get_day, get_day_attractions, get_primary_island
 
 
 LOGGER = logging.getLogger(__name__)
@@ -368,21 +369,23 @@ def _primary_day_label(day_context: dict[str, object]) -> str | None:
     return None
 
 
-def resolve_day_image(day_context: dict[str, object]) -> Path | None:
-    used_images = day_context.get("used_images")
-    if not isinstance(used_images, set):
+def resolve_day_image(trip_context, day_number: int, used_images: set[Path] | None = None) -> Path | None:
+    if used_images is None:
         used_images = set()
+    day_plan = get_day(trip_context, day_number)
+    if day_plan is None:
+        return get_fallback_image_path()
 
-    primary_label = _primary_day_label(day_context)
-    if primary_label:
-        candidates = [image_path for image_path in get_destination_image_paths(primary_label) if image_path not in used_images]
+    primary_island = get_primary_island(trip_context, day_number)
+    attractions = get_day_attractions(trip_context, day_number)
+    search_labels = [*attractions[:2], primary_island]
+    used_images = used_images if isinstance(used_images, set) else set()
+    for label in search_labels:
+        if not label:
+            continue
+        candidates = [image_path for image_path in get_destination_image_paths(label) if image_path not in used_images]
         if candidates:
             selected_image = random.choice(candidates)
-            used_images.add(selected_image)
-            return selected_image
-        island_candidates = [image_path for island in day_context.get("primary_islands") or [] for image_path in get_destination_image_paths(str(island)) if image_path not in used_images]
-        if island_candidates:
-            selected_image = random.choice(island_candidates)
             used_images.add(selected_image)
             return selected_image
     fallback = get_fallback_image_path()
@@ -996,7 +999,7 @@ def render_day_page(
     subtitle = generate_day_subtitle(day_context)
     heading = str(day_section["heading"])
     clean_heading = re.sub(r"^day\s*", "DAY ", heading, flags=re.IGNORECASE)
-    image_path = resolve_day_image(day_context)
+    image_path = resolve_day_image(build_trip_context(request), day_number, used_images)
     items = _normalize_day_items(day_section, day_context, request, day_number == request.number_of_days)
     day_flowables: list = [
         Spacer(1, 0.04 * inch),
