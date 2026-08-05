@@ -1,6 +1,44 @@
 destination_name,best_for,description,minimum_days,maximum_days
 Port Blair,"arrival;heritage;transfers","Primary arrival hub with Cellular Jail, Corbyn's Cove, museums, and ferry connections.",1,3
-Swaraj Dweep,"beaches;honeymoon;scuba;premium stays","Flagship Andaman island for Radhanagar Beach, scuba diving, cafes, and resort stays.",2,5
-Shaheed Dweep,"relaxation;families;nature;short stays","Calmer island suited for Natural Bridge, Bharatpur Beach, and slower itineraries.",1,3
+Swaraj Dweep (Havelock),"beaches;honeymoon;scuba;premium stays","Flagship Andaman island for Radhanagar Beach, scuba diving, cafes, and resort stays.",2,5
+Shaheed Dweep (Neil),"relaxation;families;nature;short stays","Calmer island suited for Natural Bridge, Bharatpur Beach, and slower itineraries.",1,3
 Baratang,"limestone caves;mangroves;adventure","Long day-trip destination known for mangrove creeks and limestone caves.",1,1
 Chidiya Tapu,"sunset;nature;birding","Port Blair side excursion for sunset views, coastal drives, and nature-focused guests.",0,1
+Ross Island (NSCB Island),"heritage;history;ruins","Former British administrative headquarters with historical ruins and deer.",0,1
+North Bay Island,"watersports;snorkeling;sea walk","Popular day trip from Port Blair known for corals and extensive water activities.",0,1
+Jolly Buoy Island,"corals;snorkeling;pristine beach","Protected marine sanctuary offering crystal clear waters and glass-bottom boat rides.",0,1
+Diglipur,"nature;turtle nesting;twin islands;adventure","Northernmost town famous for Ross and Smith Islands, Saddle Peak, and turtle nesting.",2,3
+Rangat,"eco-tourism;mangroves;beaches","Known for Dhaninallah Mangrove walkway, Amkunj Beach, and turtle nesting at Cuthbert Bay.",1,2
+Mayabunder,"karmatang beach;mangroves;culture","Quiet town in Middle Andaman, known for Karmatang beach and mangrove boat rides.",1,2
+Little Andaman,"surfing;waterfalls;offbeat","Remote island famous for surfing at Butler Bay Beach and scenic waterfalls.",2,4
+Wandoor,"beach;corals;sunset","Gateway to Mahatma Gandhi Marine National Park, known for a calm, scenic beach.",0,1
+Cellular Jail,"heritage;history;light and sound show","National memorial in Port Blair known for its colonial history and evening light and sound show.",0,1
+Corbyn's Cove Beach,"beach;relax;watersports","The closest beach to Port Blair city center, offering water sports and cafes.",0,1
+Anthropological Museum,"culture;history;museum","Museum in Port Blair showcasing the life and culture of Andaman's indigenous tribes.",0,1
+Samudrika Naval Marine Museum,"marine life;history;museum","Naval museum in Port Blair detailing local marine life and island geography.",0,1
+Chatham Saw Mill,"history;industry","One of the oldest and largest saw mills in Asia, located on Chatham Island in Port Blair.",0,1
+Mount Harriet (Mount Manipur),"nature;trekking;viewpoint","The highest peak in South Andaman offering panoramic views of Port Blair and Ross Island.",0,1
+Marina Park and Flag Point,"relax;sunset;walk","A beautiful seaside park in Port Blair ideal for evening walks and relaxing.",0,1
+Munda Pahar Beach,"sunset;trekking;beach","A pristine beach located at Chidiya Tapu, offering a scenic trek to the southernmost tip.",0,1
+Radhanagar Beach,"sunset;swimming;relaxing","Voted one of Asia's best beaches, located in Havelock, famous for its white sands and sunsets.",0,1
+Elephant Beach,"watersports;snorkeling;corals","A highly popular beach in Havelock offering snorkeling, sea walking, and various water sports.",0,1
+Kalapathar Beach,"sunrise;photography;relaxing","A serene beach in Havelock known for its black rocks, turquoise water, and stunning sunrises.",0,1
+Vijaynagar Beach,"relax;resorts;shallow water","A long, quiet stretch of beach in Havelock lined with many popular resorts.",0,1
+Bharatpur Beach,"swimming;glass bottom boat;snorkeling","A gentle beach in Neil Island known for its shallow waters, perfect for swimming and coral viewing.",0,1
+Laxmanpur Beach,"sunset;relaxing;white sand","A wide, white sandy beach in Neil Island renowned for spectacular sunset views.",0,1
+Natural Bridge,"photography;nature;marine life","A naturally formed rock bridge in Neil Island accessible during low tide, surrounded by rock pools.",0,1
+Sitapur Beach,"sunrise;photography;quiet","A secluded beach in Neil Island famous for its breathtaking sunrise views.",0,1
+Limestone Caves,"adventure;nature;mangroves","Fascinating natural limestone caves in Baratang accessible via a thrilling mangrove boat ride.",0,1
+Mud Volcano,"nature;geology","A rare natural phenomenon in Baratang where miniature volcanoes emit natural gas and mud.",0,1
+Parrot Island,"nature;birding;sunset","A small island near Baratang where thousands of parrots return every evening at sunset.",0,1
+Ross and Smith Islands,"nature;swimming;sandbar","Twin islands in Diglipur connected by a natural sandbar, offering pristine turquoise waters.",0,1
+Saddle Peak,"trekking;nature;national park","The highest point in the Andaman islands, offering a challenging trek through dense tropical forests.",0,1
+Ram Nagar Beach,"turtle nesting;nature;swimming","A quiet beach in Diglipur known for its turtle nesting grounds and eco-friendly facilities.",0,1
+Dhaninallah Mangrove Nature Walkway,"eco-tourism;mangroves;turtle nesting","A long wooden boardwalk through dense mangroves in Rangat leading to an expansive beach.",0,1
+Amkunj Beach,"eco-tourism;relaxing;rocky beach","An eco-friendly rocky beach in Rangat with log benches and natural surroundings.",0,1
+Karmatang Beach,"turtle nesting;relaxing;families","A peaceful beach in Mayabunder known as a turtle nesting ground and a great picnic spot.",0,1
+Red Skin Island,"corals;snorkeling;nature","An alternative to Jolly Buoy in the Marine National Park, offering great snorkeling and corals.",0,1
+Butler Bay Beach,"surfing;swimming;relaxing","A stunning, curved beach in Little Andaman known as one of the best surfing spots in India.",0,1
+White Surf Waterfall,"nature;waterfall;photography","A beautiful perennial waterfall nestled deep within the tropical forests of Little Andaman.",0,1
+Barren Island,"volcano;adventure;scuba","India's only active volcano, accessible by charter boats. A world-class scuba diving site.",0,1
+Mahatma Gandhi Marine National Park,"marine life;corals;conservation","A protected marine area in Wandoor encompassing Jolly Buoy and Red Skin islands.",0,1

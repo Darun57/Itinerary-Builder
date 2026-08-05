@@ -18,12 +18,12 @@ HTL-PB-015,Silver Sand Sea Princess Beach Resort,Port Blair,5 Star,11500,"honeym
 HTL-PB-016,Sea Shell Coral Cove,Port Blair,4 Star,8500,"honeymoon;family;premium","Luxury city-edge resort with pool, beach access, and polished service.",Available
 HTL-PB-017,Silver Sand Sentinel,Port Blair,4 Star,8000,"family;corporate;premium","Comfortable upscale city hotel with easy access to Port Blair sightseeing.",Available
 HTL-PB-018,Hotel TSG Grand,Port Blair,3 Star,4600,"family;budget;corporate","Practical mid-range hotel with central access and reliable service.",Available
-HTL-PB-019,J Hotel,Port Blair,3 Star,3900,"family;budget;transit","Simple and reliable city stay for short Port Blair trips and transit nights.",Available
 HTL-PB-015,Silver Sand Sea Princess Beach Resort,Port Blair,5 Star,11500,"honeymoon;family;premium","Beachside luxury resort with sea views, refined service, and a premium resort feel.",Available
 HTL-PB-016,Sea Shell Coral Cove,Port Blair,4 Star,8500,"honeymoon;family;premium","Green, stylish resort with polished service and convenient access to Port Blair sightseeing.",Available
 HTL-PB-017,Peerless Resort Port Blair,Port Blair,4 Star,7800,"family;couples;premium","Seaside resort with calm surroundings, sea-view rooms, and a relaxed holiday atmosphere.",Available
 HTL-PB-018,Zone Connect by The Park Port Blair,Port Blair,4 Star,7600,"family;business;premium","Contemporary 4-star hotel with backwater views and modern city convenience.",Available
 HTL-PB-019,The Eden Birdline,Port Blair,4 Star,7200,"family;couples;premium","Elegant city hotel with clean rooms, pool, and easy access to attractions.",Available
+HTL-PB-020,Adhvasaha Beach Spa Resort,Port Blair,4 Star,8200,"honeymoon;family;premium","Beachfront spa resort offering rejuvenating wellness experiences with scenic sea views and refined comfort.",Available
 
 HTL-HL-001,Taj Exotica Resort & Spa,Swaraj Dweep,Ultra Luxury,32000,"honeymoon;luxury;premium","Signature luxury island resort for premium beach-focused itineraries.",Available
 HTL-HL-002,SeaShell Havelock,Swaraj Dweep,5 Star,14500,"honeymoon;family;beach","Popular luxury resort with easy beach access and a polished guest experience.",Available
@@ -43,13 +43,15 @@ HTL-HL-015,Bowfins Resorts,Swaraj Dweep,4 Star,9200,"family;couples;premium","Re
 HTL-HL-016,Ocean Tree Beach Resort & Spa,Swaraj Dweep,4 Star,10500,"honeymoon;family;premium","Beach resort with spa-style relaxation and polished island ambience.",Available
 HTL-HL-017,The Wild Orchid Resort,Swaraj Dweep,3 Star,6700,"family;budget;couples","Eco-style resort suited to comfortable mid-range Havelock stays.",Available
 HTL-HL-018,Matsya Island Retreat,Swaraj Dweep,3 Star,6000,"family;friends;budget","Mid-range retreat for guests who prefer a quieter island base.",Available
-HTL-HL-014,Sea Shell Resort & Spa, Havelock,Swaraj Dweep,5 Star,15500,"honeymoon;family;beach","Popular luxury beach resort with polished rooms and strong island appeal.",Available
-HTL-HL-015,Coral Reef Resort & Spa, Havelock,Swaraj Dweep,5 Star,13800,"honeymoon;family;premium","Refined beachfront resort suited to premium island itineraries.",Available
+HTL-HL-014,"Sea Shell Resort & Spa, Havelock",Swaraj Dweep,5 Star,15500,"honeymoon;family;beach","Popular luxury beach resort with polished rooms and strong island appeal.",Available
+HTL-HL-015,"Coral Reef Resort & Spa, Havelock",Swaraj Dweep,5 Star,13800,"honeymoon;family;premium","Refined beachfront resort suited to premium island itineraries.",Available
 HTL-HL-016,Munjoh Ocean Resort,Swaraj Dweep,5 Star,16000,"honeymoon;luxury;premium","Luxury resort with a private, relaxed atmosphere ideal for high-end stays.",Available
 HTL-HL-017,Haywizz Havelock Island Resort,Swaraj Dweep,4 Star,9200,"family;friends;beach","Large resort with pool and comfortable island facilities.",Available
 HTL-HL-018,Barefoot at Havelock,Swaraj Dweep,5 Star,21000,"honeymoon;luxury;nature","Nature-forward luxury stay with an exclusive and immersive island feel.",Available
+HTL-HL-019,Havelock Island Beach Resort,Swaraj Dweep,5 Star,13000,"honeymoon;family;beach","Premium beachfront resort with scenic island views, luxury amenities, and easy access to Radhanagar Beach.",Available
 
 HTL-NL-001,SeaShell Neil,Shaheed Dweep,5 Star,9800,"honeymoon;family;relaxation","Comfortable island stay ideal for slow-paced Neil Island itineraries.",Available
+HTL-NL-018,SeaShell Samssara,Shaheed Dweep,5 Star,15000,"honeymoon;luxury;premium","Exclusive luxury island retreat offering immersive wellness experiences and refined beachfront elegance on Neil Island.",Available
 HTL-NL-002,Silver Sand Neil,Shaheed Dweep,5 Star,9200,"honeymoon;family;beach","Elegant Neil Island stay with a relaxed beach-oriented atmosphere.",Available
 HTL-NL-003,Symphony Summer Sands,Shaheed Dweep,5 Star,10500,"honeymoon;couples;premium","Relaxed island property designed for scenic beach downtime.",Available
 HTL-NL-004,TSG Aura Resort,Shaheed Dweep,3 Star,5600,"family;couples;budget","Comfortable island resort ideal for relaxed Neil Island vacations.",Available
@@ -95,5 +97,3 @@ HTL-DG-015,Gold Coast Resort,Diglipur,3 Star,4200,"nature;family;premium","Popul
 HTL-DG-016,Bliss Holiday Resorts And Restaurants,Diglipur,3 Star,4500,"nature;family;budget","Well-liked stay with restaurant facilities and a relaxed local vibe.",Available
 
 
-rangat
-long island

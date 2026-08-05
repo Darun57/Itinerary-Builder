@@ -1,0 +1,223 @@
+"use client";
+
+import React from "react";
+import { useForm, FormProvider } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { tripRequestSchema, TripRequestType } from "../schema";
+import { useWizardStore } from "../store";
+import { useMutation } from "@tanstack/react-query";
+import { generateAIItinerary } from "@/lib/api";
+import { Loader2 } from "lucide-react";
+
+import CustomerStep from "./steps/CustomerStep";
+import TripDetailsStep from "./steps/TripDetailsStep";
+import AccommodationStep from "./steps/AccommodationStep";
+import ActivitiesStep from "./steps/ActivitiesStep";
+import TransportMealsStep from "./steps/TransportMealsStep";
+import WizardStepper from "./WizardStepper";
+import ItineraryPreview from "./ItineraryPreview";
+import { TripSummarySidebar } from "./TripSummarySidebar";
+
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+
+export default function WizardForm() {
+  const { step, formData, generatedItinerary, setStep, nextStep, prevStep, updateFormData, setGeneratedItinerary, apiKey } = useWizardStore();
+
+  const methods = useForm<TripRequestType>({
+    resolver: zodResolver(tripRequestSchema) as any,
+    defaultValues: formData as TripRequestType,
+    mode: "onTouched",
+  });
+
+  const { handleSubmit, trigger, formState: { errors } } = methods;
+
+  const aiMutation = useMutation({
+    mutationFn: (data: TripRequestType) => generateAIItinerary(data, apiKey),
+    onSuccess: (data) => {
+      setGeneratedItinerary(data.itinerary_text);
+    },
+    onError: (error) => {
+      console.error("AI Generation failed:", error);
+      alert(`Failed to generate itinerary: ${error.message || "The backend encountered an error or Gemini took too long. Please try again."}`);
+    }
+  });
+
+  // Render the Preview if Gemini has already returned text
+  if (generatedItinerary) {
+    return <ItineraryPreview />;
+  }
+
+  // Render the glowing loading screen while Gemini is thinking
+  if (aiMutation.isPending) {
+    return (
+      <div className="w-full min-h-[60vh] flex flex-col items-center justify-center space-y-6 animate-in fade-in duration-500 mt-8">
+        <div className="relative">
+          <div className="absolute inset-0 bg-primary/20 blur-xl rounded-full" />
+          <Loader2 className="w-16 h-16 text-primary animate-spin relative z-10" />
+        </div>
+        <div className="text-center space-y-2">
+          <h2 className="text-2xl font-bold tracking-tight text-foreground">Consulting the Oracle...</h2>
+          <p className="text-muted-foreground max-w-md mx-auto">
+            Gemini AI is currently processing your selections and drafting a highly personalized, luxury itinerary. This usually takes 10 to 20 seconds.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  const handleNext = async () => {
+    // Validate current step fields before proceeding
+    let fieldsToValidate: (keyof TripRequestType)[] = [];
+
+    switch (step) {
+      case 1:
+        fieldsToValidate = ['customer_name', 'customer_nationality', 'customer_country', 'customer_email', 'customer_phone_number'];
+        break;
+      case 2:
+        fieldsToValidate = ['destination', 'arrival_date', 'departure_date', 'number_of_nights', 'number_of_days', 'trip_type', 'budget_category', 'number_of_adults', 'trip_pace'];
+        break;
+      case 3:
+        fieldsToValidate = ['hotel_category_preference'];
+        break;
+      case 5:
+        fieldsToValidate = ['transfer_type', 'meal_plan'];
+        break;
+    }
+
+    const isStepValid = await trigger(fieldsToValidate);
+
+    console.log("Trigger Result:", isStepValid);
+    console.log("Errors:", methods.formState.errors);
+
+    if (isStepValid) {
+      updateFormData(methods.getValues());
+      nextStep();
+    } else {
+      alert("Validation failed! Check the red text under the fields or the debug box below.");
+    }
+  };
+
+  const onSubmit = (data: any) => {
+    if (data.daily_island_plan && data.number_of_days) {
+      const plan = data.daily_island_plan.slice(0, data.number_of_days);
+      
+      data.daily_island_plan = plan.map((day: any, idx: number) => {
+        const resolvePrimaryIsland = (candidate: string, attractions: string[]) => {
+          const text = (candidate + " " + (attractions || []).join(" ")).toLowerCase();
+          if (text.includes("havelock") || text.includes("swaraj") || text.includes("radhanagar") || text.includes("kalapathar") || text.includes("elephant beach")) {
+            return "Swaraj Dweep (Havelock)";
+          }
+          if (text.includes("neil") || text.includes("shaheed") || text.includes("laxmanpur") || text.includes("bharatpur") || text.includes("natural bridge")) {
+            return "Shaheed Dweep (Neil)";
+          }
+          if (text.includes("baratang") || text.includes("limestone") || text.includes("mud volcano")) {
+            return "Baratang Island";
+          }
+          if (text.includes("ross") || text.includes("north bay")) {
+            return "Ross Island & North Bay";
+          }
+          if (text.includes("diglipur") || text.includes("saddle peak") || text.includes("ross & smith")) {
+            return "Diglipur";
+          }
+          if (text.includes("port blair") || text.includes("cellular jail") || text.includes("corbyn") || text.includes("marina park") || text.includes("chidiya tapu") || text.includes("wandoor") || text.includes("museum")) {
+            return "Port Blair";
+          }
+          return idx === 0 ? "Port Blair" : (candidate && candidate.toLowerCase() !== "andaman and nicobar islands" ? candidate : "Port Blair");
+        };
+
+        const primaryIsland = resolvePrimaryIsland(day.primary_island || "", day.attractions || []);
+        const transferType = day.transfer_type || data.transfer_type || "Private Cab";
+
+        return {
+          ...day,
+          day_number: idx + 1,
+          primary_island: primaryIsland,
+          transfer_type: transferType,
+          ferry: day.ferry || "None",
+          hotel: day.hotel || "",
+        };
+      });
+    }
+    updateFormData(data);
+    aiMutation.mutate(data);
+  };
+
+  return (
+    <div className="flex flex-col w-full min-w-0 animate-in fade-in slide-in-from-bottom-4 duration-500">
+      {/* Welcome Header */}
+      <div className="welcome">
+        <div>
+          <h1>Itinerary builder</h1>
+          <p>Step {step} of 6 — capture the trip essentials.</p>
+        </div>
+      </div>
+
+      <WizardStepper />
+
+      {/* Render the glowing loading screen while Gemini is thinking */}
+      {aiMutation.isPending && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-md">
+          <div className="flex flex-col items-center">
+            <Loader2 className="w-16 h-16 animate-spin text-primary mb-4" />
+            <h2 className="text-2xl font-bold tracking-tight text-primary">Consulting the Oracle...</h2>
+            <p className="text-muted-foreground mt-2">Crafting a bespoke luxury itinerary...</p>
+          </div>
+        </div>
+      )}
+
+      {/* Render Itinerary Preview if generated, else render Builder Grid */}
+      {generatedItinerary ? (
+        <ItineraryPreview />
+      ) : (
+        <FormProvider {...methods}>
+          <form onSubmit={handleSubmit(onSubmit)} className="builder-grid">
+
+            {/* LEFT SIDE: Active Form Step */}
+            <div className="form-card">
+              {step === 1 && <CustomerStep />}
+              {step === 2 && <TripDetailsStep />}
+              {step === 3 && <AccommodationStep />}
+              {step === 4 && <ActivitiesStep />}
+              {step === 5 && <TransportMealsStep />}
+
+              {/* Navigation Buttons */}
+              <div className="builder-nav">
+                {step > 1 ? (
+                  <button type="button" onClick={() => { updateFormData(methods.getValues()); prevStep(); }} className="btn-ghost">
+                    <i className="ti ti-arrow-left"></i>Back
+                  </button>
+                ) : (
+                  <div />
+                )}
+
+                {step < 5 ? (
+                  <button type="button" onClick={handleNext} className="btn-gold">
+                    Next Step<i className="ti ti-arrow-right"></i>
+                  </button>
+                ) : (
+                  <button type="submit" className="btn-gold" disabled={aiMutation.isPending}>
+                    {aiMutation.isPending ? "Generating..." : "Generate Itinerary"}
+                    <i className="ti ti-wand"></i>
+                  </button>
+                )}
+              </div>
+
+              {/* DEBUG BOX */}
+              {Object.keys(errors).length > 0 && (
+                <div className="mt-8 p-4 bg-destructive/10 text-destructive border border-destructive rounded text-xs overflow-auto">
+                  <strong>Validation Errors (Debug):</strong>
+                  <pre>{JSON.stringify(errors, null, 2)}</pre>
+                </div>
+              )}
+            </div>
+
+            {/* RIGHT SIDE: Sticky Summary */}
+            <TripSummarySidebar />
+
+          </form>
+        </FormProvider>
+      )}
+    </div>
+  );
+}

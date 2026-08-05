@@ -1,2 +1,0 @@
-"""Itinerary generation app package."""
-
