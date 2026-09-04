@@ -5,7 +5,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { FormField, FormItem, FormLabel, FormControl, FormDescription } from "@/components/ui/form";
 import { useFormContext } from "react-hook-form";
-import { TripRequestType } from "../../schema";
+import { TripRequestType } from "../schema";
 
 interface Hotel {
   hotel_id?: string;

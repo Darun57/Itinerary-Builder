@@ -31,10 +31,14 @@ DAY_ITINERARY_JSON_SCHEMA = {
                     "subtitle": {"type": "string"},
                     "primary_island": {"type": "string"},
                     "travel_movement": {"type": "string"},
+                    "is_departure_day": {"type": "boolean"},
+                    "visiting_places": {"type": "string"},
                     "destination_story": {"type": "string"},
                     "todays_journey": {"type": "string"},
                     "hotel_experience": {"type": "string"},
                     "curated_experience": {"type": "string"},
+                    "departure_narrative": {"type": "string"},
+                    "farewell_narrative": {"type": "string"},
                     "expert_insider_notes": {"type": "string"},
                     "next_day_transition": {"type": "string"},
                     "hotel": {"type": "string"},
@@ -54,12 +58,10 @@ DAY_ITINERARY_JSON_SCHEMA = {
                     "subtitle",
                     "primary_island",
                     "travel_movement",
+                    "visiting_places",
                     "destination_story",
                     "todays_journey",
                     "hotel_experience",
-                    "curated_experience",
-                    "expert_insider_notes",
-                    "next_day_transition",
                     "hotel",
                     "activities",
                     "attractions",
@@ -265,17 +267,29 @@ def _generate_once(client: genai.Client, model: str, request: TripRequest) -> st
         import json as _json
         parsed_days = _json.loads(payload).get("days", [])
         for idx, day in enumerate(parsed_days):
-            narrative_fields = [
-                day.get("destination_story", ""),
-                day.get("todays_journey", ""),
-                day.get("hotel_experience", ""),
-                day.get("curated_experience", ""),
-            ]
+            is_dep = bool(day.get("is_departure_day")) or (
+                idx == len(parsed_days) - 1 and bool(day.get("departure_narrative"))
+            )
+            if is_dep:
+                narrative_fields = [
+                    day.get("departure_narrative", ""),
+                    day.get("farewell_narrative", ""),
+                ]
+                min_threshold = 140
+            else:
+                narrative_fields = [
+                    day.get("visiting_places", "") or day.get("curated_experience", ""),
+                    day.get("destination_story", ""),
+                    day.get("todays_journey", ""),
+                    day.get("hotel_experience", ""),
+                ]
+                min_threshold = 220
+
             total_day_chars = sum(len(f) for f in narrative_fields if f)
-            if total_day_chars < MIN_CHARS_PER_DAY:
+            if total_day_chars < min_threshold:
                 raise ValueError(
                     f"Day {idx + 1} has only {total_day_chars} chars of narrative content — "
-                    f"response is too short/truncated (min {MIN_CHARS_PER_DAY} chars per day). Retrying."
+                    f"response is too short/truncated (min {min_threshold} chars per day). Retrying."
                 )
     except ValueError:
         raise
@@ -299,7 +313,7 @@ def _archive_raw_response(generation_id: str, raw_text: str, model: str) -> None
         "generation_id": generation_id,
         "timestamp": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
         "narrative_schema_version": NARRATIVE_SCHEMA_VERSION,
-        "prompt_version": "v3.1_xml_persona",
+        "prompt_version": "v3.2_ref_structure",
         "model": model,
         "raw_response_text": raw_text,
     }
@@ -312,52 +326,125 @@ def _generate_fallback_itinerary(request: TripRequest) -> str:
     num_days = max(1, request.number_of_days or 1)
     destination = request.destination or "Andaman and Nicobar Islands"
     hotel_name = request.selected_hotels[0] if request.selected_hotels else "Luxury Island Resort"
+    guest_name = request.customer_name or "Guest"
     
     days = []
-    islands_cycle = ["Port Blair", "Swaraj Dweep (Havelock)", "Shaheed Dweep (Neil)", "Baratang Island"]
+    islands_cycle = ["Port Blair", "Swaraj Dweep", "Shaheed Dweep", "Port Blair"]
     
     for i in range(num_days):
         day_num = i + 1
-        island = islands_cycle[i % len(islands_cycle)]
-        if day_num == 1:
-            title = f"Day 1: Arrival in {island}"
-            subtitle = f"Welcome to {destination}"
-            story = f"Welcome to {destination}. Your luxury journey begins as you land at Veer Savarkar International Airport in {island}."
-            journey = f"Bespoke private transfer from airport to {hotel_name} with priority check-in."
-            hotel_exp = f"Relax and enjoy your stay at {hotel_name} with private ocean views and curated dining."
-            curated = f"Leisurely afternoon stroll along Corbyn's Cove Beach and evening coastal drive past Cellular Jail."
-        elif day_num == num_days:
-            title = f"Day {day_num}: Farewell & Departure"
-            subtitle = f"Final Moments in {island}"
-            story = f"Reflect on your unforgettable island discoveries as your luxury Andaman journey comes to a close."
-            journey = f"Private transfer to Veer Savarkar International Airport for your departure flight."
-            hotel_exp = f"Enjoy a relaxed gourmet breakfast at {hotel_name} prior to departure."
-            curated = f"Last-minute souvenir shopping for handcrafted island mementos and coastal views."
+        island = islands_cycle[(day_num - 1) % len(islands_cycle)]
+        is_departure = (day_num == num_days)
+
+        if is_departure:
+            days.append({
+                "day_number": day_num,
+                "title": "Departure",
+                "subtitle": "Departure",
+                "primary_island": "Port Blair",
+                "travel_movement": "Departure",
+                "is_departure_day": True,
+                "visiting_places": "",
+                "destination_story": "",
+                "todays_journey": "",
+                "hotel_experience": "",
+                "curated_experience": "",
+                "departure_narrative": (
+                    f"After a relaxed morning at the hotel, the journey concludes with a comfortable transfer from the hotel to the airport. "
+                    f"Our team will assist {guest_name} and their family with their departure, ensuring a smooth and hassle-free journey as they head back home with wonderful memories of their island holiday."
+                ),
+                "farewell_narrative": (
+                    f"As the journey comes to an end, we sincerely thank {guest_name} and their family for choosing Darun Tourism to be a part of their memorable island getaway. "
+                    f"It has been our pleasure to create beautiful experiences and cherished moments for your family throughout the journey. We wish you a safe and comfortable departure, and hope to welcome you again soon for another unforgettable adventure."
+                ),
+                "expert_insider_notes": "Arrive at airport 2 hours prior to flight departure.",
+                "next_day_transition": "Safe travels on your journey home.",
+                "hotel": hotel_name,
+                "activities": ["Departure Transfer"],
+                "attractions": ["Veer Savarkar Airport"],
+                "image_keyword": "andaman_sunset",
+            })
         else:
-            title = f"Day {day_num}: Discovering {island}"
-            subtitle = f"Island Exploration & Coastal Wonders"
-            story = f"Immerse yourself in the serene beauty and turquoise waters of {island}."
-            journey = f"Private vehicle transfer to jetty followed by a smooth catamaran cruise across azure waters."
-            hotel_exp = f"Unwind at {hotel_name} with half-board dining and premium guest hospitality."
-            curated = f"Guided excursion to iconic beaches and natural coral reefs with water activities."
-            
-        days.append({
-            "day_number": day_num,
-            "title": title,
-            "subtitle": subtitle,
-            "primary_island": island,
-            "travel_movement": f"Transfer & Excursions in {island}",
-            "destination_story": story,
-            "todays_journey": journey,
-            "hotel_experience": hotel_exp,
-            "curated_experience": curated,
-            "expert_insider_notes": "Carry reef-safe sunscreen and cash for local purchases.",
-            "next_day_transition": "Prepare for tomorrow's island transfer.",
-            "hotel": hotel_name,
-            "activities": request.preferred_activities or ["Beach Exploration", "Sightseeing"],
-            "attractions": ["Radhanagar Beach", "Cellular Jail", "Elephant Beach"],
-            "image_keyword": island.lower().replace(" ", "_"),
-        })
+            if day_num == 1:
+                title = "Cellular Jail Light & Sound Show & Cellular Jail Experience"
+                subtitle = "Cellular Jail Light & Sound Show & Cellular Jail Experience"
+                visiting = (
+                    "After arriving in Port Blair, the journey begins with a relaxing visit to Corbyn's Cove Beach, followed by an exploration of Marina Park and Flag Point. "
+                    "The day concludes at the historic Cellular Jail, where the evening Light and Sound Show brings the island's freedom history vividly to life through immersive storytelling."
+                )
+                story = (
+                    "Emerald rainforests meet the brilliant turquoise waters of the Bay of Bengal as Port Blair welcomes travelers with its rich historical legacy and coastal charm. "
+                    "Historically serving as the administrative center during the British colonial era, this island capital harmoniously blends heritage significance with serene seaside vistas."
+                )
+                journey = (
+                    f"For the places and activity highlighted above, gliding through the coastal air upon arrival at Veer Savarkar International Airport, a private air-conditioned vehicle ensures a smooth and scenic road transfer directly to {hotel_name}."
+                )
+            elif day_num == 2:
+                title = "Journey to Ross Island & North Bay"
+                subtitle = "Journey to Ross Island & North Bay"
+                visiting = (
+                    "The day unfolds with an excursion to Ross Island to walk amidst colonial ruins and lush tree roots reclaiming heritage structures, followed by a scenic cruise to North Bay Island. "
+                    "Guests can marvel at vibrant coral reef formations, enjoy glass-bottom boat rides, or witness kaleidoscopic marine life."
+                )
+                story = (
+                    "Ross Island stands as a serene time capsule where stately British architecture blends into tropical greenery, while North Bay offers clear shallow waters alive with tropical fish. "
+                    "Together, they present the perfect balance of Andaman's historical intrigue and marine splendor."
+                )
+                journey = (
+                    f"For the places highlighted above, smooth boat transfers from the water sports complex escort you across the harbor waters to Ross Island and North Bay, with comfortable private vehicle pick-up and drop-off at {hotel_name}."
+                )
+            elif day_num == 3:
+                title = "Sunset at Radhanagar Beach"
+                subtitle = "Sunset at Radhanagar Beach"
+                visiting = (
+                    "The morning begins with a high-speed catamaran cruise across the open sea to Swaraj Dweep (Havelock). "
+                    "In the afternoon, visit the world-renowned Radhanagar Beach (Beach No. 7), strolling along powder-white sands while watching the spectacular crimson sunset over the Andaman Sea."
+                )
+                story = (
+                    "Swaraj Dweep is celebrated worldwide for its tranquil turquoise bays and sweeping tropical coastlines. "
+                    "Radhanagar Beach consistently ranks among Asia's most breathtaking shores, where ancient Mahua trees line immaculate white sands."
+                )
+                journey = (
+                    "For the places highlighted above, boarding a modern luxury catamaran ensures a smooth inter-island transit from Port Blair to Swaraj Dweep, with dedicated private chauffeur transfers arranged upon dock arrival."
+                )
+            else:
+                title = f"Discovering {island}"
+                subtitle = f"Island Discovery in {island}"
+                visiting = (
+                    f"Spend an enriching day exploring the pristine shores and natural wonders of {island}, taking in tranquil coastal trails, scenic lookouts, and vibrant local sights."
+                )
+                story = (
+                    f"{island} showcases the untouched natural splendor of the archipelago, where turquoise lagoons, coral reefs, and dense tropical foliage create an idyllic island sanctuary."
+                )
+                journey = (
+                    "For the places highlighted above, private inter-island ferry connections and dedicated vehicle transfers provide seamless mobility and utmost travel comfort throughout the day."
+                )
+
+            hotel_exp = (
+                f"A peaceful stay at {hotel_name}, offering comfortable accommodation, relaxing surroundings, and warm hospitality—perfect for unwinding and recharging for the next day's island adventures."
+            )
+
+            days.append({
+                "day_number": day_num,
+                "title": title,
+                "subtitle": subtitle,
+                "primary_island": island,
+                "travel_movement": island,
+                "is_departure_day": False,
+                "visiting_places": visiting,
+                "destination_story": story,
+                "todays_journey": journey,
+                "hotel_experience": hotel_exp,
+                "curated_experience": "",
+                "departure_narrative": "",
+                "farewell_narrative": "",
+                "expert_insider_notes": "Carry reef-safe sunscreen and light cotton clothing.",
+                "next_day_transition": "Prepare for tomorrow's island journey.",
+                "hotel": hotel_name,
+                "activities": request.preferred_activities or ["Sightseeing", "Beach Exploration"],
+                "attractions": ["Corbyn's Cove", "Cellular Jail", "Radhanagar Beach"],
+                "image_keyword": island.lower().replace(" ", "_"),
+            })
         
     return json.dumps({"days": days}, indent=2)
 

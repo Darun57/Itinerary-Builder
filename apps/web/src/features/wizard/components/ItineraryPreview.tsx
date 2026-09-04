@@ -100,52 +100,73 @@ export default function ItineraryPreview() {
                           )}
                         </div>
 
-                        {/* SECTION 1: DESTINATION STORY */}
-                        {(day.destination_story || day.morning) && (
-                          <div className="space-y-1 bg-card/40 p-4 rounded-lg border border-border/30">
+                        {/* DEPARTURE DAY RENDERING */}
+                        {(day.is_departure_day || day.departure_narrative || idx === sortedDays.length - 1 && !day.visiting_places && day.farewell_narrative) ? (
+                          <div className="space-y-4 bg-card/40 p-4 rounded-lg border border-border/30">
                             <h4 className="text-sm font-semibold text-amber-400 uppercase tracking-wider flex items-center gap-2">
-                              📖 Destination Story
+                              🌅 END OF THE JOURNEY
                             </h4>
-                            <p className="text-muted-foreground text-sm leading-relaxed whitespace-pre-line">
-                              {day.destination_story || day.morning}
-                            </p>
+                            {day.departure_narrative && (
+                              <p className="text-muted-foreground text-sm leading-relaxed whitespace-pre-line">
+                                {day.departure_narrative}
+                              </p>
+                            )}
+                            {day.farewell_narrative && (
+                              <p className="text-muted-foreground text-sm leading-relaxed whitespace-pre-line">
+                                {day.farewell_narrative}
+                              </p>
+                            )}
+                            {!day.departure_narrative && !day.farewell_narrative && day.todays_journey && (
+                              <p className="text-muted-foreground text-sm leading-relaxed whitespace-pre-line">
+                                {day.todays_journey}
+                              </p>
+                            )}
                           </div>
-                        )}
+                        ) : (
+                          <>
+                            {/* SECTION 1: VISITING PLACES AND DESTINATION STORY */}
+                            {(day.visiting_places || day.curated_experience || day.destination_story) && (
+                              <div className="space-y-3 bg-card/40 p-4 rounded-lg border border-border/30">
+                                <h4 className="text-sm font-semibold text-amber-400 uppercase tracking-wider flex items-center gap-2">
+                                  🏛️ Visiting Places And Destination Story
+                                </h4>
+                                {(day.visiting_places || day.curated_experience) && (
+                                  <p className="text-muted-foreground text-sm leading-relaxed whitespace-pre-line">
+                                    {day.visiting_places || day.curated_experience}
+                                  </p>
+                                )}
+                                {day.destination_story && (
+                                  <p className="text-muted-foreground text-sm leading-relaxed whitespace-pre-line">
+                                    {day.destination_story}
+                                  </p>
+                                )}
+                              </div>
+                            )}
 
-                        {/* SECTION 2: TODAY'S JOURNEY */}
-                        {day.todays_journey && (
-                          <div className="space-y-1 bg-card/40 p-4 rounded-lg border border-border/30">
-                            <h4 className="text-sm font-semibold text-sky-400 uppercase tracking-wider flex items-center gap-2">
-                              🛥️ Today's Journey & Transfers
-                            </h4>
-                            <p className="text-muted-foreground text-sm leading-relaxed whitespace-pre-line">
-                              {day.todays_journey}
-                            </p>
-                          </div>
-                        )}
+                            {/* SECTION 2: TODAY'S JOURNEY */}
+                            {day.todays_journey && (
+                              <div className="space-y-1 bg-card/40 p-4 rounded-lg border border-border/30">
+                                <h4 className="text-sm font-semibold text-sky-400 uppercase tracking-wider flex items-center gap-2">
+                                  🛥️ Today's Journey
+                                </h4>
+                                <p className="text-muted-foreground text-sm leading-relaxed whitespace-pre-line">
+                                  {day.todays_journey}
+                                </p>
+                              </div>
+                            )}
 
-                        {/* SECTION 3: HOTEL EXPERIENCE */}
-                        {(day.hotel_experience || day.overnight) && (
-                          <div className="space-y-1 bg-card/40 p-4 rounded-lg border border-border/30">
-                            <h4 className="text-sm font-semibold text-emerald-400 uppercase tracking-wider flex items-center gap-2">
-                              🏨 Hotel Experience
-                            </h4>
-                            <p className="text-muted-foreground text-sm leading-relaxed whitespace-pre-line">
-                              {day.hotel_experience || day.overnight}
-                            </p>
-                          </div>
-                        )}
-
-                        {/* SECTION 4: CURATED EXPERIENCE */}
-                        {(day.curated_experience || day.afternoon) && (
-                          <div className="space-y-1 bg-card/40 p-4 rounded-lg border border-border/30">
-                            <h4 className="text-sm font-semibold text-purple-400 uppercase tracking-wider flex items-center gap-2">
-                              ✨ Curated Luxury Experience
-                            </h4>
-                            <p className="text-muted-foreground text-sm leading-relaxed whitespace-pre-line">
-                              {day.curated_experience || day.afternoon}
-                            </p>
-                          </div>
+                            {/* SECTION 3: HOTEL EXPERIENCE */}
+                            {(day.hotel_experience || day.overnight) && (
+                              <div className="space-y-1 bg-card/40 p-4 rounded-lg border border-border/30">
+                                <h4 className="text-sm font-semibold text-emerald-400 uppercase tracking-wider flex items-center gap-2">
+                                  🏨 Hotel Experience
+                                </h4>
+                                <p className="text-muted-foreground text-sm leading-relaxed whitespace-pre-line">
+                                  {day.hotel_experience || day.overnight}
+                                </p>
+                              </div>
+                            )}
+                          </>
                         )}
 
                       </div>

@@ -83,12 +83,16 @@ class DayItinerary(BaseModel):
     subtitle: str
     primary_island: str
     travel_movement: str
+    visiting_places: Optional[str] = None
     destination_story: Optional[str] = None
     todays_journey: Optional[str] = None
     hotel_experience: Optional[str] = None
     curated_experience: Optional[str] = None
     expert_insider_notes: Optional[str] = None
     next_day_transition: Optional[str] = None
+    departure_narrative: Optional[str] = None
+    farewell_narrative: Optional[str] = None
+    is_departure_day: Optional[bool] = False
     morning: Optional[str] = None
     afternoon: Optional[str] = None
     evening: Optional[str] = None

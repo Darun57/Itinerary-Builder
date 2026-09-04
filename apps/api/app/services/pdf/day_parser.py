@@ -75,29 +75,88 @@ def split_itinerary_into_days(itinerary_text: str) -> list[dict[str, object]]:
     if isinstance(data, dict) and "days" in data and isinstance(data["days"], list):
         sections = []
         sorted_days = sorted(data["days"], key=lambda d: int(d.get("day_number") or 0))
+        total_days = len(sorted_days)
+
         for day in sorted_days:
             day_num = int(day.get("day_number") or 1)
-            island = day.get("primary_island") or ""
-            raw_title = day.get("title") or ""
-            raw_route = str(day.get("travel_movement") or island).strip()
-            
+            island = str(day.get("primary_island") or day.get("island") or "").strip()
+            raw_title = str(day.get("title") or "").strip()
+            raw_route = str(day.get("travel_movement") or day.get("route") or island).strip()
+
+            is_dep = bool(day.get("is_departure_day")) or (
+                day_num == total_days and (
+                    bool(day.get("departure_narrative")) or
+                    "departure" in raw_title.lower() or
+                    "departure" in island.lower() or
+                    "departure" in raw_route.lower()
+                )
+            )
+
             route = _clean_route_string(raw_route, island)
-            if route:
-                title = f"DAY {day_num} | {route}"
+            if is_dep:
+                route_str = "(Departure)"
+            elif route:
+                route_str = f"({route})" if not (route.startswith("(") and route.endswith(")")) else route
             else:
-                title = f"DAY {day_num}"
+                route_str = f"({island})" if island else ""
+
+            if route_str:
+                heading = f"DAY {day_num} | {route_str}"
+            else:
+                heading = f"DAY {day_num}"
 
             items = []
-            if day.get("destination_story"):
-                items.append({"label": "Destination Story", "content": str(day["destination_story"]).strip()})
-            if day.get("todays_journey"):
-                items.append({"label": "Today's Journey", "content": str(day["todays_journey"]).strip()})
-            if day.get("hotel_experience"):
-                items.append({"label": "Hotel Experience", "content": str(day["hotel_experience"]).strip()})
-            if day.get("curated_experience"):
-                items.append({"label": "Curated Experience", "content": str(day["curated_experience"]).strip()})
-            
-            sections.append({"heading": title, "items": items})
+            if is_dep:
+                # DEPARTURE DAY STRUCTURE:
+                # Heading: END OF THE JOURNEY
+                # Paragraph 1: departure_narrative
+                # Paragraph 2: farewell_narrative
+                dep_text = str(day.get("departure_narrative") or day.get("todays_journey") or "").strip()
+                farewell_text = str(day.get("farewell_narrative") or day.get("destination_story") or "").strip()
+                dep_paragraphs = [p for p in [dep_text, farewell_text] if p]
+                if dep_paragraphs:
+                    items.append({
+                        "label": "END OF THE JOURNEY",
+                        "paragraphs": dep_paragraphs,
+                        "content": "\n\n".join(dep_paragraphs),
+                    })
+            else:
+                # NORMAL DAY STRUCTURE:
+                # 1. Visiting Places And Destination Story (contains TWO distinct paragraphs)
+                visiting_places = str(day.get("visiting_places") or day.get("curated_experience") or "").strip()
+                dest_story = str(day.get("destination_story") or "").strip()
+                vp_paragraphs = [p for p in [visiting_places, dest_story] if p]
+                if vp_paragraphs:
+                    items.append({
+                        "label": "Visiting Places And Destination Story",
+                        "paragraphs": vp_paragraphs,
+                        "content": "\n\n".join(vp_paragraphs),
+                    })
+
+                # 2. Today's Journey
+                if day.get("todays_journey"):
+                    journey_text = str(day["todays_journey"]).strip()
+                    items.append({
+                        "label": "Today's Journey",
+                        "paragraphs": [journey_text],
+                        "content": journey_text,
+                    })
+
+                # 3. Hotel Experience
+                if day.get("hotel_experience"):
+                    hotel_text = str(day["hotel_experience"]).strip()
+                    items.append({
+                        "label": "Hotel Experience",
+                        "paragraphs": [hotel_text],
+                        "content": hotel_text,
+                    })
+
+            sections.append({
+                "heading": heading,
+                "items": items,
+                "is_departure_day": is_dep,
+                "custom_title": raw_title,
+            })
         if sections:
             return sections
 
@@ -169,6 +228,8 @@ def build_day_context(
     return {
         "day_number": day_number,
         "title": str(day_section.get("heading") or f"Day {day_number}"),
+        "is_departure_day": bool(day_section.get("is_departure_day")),
+        "custom_title": str(day_section.get("custom_title") or ""),
         "destinations": context_values["destinations"],
         "activities": context_values["activities"],
         "attractions": context_values["attractions"],
@@ -188,6 +249,14 @@ def _join_subtitle_values(values: list[str]) -> str:
 
 
 def generate_day_subtitle(day_context: dict[str, object]) -> str:
+    title = str(day_context.get("title") or "")
+    if day_context.get("is_departure_day") or "departure" in title.lower():
+        return "Departure"
+
+    custom_title = str(day_context.get("custom_title") or "").strip()
+    if custom_title and not re.match(r"^day\s*\d+", custom_title, re.IGNORECASE) and custom_title.lower() != "departure":
+        return custom_title
+
     attractions = unique_values(
         list(day_context.get("primary_attractions") or []) + list(day_context.get("attractions") or [])
     )
@@ -198,10 +267,6 @@ def generate_day_subtitle(day_context: dict[str, object]) -> str:
     activities = unique_values(
         list(day_context.get("primary_activities") or []) + list(day_context.get("activities") or [])
     )
-    title = str(day_context.get("title") or "")
-
-    if "Departure" in title:
-        return "Farewell to the Andaman Islands"
     if attractions:
         selected = attractions[:2]
         if {"Ross Island", "North Bay Island"}.issubset(set(selected)):

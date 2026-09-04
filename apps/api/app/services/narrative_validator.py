@@ -5,19 +5,17 @@ Schema Version: v2.0
 """
 import json
 import logging
+import re
 from typing import Any
 
 from app.schemas.trip import TripRequest
 
 LOGGER = logging.getLogger(__name__)
 
-REQUIRED_NARRATIVE_FIELDS = [
+REQUIRED_NORMAL_FIELDS = [
     "destination_story",
     "todays_journey",
-    "curated_experience",
     "hotel_experience",
-    "expert_insider_notes",
-    "next_day_transition",
 ]
 
 GENERIC_PLACEHOLDERS = [
@@ -37,10 +35,26 @@ GENERIC_PLACEHOLDERS = [
 def validate_schema(day_dict: dict[str, Any]) -> tuple[bool, list[str]]:
     """Stage 1: Verify presence and type of required narrative fields."""
     errors = []
-    for field_name in REQUIRED_NARRATIVE_FIELDS:
-        val = day_dict.get(field_name)
-        if not val or not isinstance(val, str) or not val.strip():
-            errors.append(f"Missing or empty required field: {field_name}")
+    is_departure = bool(day_dict.get("is_departure_day"))
+
+    if is_departure:
+        # Departure Day
+        has_dep = bool(str(day_dict.get("departure_narrative") or day_dict.get("todays_journey") or "").strip())
+        has_farewell = bool(str(day_dict.get("farewell_narrative") or day_dict.get("destination_story") or "").strip())
+        if not has_dep:
+            errors.append("Missing or empty required field for departure day: departure_narrative")
+        if not has_farewell:
+            errors.append("Missing or empty required field for departure day: farewell_narrative")
+    else:
+        # Normal Day
+        has_visiting = bool(str(day_dict.get("visiting_places") or day_dict.get("curated_experience") or "").strip())
+        if not has_visiting:
+            errors.append("Missing or empty required field: visiting_places")
+        for field_name in REQUIRED_NORMAL_FIELDS:
+            val = day_dict.get(field_name)
+            if not val or not isinstance(val, str) or not val.strip():
+                errors.append(f"Missing or empty required field: {field_name}")
+
     return (len(errors) == 0, errors)
 
 
@@ -54,82 +68,78 @@ def evaluate_quality_score(day_dict: dict[str, Any], request: TripRequest) -> tu
 
     destination = (request.destination or "Andaman").lower()
     selected_hotels = [h.lower() for h in (request.selected_hotels or [])]
+    is_departure = bool(day_dict.get("is_departure_day"))
 
-    # 1. Destination Story (Weight: 20%)
+    if is_departure:
+        dep_text = str(day_dict.get("departure_narrative") or day_dict.get("todays_journey") or "").strip()
+        score_dep = 100.0
+        if len(dep_text.split()) < 20:
+            score_dep -= 30
+            failed_rules.append("Departure narrative too short (<20 words)")
+        if any(p in dep_text.lower() for p in GENERIC_PLACEHOLDERS):
+            score_dep -= 30
+            failed_rules.append("Departure narrative contains generic placeholder text")
+        section_scores["departure_narrative"] = max(0.0, score_dep)
+
+        farewell_text = str(day_dict.get("farewell_narrative") or day_dict.get("destination_story") or "").strip()
+        score_farewell = 100.0
+        if len(farewell_text.split()) < 20:
+            score_farewell -= 30
+            failed_rules.append("Farewell narrative too short (<20 words)")
+        if any(p in farewell_text.lower() for p in GENERIC_PLACEHOLDERS):
+            score_farewell -= 30
+            failed_rules.append("Farewell narrative contains generic placeholder text")
+        section_scores["farewell_narrative"] = max(0.0, score_farewell)
+
+        overall_score = (score_dep + score_farewell) / 2.0
+        return (overall_score, section_scores, failed_rules)
+
+    # 1. Visiting Places (Weight: 25%)
+    visiting = str(day_dict.get("visiting_places") or day_dict.get("curated_experience") or "").strip()
+    score_visiting = 100.0
+    if len(visiting.split()) < 20:
+        score_visiting -= 30
+        failed_rules.append("Visiting places description too short (<20 words)")
+    if any(p in visiting.lower() for p in GENERIC_PLACEHOLDERS):
+        score_visiting -= 30
+        failed_rules.append("Visiting places contains generic placeholder text")
+    section_scores["visiting_places"] = max(0.0, score_visiting)
+
+    # 2. Destination Story (Weight: 25%)
     story = str(day_dict.get("destination_story") or "").strip()
     words_story = len(story.split())
     score_story = 100.0
-    if words_story < 25:
+    if words_story < 20:
         score_story -= 30
-        failed_rules.append("Destination story too short (<25 words)")
+        failed_rules.append("Destination story too short (<20 words)")
     if any(p in story.lower() for p in GENERIC_PLACEHOLDERS):
-        score_story -= 40
+        score_story -= 30
         failed_rules.append("Destination story contains generic placeholder text")
     section_scores["destination_story"] = max(0.0, score_story)
 
-    # 2. Today's Journey (Weight: 15%)
+    # 3. Today's Journey (Weight: 25%)
     journey = str(day_dict.get("todays_journey") or "").strip()
     score_journey = 100.0
-    if len(journey.split()) < 20:
+    if len(journey.split()) < 15:
         score_journey -= 30
-        failed_rules.append("Today's journey description too short (<20 words)")
+        failed_rules.append("Today's journey description too short (<15 words)")
     if any(p in journey.lower() for p in GENERIC_PLACEHOLDERS):
         score_journey -= 30
         failed_rules.append("Today's journey contains generic placeholder text")
     section_scores["todays_journey"] = max(0.0, score_journey)
 
-    # 3. Curated Experience (Weight: 20%)
-    experience = str(day_dict.get("curated_experience") or "").strip()
-    score_exp = 100.0
-    if len(experience.split()) < 25:
-        score_exp -= 30
-        failed_rules.append("Curated experience description too short (<25 words)")
-    if any(p in experience.lower() for p in GENERIC_PLACEHOLDERS):
-        score_exp -= 40
-        failed_rules.append("Curated experience contains generic placeholder text")
-    section_scores["curated_experience"] = max(0.0, score_exp)
-
-    # 4. Hotel Experience (Weight: 20%)
+    # 4. Hotel Experience (Weight: 25%)
     hotel_exp = str(day_dict.get("hotel_experience") or "").strip()
     score_hotel = 100.0
-    if len(hotel_exp.split()) < 20:
+    if len(hotel_exp.split()) < 15:
         score_hotel -= 30
-        failed_rules.append("Hotel experience description too short (<20 words)")
+        failed_rules.append("Hotel experience description too short (<15 words)")
     if selected_hotels and not any(h in hotel_exp.lower() for h in selected_hotels):
         score_hotel -= 25
         failed_rules.append("Hotel experience does not reference any mandatory selected hotel")
     section_scores["hotel_experience"] = max(0.0, score_hotel)
 
-    # 5. Expert Insider Notes (Weight: 15%)
-    insider = str(day_dict.get("expert_insider_notes") or "").strip()
-    score_insider = 100.0
-    if len(insider.split()) < 15:
-        score_insider -= 30
-        failed_rules.append("Expert insider notes too short (<15 words)")
-    if any(p in insider.lower() for p in GENERIC_PLACEHOLDERS):
-        score_insider -= 30
-        failed_rules.append("Insider notes contain generic tourism statement")
-    section_scores["expert_insider_notes"] = max(0.0, score_insider)
-
-    # 6. Transition to Tomorrow (Weight: 10%)
-    transition = str(day_dict.get("next_day_transition") or "").strip()
-    score_trans = 100.0
-    if len(transition.split()) < 10:
-        score_trans -= 30
-        failed_rules.append("Next day transition too short (<10 words)")
-    section_scores["next_day_transition"] = max(0.0, score_trans)
-
-    # Compute Weighted Overall Score matching Architecture Diagram
-    weights = {
-        "destination_story": 0.20,
-        "todays_journey": 0.20,
-        "curated_experience": 0.20,
-        "hotel_experience": 0.20,
-        "expert_insider_notes": 0.15,
-        "next_day_transition": 0.05,
-    }
-
-    overall_score = sum(section_scores[k] * weights[k] for k in weights)
+    overall_score = (score_visiting * 0.25 + score_story * 0.25 + score_journey * 0.25 + score_hotel * 0.25)
     return (overall_score, section_scores, failed_rules)
 
 
@@ -217,14 +227,14 @@ def validate_full_itinerary(raw_json: str, request: TripRequest) -> dict[str, An
         # Stage 2: Quality Scoring across all days
         day_scores = []
         all_failed_rules = []
-        all_section_scores: dict[str, list[float]] = {k: [] for k in REQUIRED_NARRATIVE_FIELDS}
+        all_section_scores: dict[str, list[float]] = {}
 
         for idx, day in enumerate(days):
             score, sec_scores, rules = evaluate_quality_score(day, request)
             day_scores.append(score)
             all_failed_rules.extend([f"Day {idx+1}: {r}" for r in rules])
             for k, s in sec_scores.items():
-                all_section_scores[k].append(s)
+                all_section_scores.setdefault(k, []).append(s)
 
         avg_overall_score = sum(day_scores) / len(day_scores) if day_scores else 0.0
         avg_section_scores = {k: (sum(v) / len(v) if v else 0.0) for k, v in all_section_scores.items()}

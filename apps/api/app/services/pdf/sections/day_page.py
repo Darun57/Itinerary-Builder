@@ -39,22 +39,38 @@ def _get_date_for_day(date_str: str, day_index: int) -> str:
     return ""
 
 
-def _normalize_day_items(day_section: dict[str, object], day_context: dict[str, object], request: TripRequest, is_final_day: bool) -> list[dict[str, str]]:
+def _normalize_day_items(day_section: dict[str, object], day_context: dict[str, object], request: TripRequest, is_final_day: bool) -> list[dict[str, object]]:
     incoming_items = list(day_section.get("items") or [])
     result = []
     for item in incoming_items:
         label = str(item.get("label") or "").strip()
-        content = str(item.get("content") or "").strip()
-        if content:
-            result.append({"label": label, "content": content})
+        paragraphs = item.get("paragraphs")
+        if paragraphs:
+            clean_paragraphs = [str(p).strip() for p in paragraphs if str(p).strip()]
+            if clean_paragraphs:
+                result.append({
+                    "label": label,
+                    "paragraphs": clean_paragraphs,
+                    "content": "\n\n".join(clean_paragraphs),
+                })
+        else:
+            content = str(item.get("content") or "").strip()
+            if content:
+                paras = [p.strip() for p in content.split("\n\n") if p.strip()]
+                result.append({
+                    "label": label,
+                    "paragraphs": paras,
+                    "content": content,
+                })
     return result
 
 
-def _estimate_day_block_height(items: list[dict[str, str]], has_image: bool) -> float:
+def _estimate_day_block_height(items: list[dict[str, object]], has_image: bool) -> float:
     height = 0.55 * inch
     height += 2.75 * inch if has_image else 0.55 * inch
     for item in items:
-        content_words = max(word_count(item.get("content") or ""), 1)
+        paragraphs = item.get("paragraphs") or [item.get("content")]
+        content_words = sum(max(word_count(p or ""), 1) for p in paragraphs)
         label_words = max(word_count(item.get("label") or ""), 1)
         height += 0.24 * inch
         height += 0.16 * inch if item.get("label") else 0
@@ -67,14 +83,48 @@ def _estimate_day_block_height(items: list[dict[str, str]], has_image: bool) -> 
 
 def _fallback_day_section(day_number: int, request: TripRequest) -> dict[str, object]:
     base_destination = clean_destination_label(request.destination or "Andaman Islands")
-    heading = f"Day {day_number}: Departure" if day_number == request.number_of_days else f"Day {day_number}: {base_destination}"
+    is_departure = (day_number == request.number_of_days)
+    if is_departure:
+        heading = f"DAY {day_number} | (Departure)"
+        return {
+            "heading": heading,
+            "is_departure_day": True,
+            "custom_title": "Departure",
+            "items": [
+                {
+                    "label": "END OF THE JOURNEY",
+                    "paragraphs": [
+                        f"After a relaxed morning at the hotel, the journey concludes with a comfortable transfer from the hotel to the airport. Our team will assist {request.customer_name or 'the guests'} and their family with their departure, ensuring a smooth and hassle-free journey as they head back home with wonderful memories of their island holiday.",
+                        f"As the journey comes to an end, we sincerely thank {request.customer_name or 'the guests'} and their family for choosing Darun Tourism to be a part of their memorable island getaway. It has been our pleasure to create beautiful experiences and cherished moments for your family throughout the journey. We wish you a safe and comfortable departure, and hope to welcome you again soon for another unforgettable adventure.",
+                    ],
+                }
+            ],
+        }
+    heading = f"DAY {day_number} | ({base_destination})"
     return {
         "heading": heading,
+        "is_departure_day": False,
+        "custom_title": f"Discovering {base_destination}",
         "items": [
-            {"label": "Destination Story", "content": ""},
-            {"label": "Today's Journey", "content": ""},
-            {"label": "Hotel Experience", "content": ""},
-            {"label": "Curated Experience", "content": ""},
+            {
+                "label": "Visiting Places And Destination Story",
+                "paragraphs": [
+                    f"The day begins with curated exploration of the iconic highlights of {base_destination}, tailored for relaxation and island discovery.",
+                    f"Surrounded by the azure waters of the Bay of Bengal, {base_destination} offers a serene harmony of tropical scenery, coastal history, and island charm.",
+                ],
+            },
+            {
+                "label": "Today's Journey",
+                "paragraphs": [
+                    "For the places highlighted above, private vehicle transfers ensure a smooth and relaxing day of sightseeing across the island."
+                ],
+            },
+            {
+                "label": "Hotel Experience",
+                "paragraphs": [
+                    "A comfortable stay offering relaxing surroundings and warm hospitality—perfect for unwinding after the day's adventures."
+                ],
+            },
         ],
     }
 
@@ -114,11 +164,20 @@ def render_day_page(
     day_flowables.append(Spacer(1, 0.2 * inch))
 
     for item in items:
-        label = str(item["label"] or "").strip()
-        content = escape_text(str(item["content"] or "").strip())
+        label = str(item.get("label") or "").strip()
+        paragraphs = item.get("paragraphs") or [item.get("content")]
         if label:
             day_flowables.append(Paragraph(escape_text(label), styles["label"]))
-        day_flowables.append(Paragraph(content, styles["body"]))
+            day_flowables.append(Spacer(1, 0.04 * inch))
+
+        for p_idx, para in enumerate(paragraphs):
+            para_str = escape_text(str(para or "").strip())
+            if not para_str:
+                continue
+            if p_idx > 0:
+                day_flowables.append(Spacer(1, 0.06 * inch))
+            day_flowables.append(Paragraph(para_str, styles["body"]))
+
         day_flowables.append(Spacer(1, 0.08 * inch))
         day_flowables.append(HRFlowable(width="100%", thickness=0.25, color=COLORS["line"]))
         day_flowables.append(Spacer(1, 0.08 * inch))
