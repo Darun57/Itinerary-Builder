@@ -7,8 +7,8 @@ const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 const fraunces = Fraunces({ subsets: ["latin"], variable: "--font-heading" });
 
 export const metadata: Metadata = {
-  title: "Darun Tourism - AI Itinerary Studio",
-  description: "Internal staff portal for generating luxury travel itineraries",
+  title: "VELQAIRN",
+  description: "Bespoke AI-powered travel intelligence and itinerary platform",
 };
 
 export default function RootLayout({
@@ -21,7 +21,7 @@ export default function RootLayout({
       <head>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/2.44.0/iconfont/tabler-icons.min.css" />
       </head>
-      <body className={`${inter.variable} ${fraunces.variable} font-sans antialiased dark`}>
+      <body className={`${inter.variable} ${fraunces.variable} font-sans antialiased`}>
         <Providers>
           {children}
         </Providers>

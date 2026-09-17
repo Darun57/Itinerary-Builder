@@ -12,9 +12,9 @@ HOTEL_COLUMNS = [
     "hotel_name",
     "location",
     "category",
-    "nightly_price",
-    "suitable_for",
+    "room_type",
     "description",
+    "availability_status",
 ]
 ACTIVITY_COLUMNS = [
     "activity_id",
@@ -82,11 +82,83 @@ def _load_csv_with_optional(
 
 
 def load_hotels() -> pd.DataFrame:
-    frame = _load_csv_with_optional("hotels.csv", HOTEL_COLUMNS, ["availability_status"])
+    base_required = ["hotel_id", "hotel_name", "location", "category", "description"]
+    _OPTIONAL = ["room_type", "availability_status"]
+    frame = _load_csv_with_optional("hotels.csv", base_required, _OPTIONAL)
     if "availability_status" not in frame.columns:
         frame["availability_status"] = "Available"
+    if "room_type" not in frame.columns:
+        frame["room_type"] = ""
+    frame["availability_status"] = frame["availability_status"].fillna("Available")
+    frame["room_type"] = frame["room_type"].fillna("")
     frame = frame.drop_duplicates(subset=["hotel_id"])
-    return frame[HOTEL_COLUMNS + ["availability_status"]]
+    return frame[HOTEL_COLUMNS]
+
+
+_LOCATION_PREFIX_MAP: dict[str, str] = {
+    "port blair": "PB",
+    "swaraj dweep": "SD",
+    "havelock": "SD",
+    "shaheed dweep": "ND",
+    "neil": "ND",
+    "baratang": "BT",
+    "diglipur": "DG",
+    "little andaman": "LA",
+    "rangat": "RG",
+    "mayabunder": "MB",
+}
+
+
+def _next_hotel_id(location: str) -> str:
+    """Generate the next sequential hotel_id for a given location prefix."""
+    loc_key = location.strip().lower()
+    prefix = _LOCATION_PREFIX_MAP.get(loc_key, "OT")  # OT = Other
+    try:
+        existing = load_hotels()
+        pattern = f"HTL-{prefix}-"
+        matched = existing["hotel_id"].astype(str).str.startswith(pattern)
+        if matched.any():
+            nums = (
+                existing.loc[matched, "hotel_id"]
+                .str.replace(pattern, "", regex=False)
+                .str.extract(r"(\d+)")
+                .dropna()[0]
+                .astype(int)
+            )
+            next_num = int(nums.max()) + 1 if len(nums) else 1
+        else:
+            next_num = 1
+    except Exception:
+        next_num = 1
+    return f"HTL-{prefix}-{next_num:03d}"
+
+
+def append_hotel(hotel: dict) -> dict:
+    """Validate and append a new hotel row to data/hotels.csv. Returns the saved hotel dict."""
+    required = ["hotel_name", "location", "category"]
+    for field in required:
+        if not hotel.get(field, "").strip():
+            raise ValueError(f"Missing required hotel field: {field}")
+
+    hotel_id = _next_hotel_id(hotel["location"])
+    new_row = {
+        "hotel_id": hotel_id,
+        "hotel_name": hotel["hotel_name"].strip(),
+        "location": hotel["location"].strip(),
+        "category": hotel["category"].strip(),
+        "room_type": hotel.get("room_type", "").strip(),
+        "description": hotel.get("description", "").strip(),
+        "availability_status": hotel.get("availability_status", "Available").strip(),
+    }
+
+    path = DATA_DIR / "hotels.csv"
+    new_df = pd.DataFrame([new_row])[HOTEL_COLUMNS]
+    if path.exists():
+        new_df.to_csv(path, mode="a", header=False, index=False)
+    else:
+        new_df.to_csv(path, mode="w", header=True, index=False)
+
+    return new_row
 
 
 def load_activities() -> pd.DataFrame:

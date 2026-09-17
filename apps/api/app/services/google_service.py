@@ -187,7 +187,13 @@ def _ensure_payload_integrity(request: TripRequest) -> None:
             dp.transfer_type = request.transfer_type or "Private Cab"
         
         # Always resolve hotel matching the day's primary island if not explicitly set to a valid non-default
-        if not dp.hotel or dp.hotel == "Luxury Resort":
+        is_final_departure = (day_num == num_days) and (
+            (dp.primary_island or "").strip().lower() == "departure"
+            or any(str(a).strip().lower() == "departure" for a in (dp.attractions or []))
+        )
+        if is_final_departure:
+            dp.hotel = ""
+        elif not dp.hotel or dp.hotel == "Luxury Resort":
             dp.hotel = _resolve_hotel_for_day_plan(dp.primary_island, request.selected_hotels or [])
             
         new_plan.append(dp)
@@ -295,6 +301,9 @@ def _generate_once(client: genai.Client, model: str, request: TripRequest) -> st
         raise
     except Exception as parse_err:
         LOGGER.warning("Could not validate narrative depth: %s", parse_err)
+
+    from app.services.itinerary_normalizer import normalize_itinerary_payload
+    payload = normalize_itinerary_payload(payload, request)
 
     return payload
 
@@ -446,7 +455,8 @@ def _generate_fallback_itinerary(request: TripRequest) -> str:
                 "image_keyword": island.lower().replace(" ", "_"),
             })
         
-    return json.dumps({"days": days}, indent=2)
+    from app.services.itinerary_normalizer import normalize_itinerary_payload
+    return normalize_itinerary_payload(json.dumps({"days": days}, indent=2), request)
 
 
 def generate_itinerary(api_key: str, model: str, request: TripRequest) -> str:

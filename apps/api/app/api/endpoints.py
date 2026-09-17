@@ -7,15 +7,28 @@ from app.schemas.trip import TripRequest
 from app.services import recommendations
 from app.services import google_service
 from app.services import pdf_service
-from app.services.data_loader import load_destinations, load_activities, load_ferries
+import pandas as pd
+from app.services.data_loader import load_destinations, load_activities, load_ferries, load_hotels, append_hotel
 
 router = APIRouter()
+
+
+def _safe_records(df: pd.DataFrame) -> list[dict]:
+    if df is None or df.empty:
+        return []
+    import math
+    records = df.to_dict(orient="records")
+    for row in records:
+        for k, v in list(row.items()):
+            if v is None or pd.isna(v) or (isinstance(v, float) and math.isnan(v)):
+                row[k] = ""
+    return records
 
 
 def _recommend(fn, request: TripRequest):
     """Shared helper: run a recommendation function and return JSON-serialisable records."""
     try:
-        return fn(request).to_dict(orient="records")
+        return _safe_records(fn(request))
     except Exception as exc:
         raise HTTPException(status_code=500, detail=str(exc)) from exc
 
@@ -23,7 +36,36 @@ def _recommend(fn, request: TripRequest):
 @router.post("/recommendations/hotels")
 def get_hotel_recommendations(request: TripRequest):
     try:
-        return recommendations.recommend_hotels(request, for_ui=True).to_dict(orient="records")
+        return _safe_records(recommendations.recommend_hotels(request, for_ui=True))
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=str(exc)) from exc
+
+
+# ── Hotel CRUD ──────────────────────────────────────────────────────────────
+
+class HotelCreateRequest(BaseModel):
+    hotel_name: str
+    location: str
+    category: str
+    room_type: str = ""
+    description: str = ""
+    availability_status: str = "Available"
+
+
+@router.get("/hotels")
+def list_hotels():
+    """Return all hotels in the database (for management / UI browse)."""
+    return _safe_records(load_hotels())
+
+
+@router.post("/hotels", status_code=201)
+def create_hotel(payload: HotelCreateRequest):
+    """Append a new hotel to hotels.csv and return the saved row."""
+    try:
+        saved = append_hotel(payload.model_dump())
+        return saved
+    except ValueError as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
     except Exception as exc:
         raise HTTPException(status_code=500, detail=str(exc)) from exc
 
@@ -45,17 +87,17 @@ def get_destination_recommendations(request: TripRequest):
 
 @router.get("/data/destinations")
 def get_all_destinations():
-    return load_destinations().to_dict(orient="records")
+    return _safe_records(load_destinations())
 
 
 @router.get("/data/activities")
 def get_all_activities():
-    return load_activities().to_dict(orient="records")
+    return _safe_records(load_activities())
 
 
 @router.get("/data/ferries")
 def get_all_ferries():
-    return load_ferries().to_dict(orient="records")
+    return _safe_records(load_ferries())
 
 import time
 @router.get("/test/timeout")

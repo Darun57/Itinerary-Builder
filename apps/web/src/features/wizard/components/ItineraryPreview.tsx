@@ -12,7 +12,7 @@ import { generatePDF } from "@/lib/api";
 import { TripRequestType } from "../schema";
 
 export default function ItineraryPreview() {
-  const { formData, generatedItinerary, setGeneratedItinerary } = useWizardStore();
+  const { formData, generatedItinerary, setGeneratedItinerary, setStep } = useWizardStore();
 
   const pdfMutation = useMutation({
     mutationFn: generatePDF,
@@ -53,7 +53,7 @@ export default function ItineraryPreview() {
           <p className="text-muted-foreground mt-1">Review the AI-crafted proposal before generating the final PDF.</p>
         </div>
         <div className="flex space-x-4">
-          <Button variant="outline" onClick={() => setGeneratedItinerary(null)} disabled={pdfMutation.isPending}>
+          <Button variant="outline" onClick={() => { setGeneratedItinerary(null); setStep(6); }} disabled={pdfMutation.isPending}>
             <Edit2 className="w-4 h-4 mr-2" />
             Edit Wizard
           </Button>

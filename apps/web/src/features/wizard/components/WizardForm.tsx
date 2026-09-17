@@ -43,10 +43,6 @@ export default function WizardForm() {
     }
   });
 
-  // Render the Preview if Gemini has already returned text
-  if (generatedItinerary) {
-    return <ItineraryPreview />;
-  }
 
   // Render the glowing loading screen while Gemini is thinking
   if (aiMutation.isPending) {
@@ -85,10 +81,7 @@ export default function WizardForm() {
         break;
     }
 
-    const isStepValid = await trigger(fieldsToValidate);
-
-    console.log("Trigger Result:", isStepValid);
-    console.log("Errors:", methods.formState.errors);
+    const isStepValid = fieldsToValidate.length > 0 ? await trigger(fieldsToValidate) : true;
 
     if (isStepValid) {
       updateFormData(methods.getValues());
@@ -99,6 +92,10 @@ export default function WizardForm() {
   };
 
   const onSubmit = (data: any) => {
+    if (step < 6) {
+      handleNext();
+      return;
+    }
     if (data.daily_island_plan && data.number_of_days) {
       const plan = data.daily_island_plan.slice(0, data.number_of_days);
       
@@ -128,6 +125,11 @@ export default function WizardForm() {
 
         const primaryIsland = resolvePrimaryIsland(day.primary_island || "", day.attractions || []);
         const transferType = day.transfer_type || data.transfer_type || "Private Cab";
+        const isLastDay = idx === plan.length - 1;
+        const isDeparture = isLastDay && (
+          primaryIsland.toLowerCase().trim() === "departure" ||
+          (day.attractions || []).some((a: string) => String(a).toLowerCase().trim() === "departure")
+        );
 
         return {
           ...day,
@@ -135,7 +137,7 @@ export default function WizardForm() {
           primary_island: primaryIsland,
           transfer_type: transferType,
           ferry: day.ferry || "None",
-          hotel: day.hotel || "",
+          hotel: isDeparture ? "" : (day.hotel || ""),
         };
       });
     }
@@ -166,12 +168,23 @@ export default function WizardForm() {
         </div>
       )}
 
-      {/* Render Itinerary Preview if generated, else render Builder Grid */}
+      {/* Render Itinerary Preview after successful generation */}
       {generatedItinerary ? (
         <ItineraryPreview />
       ) : (
         <FormProvider {...methods}>
-          <form onSubmit={handleSubmit(onSubmit)} className="builder-grid">
+          <form 
+            onSubmit={handleSubmit(onSubmit)} 
+            onKeyDown={(e) => {
+              if (e.key === "Enter" && (e.target as HTMLElement).tagName === "INPUT") {
+                e.preventDefault();
+                if (step < 6) {
+                  handleNext();
+                }
+              }
+            }}
+            className="builder-grid"
+          >
 
             {/* LEFT SIDE: Active Form Step */}
             <div className="form-card">
@@ -180,6 +193,32 @@ export default function WizardForm() {
               {step === 3 && <AccommodationStep />}
               {step === 4 && <ActivitiesStep />}
               {step === 5 && <TransportMealsStep />}
+              {step === 6 && (
+                <div>
+                  <h2 style={{ fontFamily: "var(--font-heading, serif)", fontWeight: 700, fontSize: "22px", marginBottom: "6px" }}>Ready to Generate</h2>
+                  <p className="sub">All details are captured. Click the button below to generate your AI-powered itinerary.</p>
+                  <div style={{ marginTop: "28px", display: "flex", flexDirection: "column", gap: "14px" }}>
+                    {[
+                      { icon: "ti-user", label: "Customer", value: methods.getValues("customer_name") || "—" },
+                      { icon: "ti-map-pin", label: "Destination", value: methods.getValues("destination") || "—" },
+                      { icon: "ti-calendar", label: "Travel dates", value: `${methods.getValues("arrival_date") || "—"} → ${methods.getValues("departure_date") || "—"}` },
+                      { icon: "ti-building", label: "Hotels", value: methods.getValues("hotel_category_preference") || "—" },
+                      { icon: "ti-car", label: "Transfer", value: methods.getValues("transfer_type") || "—" },
+                      { icon: "ti-tools-kitchen-2", label: "Meal Plan", value: methods.getValues("meal_plan") || "—" },
+                    ].map(item => (
+                      <div key={item.label} style={{ display: "flex", alignItems: "center", gap: "12px", padding: "12px 16px", background: "#F9FAFB", borderRadius: "10px", border: "1px solid #E5E7EB" }}>
+                        <div style={{ width: "34px", height: "34px", borderRadius: "9px", background: "rgba(20,33,61,0.07)", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--navy)", flexShrink: 0 }}>
+                          <i className={`ti ${item.icon}`} style={{ fontSize: "16px" }} />
+                        </div>
+                        <div>
+                          <div style={{ fontSize: "11px", color: "#9CA3AF", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.5px" }}>{item.label}</div>
+                          <div style={{ fontSize: "13.5px", fontWeight: 600, color: "#111827", marginTop: "2px" }}>{item.value}</div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
 
               {/* Navigation Buttons */}
               <div className="builder-nav">
@@ -194,6 +233,10 @@ export default function WizardForm() {
                 {step < 5 ? (
                   <button type="button" onClick={handleNext} className="btn-gold">
                     Next Step<i className="ti ti-arrow-right"></i>
+                  </button>
+                ) : step === 5 ? (
+                  <button type="button" onClick={handleNext} className="btn-gold">
+                    Review & Generate<i className="ti ti-arrow-right"></i>
                   </button>
                 ) : (
                   <button type="submit" className="btn-gold" disabled={aiMutation.isPending}>

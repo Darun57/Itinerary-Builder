@@ -9,11 +9,8 @@ export function Sidebar() {
   return (
     <aside className="sidebar">
       <div className="brand">
-        <div className="brand-mark">D</div>
-        <div>
-          <div className="brand-name">Darun Tourism</div>
-          <div className="brand-sub">AI Studio</div>
-        </div>
+        <div className="brand-mark">V</div>
+        <div className="brand-name">VELQAIRN</div>
       </div>
 
       <div className="nav-label">Workspace</div>
@@ -29,19 +26,18 @@ export function Sidebar() {
       >
         <i className="ti ti-route"></i>Itinerary Builder<span className="nav-badge">3</span>
       </div>
-
-      <div className="nav-label">Records</div>
-      <div className="nav-item"><i className="ti ti-users"></i>Customers</div>
-      <div className="nav-item"><i className="ti ti-target-arrow"></i>Leads</div>
-      <div className="nav-item"><i className="ti ti-building-skyscraper"></i>Hotels</div>
-      <div className="nav-item"><i className="ti ti-ski-jumping"></i>Activities</div>
-      <div className="nav-item"><i className="ti ti-plane"></i>Transport</div>
-      <div className="nav-item"><i className="ti ti-file-text"></i>Generated PDFs</div>
-
-      <div className="nav-label">Grow</div>
-      <div className="nav-item"><i className="ti ti-address-book"></i>CRM</div>
-      <div className="nav-item"><i className="ti ti-chart-bar"></i>Analytics</div>
-      <div className="nav-item"><i className="ti ti-settings"></i>Settings</div>
+      <div
+        className={`nav-item ${activeView === "crm" ? "active" : ""}`}
+        onClick={() => setActiveView("crm")}
+      >
+        <i className="ti ti-address-book"></i>CRM
+      </div>
+      <div
+        className={`nav-item ${activeView === "marketing" ? "active" : ""}`}
+        onClick={() => setActiveView("marketing")}
+      >
+        <i className="ti ti-speakerphone"></i>Marketing
+      </div>
 
       <div className="sidebar-footer">
         <div className="ai-mini"><span className="dot-live"></span>AI engine online</div>

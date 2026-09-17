@@ -17,8 +17,7 @@ HOTEL_RESULT_COLUMNS = [
     "hotel_name",
     "location",
     "category",
-    "nightly_price",
-    "suitable_for",
+    "room_type",
     "description",
     "score",
     "reason",
@@ -191,56 +190,71 @@ def recommend_hotels(request: TripRequest, for_ui: bool = False) -> pd.DataFrame
         preferred_locations.update(_requested_locations(request.selected_destinations))
     selected_hotels = {value.lower() for value in request.selected_hotels if value and value.lower() != "none"}
     hotels = hotels[hotels["availability_status"].fillna("Available").str.lower() != "fully booked"].copy()
-    if not for_ui and selected_hotels:
+
+    # For the UI carousel: always guarantee that already-selected hotels are visible
+    # (e.g. newly added hotels), regardless of location / category filters below.
+    if for_ui and selected_hotels:
+        selected_mask = hotels["hotel_name"].astype(str).str.lower().isin(selected_hotels)
+        pinned_hotels = hotels[selected_mask].copy()        # always show these
+        remaining = hotels[~selected_mask].copy()           # filters apply to the rest
+    elif not for_ui and selected_hotels:
         selected_mask = hotels["hotel_name"].astype(str).str.lower().isin(selected_hotels)
         if selected_mask.any():
             hotels = hotels[selected_mask].copy()
+        pinned_hotels = pd.DataFrame()
+        remaining = hotels
+    else:
+        pinned_hotels = pd.DataFrame()
+        remaining = hotels
+
     if preferred_locations:
-        location_mask = hotels["location"].astype(str).str.lower().isin(preferred_locations)
+        location_mask = remaining["location"].astype(str).str.lower().isin(preferred_locations)
         if location_mask.any():
-            hotels = hotels[location_mask].copy()
+            remaining = remaining[location_mask].copy()
     if category_preference:
-        category_mask = hotels["category"].astype(str).str.lower() == category_preference
+        category_mask = remaining["category"].astype(str).str.lower() == category_preference
         if category_mask.any():
-            hotels = hotels[category_mask].copy()
+            remaining = remaining[category_mask].copy()
+
+    # Merge pinned (selected) hotels back with the filtered recommendations
+    if not pinned_hotels.empty:
+        hotels = pd.concat([pinned_hotels, remaining], ignore_index=True).drop_duplicates(subset=["hotel_id"])
+    else:
+        hotels = remaining
 
     def score_row(row: pd.Series) -> tuple[int, list[str]]:
         score = 0
         reasons: list[str] = []
         location = _normalize(row["location"])
         category = _normalize(row["category"])
-        suitable_for = _normalize(row["suitable_for"])
         description = _normalize(row["description"])
-        price = float(row["nightly_price"] or 0)
         availability = _normalize(row.get("availability_status") or "available")
 
+        if selected_hotels and _normalize(row["hotel_name"]) in selected_hotels:
+            score += _append_reason(reasons, "selected stay", 1000)
         if availability == "limited availability":
             score += _append_reason(reasons, "limited availability but still bookable", 4)
         if preferred_locations and location in preferred_locations:
             score += _append_reason(reasons, "destination/location match", 25)
-        if trip_type and trip_type in suitable_for:
-            score += _append_reason(reasons, "suited to trip type", 30)
+        if trip_type and trip_type in description:
+            score += _append_reason(reasons, "suited to trip type", 20)
         if category_preference and category == category_preference:
             score += _append_reason(reasons, "matches selected hotel category", 45)
-        elif budget == "budget" and category in {"3 star", "4 star"}:
-            score += _append_reason(reasons, "budget-friendly hotel fit", 20)
-        elif budget == "premium" and category in {"4 star", "5 star"}:
+        elif budget in {"premium", "premium luxury"} and category in {"4 star", "5 star"}:
             score += _append_reason(reasons, "premium hotel fit", 20)
-        elif budget == "luxury" and category in {"5 star", "ultra luxury"}:
+        elif budget in {"luxury", "ultra luxury"} and category in {"5 star", "boutique"}:
             score += _append_reason(reasons, "luxury hotel fit", 25)
-
-        score += _budget_price_score(price, budget)
-        if budget:
-            reasons.append("price aligned with budget")
+        elif budget in {"budget", "economy"} and category in {"2 star", "3 star"}:
+            score += _append_reason(reasons, "budget-friendly hotel fit", 20)
 
         if _contains_any(request_text, HONEYMOON_TERMS) and (
-            "honeymoon" in suitable_for or "boutique" in description or category in {"5 star", "ultra luxury"}
+            "honeymoon" in description or "boutique" in description or category in {"5 star"}
         ):
             score += _append_reason(reasons, "strong honeymoon fit", 25)
-        if _contains_any(request_text, FAMILY_TERMS) and "family" in suitable_for:
+        if _contains_any(request_text, FAMILY_TERMS) and "family" in description:
             score += _append_reason(reasons, "family-friendly stay", 25)
         if _contains_any(request_text, RELAXATION_TERMS) and (
-            "relax" in suitable_for or "quiet" in description or "beach" in description
+            "relax" in description or "quiet" in description or "beach" in description
         ):
             score += _append_reason(reasons, "relaxed stay profile", 15)
         if _contains_any(request_text, SENIOR_TERMS) and "easy access" in description:

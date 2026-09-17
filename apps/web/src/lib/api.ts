@@ -5,9 +5,9 @@ const getApiBaseUrl = () => {
   if (typeof window !== "undefined") {
     const hostname = window.location.hostname || "localhost";
     const protocol = window.location.protocol || "http:";
-    return `${protocol}//${hostname}:8000/api`;
+    return `${protocol}//${hostname}:8001/api`;
   }
-  return "http://127.0.0.1:8000/api";
+  return "http://127.0.0.1:8001/api";
 };
 
 async function safeFetch(path: string, options?: RequestInit): Promise<Response> {
@@ -27,11 +27,11 @@ async function safeFetch(path: string, options?: RequestInit): Promise<Response>
         return await fetch(fallbackUrl, options);
       } catch (fallbackErr) {
         console.error(`Fetch failed for primary (${primaryUrl}) and fallback (${fallbackUrl}):`, fallbackErr);
-        throw new Error(`Unable to connect to API backend. Ensure FastAPI server is running on port 8000.`);
+        throw new Error(`Unable to connect to API backend. Ensure FastAPI server is running on port 8001.`);
       }
     }
     console.error(`Fetch failed for ${primaryUrl}:`, err);
-    throw new Error(`Unable to connect to API backend at ${primaryUrl}. Ensure FastAPI server is running on port 8000.`);
+    throw new Error(`Unable to connect to API backend at ${primaryUrl}. Ensure FastAPI server is running on port 8001.`);
   }
 }
 
@@ -107,6 +107,34 @@ export async function generateAIItinerary(data: TripRequestType, apiKey: string)
   if (!response.ok) {
     const errData = await response.json().catch(() => null);
     throw new Error(errData?.detail || "Failed to generate AI itinerary");
+  }
+  return response.json();
+}
+
+export interface NewHotelPayload {
+  hotel_name: string;
+  location: string;
+  category: string;
+  room_type?: string;
+  description?: string;
+  availability_status?: string;
+}
+
+export async function fetchAllHotels() {
+  const response = await safeFetch("/hotels", { method: "GET" });
+  if (!response.ok) return [];
+  return response.json();
+}
+
+export async function createHotel(data: NewHotelPayload) {
+  const response = await safeFetch("/hotels", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
+  if (!response.ok) {
+    const err = await response.json().catch(() => null);
+    throw new Error(err?.detail || "Failed to create hotel");
   }
   return response.json();
 }

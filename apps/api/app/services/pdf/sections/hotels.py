@@ -27,11 +27,22 @@ def _consolidate_hotel_stays(request: TripRequest) -> list[dict]:
       { hotel_name, nights, first_day }
     Same hotel across any days is merged into one entry with total nights summed.
     Cards are ordered by the first day on which each hotel appears.
+    If the final day is marked as 'Departure', it is not treated as an overnight stay.
     """
     plans = list(request.daily_island_plan or [])
+    total_days = int(request.number_of_days or len(plans))
     # Ordered dict keyed by normalised hotel name to preserve insertion order
     merged: OrderedDict[str, dict] = OrderedDict()
     for plan in plans:
+        is_final = (plan.day_number == total_days)
+        is_dep = is_final and (
+            getattr(plan, "is_departure_day", False)
+            or (plan.primary_island or "").strip().lower() == "departure"
+            or any(str(a).strip().lower() == "departure" for a in (plan.attractions or []))
+        )
+        if is_dep:
+            continue
+
         name = (plan.hotel or "").strip()
         if not name:
             continue
@@ -62,6 +73,7 @@ def _lookup_hotel_metadata(hotel_name: str, all_hotels_df) -> dict:
     return {
         "location": str(row.get("location") or "").strip(),
         "category": str(row.get("category") or "").strip(),
+        "room_type": str(row.get("room_type") or "").strip(),
         "description": str(row.get("description") or "").strip(),
     }
 
@@ -70,6 +82,7 @@ def _hotel_card_flowable(hotel_name: str, nights: int, meta: dict, card_width: f
     fonts = font_map()
     location = meta.get("location") or ""
     category = meta.get("category") or ""
+    room_type = meta.get("room_type") or ""
     description = meta.get("description") or ""
     stay_text = f"{nights} Night" if nights == 1 else f"{nights} Nights"
 
@@ -80,6 +93,13 @@ def _hotel_card_flowable(hotel_name: str, nights: int, meta: dict, card_width: f
         star_count = min(7, int(match.group(1)))
         stars = " " + ("\u2605" * star_count)
 
+    sub_parts = []
+    if category:
+        sub_parts.append(category)
+    if room_type:
+        sub_parts.append(f"Room: {room_type}")
+    sub_line = " \u2022 ".join(sub_parts) if sub_parts else category
+
     details = [
         Paragraph(escape_text(f"{hotel_name}{stars}"), ParagraphStyle(
             "hotel_card_name", fontName=fonts["heading"], fontSize=13.5, leading=16,
@@ -87,7 +107,7 @@ def _hotel_card_flowable(hotel_name: str, nights: int, meta: dict, card_width: f
         Paragraph(escape_text(location), ParagraphStyle(
             "hotel_card_meta", fontName=fonts["body_bold"], fontSize=10.1, leading=13.5,
             textColor=COLORS["dark"], spaceAfter=3)),
-        Paragraph(escape_text(category), ParagraphStyle(
+        Paragraph(escape_text(sub_line), ParagraphStyle(
             "hotel_card_meta2", fontName=fonts["body"], fontSize=9.5, leading=13,
             textColor=COLORS["soft_grey"], spaceAfter=4)),
         Paragraph(escape_text(description), ParagraphStyle(
@@ -137,11 +157,15 @@ def render_luxury_stays_page(story: list, styles: dict[str, ParagraphStyle], req
     for i in range(0, len(consolidated), 2):
         left_entry = consolidated[i]
         left_meta = _lookup_hotel_metadata(left_entry["hotel_name"], all_hotels_df)
+        if not left_meta.get("room_type") and getattr(request, "room_type_preference", None):
+            left_meta["room_type"] = request.room_type_preference
         left_card = _hotel_card_flowable(left_entry["hotel_name"], left_entry["nights"], left_meta, card_width)
 
         if i + 1 < len(consolidated):
             right_entry = consolidated[i + 1]
             right_meta = _lookup_hotel_metadata(right_entry["hotel_name"], all_hotels_df)
+            if not right_meta.get("room_type") and getattr(request, "room_type_preference", None):
+                right_meta["room_type"] = request.room_type_preference
             right_card = _hotel_card_flowable(right_entry["hotel_name"], right_entry["nights"], right_meta, card_width)
         else:
             right_card = Spacer(1, 0.01 * inch)

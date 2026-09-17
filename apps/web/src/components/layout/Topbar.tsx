@@ -7,7 +7,14 @@ export function Topbar() {
   const { activeView, apiKey, setApiKey } = useWizardStore();
   const [showKeyInput, setShowKeyInput] = React.useState(false);
   
-  const crumbText = activeView === "dashboard" ? "Dashboard" : "Itinerary Builder";
+  const crumbText =
+    activeView === "dashboard"
+      ? "Dashboard"
+      : activeView === "builder"
+      ? "Itinerary Builder"
+      : activeView === "marketing"
+      ? "Marketing Hub"
+      : "CRM";
 
   return (
     <div className="topbar">
@@ -54,7 +61,7 @@ export function Topbar() {
 
         <div className="ai-pill"><i className="ti ti-sparkles"></i>AI ready</div>
         <div className="icon-btn"><i className="ti ti-bell"></i><span className="ping"></span></div>
-        <div className="avatar">RK</div>
+        <div className="avatar">D</div>
       </div>
     </div>
   );

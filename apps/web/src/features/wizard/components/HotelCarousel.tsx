@@ -12,7 +12,7 @@ interface Hotel {
   hotel_name: string;
   location?: string;
   category?: string;
-  nightly_price?: number | string;
+  room_type?: string;
   description?: string;
 }
 
@@ -227,11 +227,13 @@ export function HotelCarousel({ hotels, location }: HotelCarouselProps) {
                         <FormDescription className="text-xs line-clamp-3 leading-relaxed">
                           {hotel.description}
                         </FormDescription>
-                        <div className="pt-2 mt-2 border-t border-border/50 text-xs text-muted-foreground flex justify-between items-center">
-                          <span>{hotel.category}</span>
-                          <span className={`font-semibold ${isChecked ? "text-primary" : "text-foreground"}`}>
-                            ₹{hotel.nightly_price?.toLocaleString?.() ?? hotel.nightly_price}
-                          </span>
+                        <div className="pt-2 mt-2 border-t border-border/50 text-xs text-muted-foreground flex justify-between items-center gap-2">
+                          <span className="shrink-0">{hotel.category}</span>
+                          {hotel.room_type ? (
+                            <span className={`font-medium truncate text-right ${isChecked ? "text-primary font-semibold" : "text-foreground/80"}`} title={hotel.room_type}>
+                              {hotel.room_type}
+                            </span>
+                          ) : null}
                         </div>
                       </div>
                     </FormItem>

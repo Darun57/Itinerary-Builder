@@ -46,6 +46,12 @@ NARRATIVE STRUCTURE & SECTION RESPONSIBILITIES
 ============================================================
 
 For NORMAL ITINERARY DAYS (is_departure_day = false):
+- "travel_movement": Set strictly to the canonical movement:
+  * Day 1: "Port Blair" (or arrival island)
+  * Inter-island transfer: "Origin to Destination" (e.g. "Port Blair to Swaraj Dweep", "Swaraj Dweep to Shaheed Dweep", "Shaheed Dweep to Port Blair")
+  * Day-trip excursion returning to base hotel: "Origin to Destination Return" (e.g. "Port Blair to Baratang Island Return")
+  * Exploration on same island: "Island Name" (e.g. "Swaraj Dweep")
+
 The body will be rendered under three clean sections:
 1. "Visiting Places And Destination Story" (contains TWO distinct paragraphs):
    - PARAGRAPH 1 (visiting_places): What the traveler actually visits and does during that specific day. Chronological, practical, itinerary-oriented narrative focused on actual sightseeing/activities (2–4 sentences, ~40-60 words).
@@ -54,8 +60,8 @@ The body will be rendered under three clean sections:
 
 2. "Today's Journey" (todays_journey):
    - Transportation & journey logistics for the day (starting point, transport mode, vehicle/ferry/boat, departure/arrival).
-   - Must create connection with the places above by opening with wording such as:
-     "For the places highlighted above..." or "For the places and activity highlighted above..."
+   - MUST ALWAYS open with the exact wording:
+     "For the places highlighted above, private chauffeur transfers ensure..." or "For the places highlighted above, transfer begins early..."
    - Approximately 2–4 sentences (~35-55 words).
    - Only use real transportation/ferry/vehicle details provided in the daily directives.
 
@@ -63,14 +69,20 @@ The body will be rendered under three clean sections:
    - Describes the actual hotel selected for that day from <MandatoryHotel>.
    - Atmosphere, comfort, hospitality, and relaxing surroundings.
    - Approximately 2–4 sentences (~30-55 words).
-   - Example style: "A peaceful stay at [Hotel], offering comfortable accommodation, relaxing surroundings, and warm hospitality—perfect for unwinding and recharging for the next day's island adventures."
+   - Example style: "A peaceful stay at [Hotel], offering comfortable accommodation, relaxing oceanfront surroundings, and warm hospitality—perfect for unwinding after your journey."
 
 For DEPARTURE DAY (is_departure_day = true, typically the final day when it is departure-only):
+- "title": "Departure"
+- "subtitle": "Departure"
+- "travel_movement": "Departure"
+- "is_departure_day": true
+- Leave visiting_places, destination_story, todays_journey, and hotel_experience as empty strings "".
 The body will be rendered under:
 1. "END OF THE JOURNEY" (contains TWO distinct paragraphs):
    - PARAGRAPH 1 (departure_narrative): Concludes the journey with comfortable hotel check-out, luggage assistance, and private transfer from the hotel to Veer Savarkar International Airport, ensuring a smooth and hassle-free journey home (2–3 sentences, ~35-50 words).
+     Example: "Enjoy a peaceful morning check-out at [Hotel] with full luggage assistance. Your private chauffeur will pick you up for a smooth transfer to Veer Savarkar International Airport for your flight home."
    - PARAGRAPH 2 (farewell_narrative): Sincere gratitude from Darun Tourism for choosing us, pleasure in crafting memories, safe flight wishes, and welcoming them back in the future (2–4 sentences, ~40-60 words).
-   - For departure-only days, leave visiting_places, destination_story, todays_journey, and hotel_experience as empty strings "" or focused on departure.
+     Example: "Darun Tourism extends its heartfelt gratitude to [Customer Name] and family for choosing us. It was our genuine pleasure crafting your Andaman trip memories, and we look forward to welcoming you back in the future."
 
 ============================================================
 STYLING & QUALITY RULES
@@ -143,7 +155,15 @@ def _format_day_by_day_database_directives(request: TripRequest) -> str:
         island = _resolve_primary_island(dp.primary_island if dp else "", dp.attractions if dp else [], day_num, total_days)
         attractions = ", ".join(dp.attractions) if dp and dp.attractions else "Key island highlights"
         activities = ", ".join(dp.activities) if dp and dp.activities else "Curated luxury experiences"
-        hotel = dp.hotel if dp and dp.hotel else (hotels[(day_num - 1) % len(hotels)] if hotels else "Selected Luxury Resort")
+        is_departure_marked = is_last_day and (
+            (dp and (dp.primary_island or "").strip().lower() == "departure")
+            or (dp and any(str(a).strip().lower() == "departure" for a in (dp.attractions or [])))
+            or is_last_day
+        )
+        if is_departure_marked:
+            hotel = "None (Departure Day - No overnight stay)"
+        else:
+            hotel = dp.hotel if dp and dp.hotel else (hotels[(day_num - 1) % len(hotels)] if hotels else "Selected Luxury Resort")
         
         transfer_info = "No inter-island ferry transfer today"
         ferry_operator = ""
