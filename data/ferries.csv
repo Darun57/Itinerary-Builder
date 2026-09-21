@@ -1,13 +1,75 @@
 ferry_id,operator,from_location,to_location,departure_time,arrival_time,duration
-FRY-001,Makruzz,Port Blair,Swaraj Dweep,08:00,09:30,1 hour 30 minutes
-FRY-002,Green Ocean,Swaraj Dweep,Shaheed Dweep,10:30,11:30,1 hour
-FRY-003,Makruzz,Shaheed Dweep,Port Blair,15:30,17:00,1 hour 30 minutes
-FRY-004,Nautika,Port Blair,Shaheed Dweep,07:30,09:15,1 hour 45 minutes
-FRY-005,Green Ocean,Swaraj Dweep,Port Blair,15:00,17:00,2 hours
-FRY-006,Govt Ferry,Port Blair,Swaraj Dweep,06:00,08:30,2 hours 30 minutes
-FRY-007,Govt Ferry,Swaraj Dweep,Shaheed Dweep,11:00,12:30,1 hour 30 minutes
-FRY-008,Govt Ferry,Shaheed Dweep,Port Blair,16:00,18:00,2 hours
-FRY-009,12-Seater Speed Boat,Port Blair,Ross Island,09:00,09:15,15 minutes
-FRY-010,12-Seater Speed Boat,Ross Island,North Bay,11:00,11:20,20 minutes
-FRY-011,12-Seater Speed Boat,North Bay,Port Blair,15:00,15:30,30 minutes
-FRY-012,12-Seater Speed Boat,Port Blair, baratang,08:00,08:45,45 minutes
+FRY-001,Makruzz,Port Blair,Swaraj Dweep (Havelock),08:00,09:30,1.5 hours
+FRY-002,Makruzz,Swaraj Dweep (Havelock),Shaheed Dweep (Neil),10:30,11:30,1 hour
+FRY-003,Makruzz,Shaheed Dweep (Neil),Port Blair,11:30,12:45,1.15 hours
+FRY-004,Makruzz,Swaraj Dweep (Havelock),Port Blair,14:00,15:30,1.5 hours
+FRY-005,Makruzz,Port Blair,Shaheed Dweep (Neil),08:00,09:15,1.15 hours
+FRY-006,Makruzz,Shaheed Dweep (Neil),Swaraj Dweep (Havelock),12:30,13:30,1 hour
+FRY-007,Nautika,Port Blair,Swaraj Dweep (Havelock),07:30,09:15,1.75 hours
+FRY-008,Nautika,Swaraj Dweep (Havelock),Shaheed Dweep (Neil),10:45,11:45,1 hour
+FRY-009,Nautika,Shaheed Dweep (Neil),Port Blair,12:00,13:15,1.15 hours
+FRY-010,Nautika,Swaraj Dweep (Havelock),Port Blair,15:00,16:45,1.75 hours
+FRY-011,Nautika,Port Blair,Shaheed Dweep (Neil),08:30,09:45,1.15 hours
+FRY-012,Nautika,Shaheed Dweep (Neil),Swaraj Dweep (Havelock),13:00,14:00,1 hour
+FRY-013,Green Ocean,Port Blair,Swaraj Dweep (Havelock),06:45,09:00,2.15 hours
+FRY-014,Green Ocean,Swaraj Dweep (Havelock),Shaheed Dweep (Neil),11:15,12:30,1.25 hours
+FRY-015,Green Ocean,Shaheed Dweep (Neil),Port Blair,15:15,16:45,1.5 hours
+FRY-016,Green Ocean,Swaraj Dweep (Havelock),Port Blair,09:15,11:30,2.15 hours
+FRY-017,Green Ocean,Shaheed Dweep (Neil),Swaraj Dweep (Havelock),12:45,13:45,1 hour
+FRY-018,ITT Majestic,Port Blair,Swaraj Dweep (Havelock),08:30,10:30,2 hours
+FRY-019,ITT Majestic,Swaraj Dweep (Havelock),Shaheed Dweep (Neil),11:00,12:00,1 hour
+FRY-020,ITT Majestic,Shaheed Dweep (Neil),Port Blair,14:15,15:45,1.5 hours
+FRY-021,ITT Majestic,Swaraj Dweep (Havelock),Port Blair,16:00,18:00,2 hours
+FRY-022,ITT Majestic,Shaheed Dweep (Neil),Swaraj Dweep (Havelock),12:30,13:30,1 hour
+FRY-023,Makruzz or Nautika,Port Blair,Swaraj Dweep (Havelock),08:00,10:00,2 hours
+FRY-024,Makruzz or Nautika,Swaraj Dweep (Havelock),Shaheed Dweep (Neil),10:30,11:30,1 hour
+FRY-025,Makruzz or Nautika,Shaheed Dweep (Neil),Port Blair,14:00,15:30,1.5 hours
+FRY-026,Makruzz or Nautika,Swaraj Dweep (Havelock),Port Blair,14:00,16:00,2 hours
+FRY-027,Makruzz or Nautika,Port Blair,Shaheed Dweep (Neil),08:00,09:30,1.5 hours
+FRY-028,Makruzz or Nautika,Shaheed Dweep (Neil),Swaraj Dweep (Havelock),12:30,13:30,1 hour
+FRY-029,Makruzz / Nautika / Green Ocean,Port Blair,Swaraj Dweep (Havelock),08:00,10:00,2 hours
+FRY-030,Makruzz / Nautika / Green Ocean,Swaraj Dweep (Havelock),Shaheed Dweep (Neil),11:00,12:00,1 hour
+FRY-031,Makruzz / Nautika / Green Ocean,Shaheed Dweep (Neil),Port Blair,14:30,16:00,1.5 hours
+FRY-032,Makruzz / Nautika / Green Ocean,Swaraj Dweep (Havelock),Port Blair,14:30,16:30,2 hours
+FRY-033,Makruzz / Nautika / Green Ocean,Port Blair,Shaheed Dweep (Neil),08:30,10:00,1.5 hours
+FRY-034,Makruzz / Nautika / Green Ocean,Shaheed Dweep (Neil),Swaraj Dweep (Havelock),12:00,13:00,1 hour
+FRY-035,Makruzz or ITT Majestic,Port Blair,Swaraj Dweep (Havelock),08:30,10:30,2 hours
+FRY-036,Makruzz or ITT Majestic,Swaraj Dweep (Havelock),Shaheed Dweep (Neil),11:00,12:00,1 hour
+FRY-037,Makruzz or ITT Majestic,Shaheed Dweep (Neil),Port Blair,14:15,15:45,1.5 hours
+FRY-038,Makruzz or ITT Majestic,Swaraj Dweep (Havelock),Port Blair,15:00,17:00,2 hours
+FRY-039,10+2 Seater Speed Boat,Port Blair (Water Sports Complex / Aberdeen Jetty),Ross Island (NSCB Island),08:30,08:50,20 mins
+FRY-040,10+2 Seater Speed Boat,Ross Island (NSCB Island),North Bay Island,11:00,11:30,30 mins
+FRY-041,10+2 Seater Speed Boat,North Bay Island,Port Blair (Water Sports Complex / Aberdeen Jetty),14:00,14:30,30 mins
+FRY-042,10+2 Seater Speed Boat (Two Island Tour),Port Blair,Ross Island & North Bay,09:00,15:00,Full Day
+FRY-043,10+2 Seater Speed Boat,Havelock Jetty (Swaraj Dweep),Elephant Beach,08:00,08:30,30 mins
+FRY-044,10+2 Seater Speed Boat,Elephant Beach,Havelock Jetty (Swaraj Dweep),13:00,13:30,30 mins
+FRY-045,10+2 Seater Speed Boat,Port Blair,Baratang,06:00,08:30,2.5 hours
+FRY-046,10+2 Seater Speed Boat,Baratang,Port Blair,14:00,16:30,2.5 hours
+FRY-047,10+2 Seater Fiber Speed Boat (Mangrove Creek),Nilambur Jetty (Baratang),Limestone Caves (Nayadera),08:30,09:00,30 mins
+FRY-048,10+2 Seater Fiber Speed Boat (Mangrove Creek),Limestone Caves (Nayadera),Nilambur Jetty (Baratang),11:30,12:00,30 mins
+FRY-049,10+2 Seater Speed Boat,Wandoor Jetty,Jolly Buoy Island,08:30,09:15,45 mins
+FRY-050,10+2 Seater Speed Boat,Jolly Buoy Island,Wandoor Jetty,14:00,14:45,45 mins
+FRY-051,10+2 Seater Speed Boat,Wandoor Jetty,Red Skin Island,08:30,09:15,45 mins
+FRY-052,10+2 Seater Speed Boat,Red Skin Island,Wandoor Jetty,14:00,14:45,45 mins
+FRY-053,10+2 Seater Speed Boat,Shaheed Dweep Jetty,Bharatpur Beach Reef,On Demand,On Demand,15 mins
+FRY-054,10+2 Seater Speed Boat,Swaraj Dweep (Havelock),Shaheed Dweep (Neil),On Demand,On Demand,45 mins
+FRY-055,10+2 Seater Speed Boat,Shaheed Dweep (Neil),Swaraj Dweep (Havelock),On Demand,On Demand,45 mins
+FRY-056,10+2 Seater Speed Boat (Private Charter),Port Blair,Swaraj Dweep (Havelock),On Demand,On Demand,1.5 hours
+FRY-057,10+2 Seater Speed Boat (Private Charter),Swaraj Dweep (Havelock),Port Blair,On Demand,On Demand,1.5 hours
+FRY-058,10+2 Seater Speed Boat (Private Charter),Shaheed Dweep (Neil),Port Blair,On Demand,On Demand,1 hour
+FRY-059,10+2 Seater Speed Boat,Yerrata Jetty (Rangat),Long Island,09:00,09:45,45 mins
+FRY-060,Government Ferry,Port Blair,Swaraj Dweep (Havelock),06:00,08:30,2.5 hours
+FRY-061,Government Ferry,Swaraj Dweep (Havelock),Port Blair,14:00,16:30,2.5 hours
+FRY-062,Government Ferry,Swaraj Dweep (Havelock),Shaheed Dweep (Neil),14:00,15:15,1.25 hours
+FRY-063,Government Ferry,Shaheed Dweep (Neil),Swaraj Dweep (Havelock),08:30,09:45,1.25 hours
+FRY-064,Government Ferry,Shaheed Dweep (Neil),Port Blair,06:00,08:30,2.5 hours
+FRY-065,Government Ferry,Port Blair,Shaheed Dweep (Neil),06:00,09:00,3 hours
+FRY-066,Government Passenger Ferry,Aberdeen Jetty,Ross Island (NSCB Island),08:30,08:50,20 mins
+FRY-067,Government Vehicle Ferry,Middle Strait,Baratang Island,Every 30 mins,Every 30 mins,15 mins
+FRY-068,Government Ferry,Port Blair (Phoenix Bay),Baratang,06:00,10:00,4 hours
+FRY-069,Government Ferry / DSS Vessel,Port Blair,Diglipur (Aerial Bay),06:00,14:00,8 hours
+FRY-070,Government Ferry / DSS Vessel,Diglipur (Aerial Bay),Port Blair,06:00,14:00,8 hours
+FRY-071,Government Ferry / Vessel,Port Blair,Long Island (via Havelock),07:00,13:00,6 hours
+FRY-072,Government Ferry / Vessel,Port Blair,Rangat (via Havelock/Neil),06:30,12:30,6 hours
+FRY-073,Government High Speed Vessel (Coral Queen / DSS),Port Blair,Little Andaman (Hut Bay),06:00,16:00,10 hours
+FRY-074,Government High Speed Vessel (Coral Queen / DSS),Little Andaman (Hut Bay),Port Blair,06:00,16:00,10 hours

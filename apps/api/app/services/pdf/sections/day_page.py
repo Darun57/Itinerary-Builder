@@ -11,7 +11,7 @@ from reportlab.lib.enums import TA_CENTER
 from reportlab.platypus import CondPageBreak, HRFlowable, Image, PageBreak, Paragraph, Spacer, Table, TableStyle
 
 from app.schemas.trip import TripRequest
-from app.services.pdf.constants import COLORS, SECTION_LABELS
+from app.services.pdf.constants import COLORS, PAGE_INNER_WIDTH, SECTION_LABELS
 from app.services.pdf.day_parser import build_day_context, generate_day_subtitle, split_itinerary_into_days
 from app.services.pdf.image_resolver import resolve_day_image
 from app.services.pdf.text_utils import (
@@ -44,6 +44,20 @@ def _normalize_day_items(day_section: dict[str, object], day_context: dict[str, 
     result = []
     for item in incoming_items:
         label = str(item.get("label") or "").strip()
+        is_bullets = bool(item.get("is_bullets"))
+        bullets = item.get("bullets")
+        is_intro = bool(item.get("is_intro"))
+
+        if is_bullets and bullets:
+            clean_bullets = [str(b).strip() for b in bullets if str(b).strip()]
+            if clean_bullets:
+                result.append({
+                    "label": label,
+                    "bullets": clean_bullets,
+                    "is_bullets": True,
+                })
+            continue
+
         paragraphs = item.get("paragraphs")
         if paragraphs:
             clean_paragraphs = [str(p).strip() for p in paragraphs if str(p).strip()]
@@ -52,6 +66,7 @@ def _normalize_day_items(day_section: dict[str, object], day_context: dict[str, 
                     "label": label,
                     "paragraphs": clean_paragraphs,
                     "content": "\n\n".join(clean_paragraphs),
+                    "is_intro": is_intro,
                 })
         else:
             content = str(item.get("content") or "").strip()
@@ -61,6 +76,7 @@ def _normalize_day_items(day_section: dict[str, object], day_context: dict[str, 
                     "label": label,
                     "paragraphs": paras,
                     "content": content,
+                    "is_intro": is_intro,
                 })
     return result
 
@@ -69,9 +85,12 @@ def _estimate_day_block_height(items: list[dict[str, object]], has_image: bool) 
     height = 0.55 * inch
     height += 2.75 * inch if has_image else 0.55 * inch
     for item in items:
-        paragraphs = item.get("paragraphs") or [item.get("content")]
-        content_words = sum(max(word_count(p or ""), 1) for p in paragraphs)
-        label_words = max(word_count(item.get("label") or ""), 1)
+        if item.get("is_bullets") and item.get("bullets"):
+            content_words = sum(max(word_count(str(b) or ""), 1) for b in item["bullets"])
+        else:
+            paragraphs = item.get("paragraphs") or [item.get("content")]
+            content_words = sum(max(word_count(str(p) or ""), 1) for p in paragraphs if p)
+        label_words = max(word_count(str(item.get("label") or "")), 1)
         height += 0.24 * inch
         height += 0.16 * inch if item.get("label") else 0
         height += max(0.75 * inch, ((content_words + label_words) / 14.0) * 0.28 * inch)
@@ -84,8 +103,40 @@ def _estimate_day_block_height(items: list[dict[str, object]], has_image: bool) 
 def _fallback_day_section(day_number: int, request: TripRequest) -> dict[str, object]:
     base_destination = clean_destination_label(request.destination or "Andaman Islands")
     is_departure = (day_number == request.number_of_days)
+    is_simple = (getattr(request, "day_wise_style", "luxury_narrative") in ["simple_itinerary", "simple"])
+
     if is_departure:
         heading = f"DAY {day_number} | (Departure)"
+        if is_simple:
+            bullets = [
+                "Breakfast at hotel",
+                "Hotel check-out and luggage assistance",
+                f"Private transfer to Veer Savarkar International Airport, Port Blair",
+                "Board scheduled return flight with memorable experiences",
+            ]
+            return {
+                "heading": heading,
+                "is_departure_day": True,
+                "custom_title": "Departure",
+                "items": [
+                    {
+                        "label": "",
+                        "paragraphs": ["Morning check-out followed by assisted airport transfer for your return flight home."],
+                        "is_intro": True,
+                    },
+                    {
+                        "label": "END OF THE JOURNEY",
+                        "bullets": bullets,
+                        "is_bullets": True,
+                    },
+                    {
+                        "label": "TRANSPORT & LOGISTICS",
+                        "paragraphs": ["Private transfer from hotel to airport."],
+                        "content": "Private transfer from hotel to airport.",
+                    },
+                ],
+            }
+
         return {
             "heading": heading,
             "is_departure_day": True,
@@ -100,7 +151,43 @@ def _fallback_day_section(day_number: int, request: TripRequest) -> dict[str, ob
                 }
             ],
         }
+
     heading = f"DAY {day_number} | ({base_destination})"
+    if is_simple:
+        bullets = [
+            "After breakfast, pickup from hotel",
+            f"Proceed for sightseeing across {base_destination}",
+            "Return transfer to hotel",
+            f"Overnight stay at {base_destination}",
+        ]
+        return {
+            "heading": heading,
+            "is_departure_day": False,
+            "custom_title": f"{base_destination} Tour",
+            "items": [
+                {
+                    "label": "",
+                    "paragraphs": [f"Explore {base_destination} with curated local sightseeing."],
+                    "is_intro": True,
+                },
+                {
+                    "label": "TODAY'S SCHEDULE",
+                    "bullets": bullets,
+                    "is_bullets": True,
+                },
+                {
+                    "label": "TRANSPORT & LOGISTICS",
+                    "paragraphs": ["Private vehicle transfers for all scheduled sightseeing."],
+                    "content": "Private vehicle transfers for all scheduled sightseeing.",
+                },
+                {
+                    "label": "HOTEL & OVERNIGHT",
+                    "paragraphs": [f"Overnight stay at {base_destination}."],
+                    "content": f"Overnight stay at {base_destination}.",
+                },
+            ],
+        }
+
     return {
         "heading": heading,
         "is_departure_day": False,
@@ -158,33 +245,65 @@ def render_day_page(
         Spacer(1, 0.04 * inch),
     ]
     if image_path:
-        day_flowables.append(Image(str(image_path), width=6.15 * inch, height=2.75 * inch))
+        img_height = 2.60 * inch
+        img = Image(str(image_path), width=PAGE_INNER_WIDTH, height=img_height)
+        img_table = Table([[img]], colWidths=[PAGE_INNER_WIDTH], rowHeights=[img_height])
+        img_table.setStyle(TableStyle([
+            ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
+            ("ALIGN", (0, 0), (-1, -1), "CENTER"),
+            ("BOX", (0, 0), (-1, -1), 0.6, COLORS["line"]),
+            ("LEFTPADDING", (0, 0), (-1, -1), 0),
+            ("RIGHTPADDING", (0, 0), (-1, -1), 0),
+            ("TOPPADDING", (0, 0), (-1, -1), 0),
+            ("BOTTOMPADDING", (0, 0), (-1, -1), 0),
+        ]))
+        day_flowables.append(img_table)
+        day_flowables.append(Spacer(1, 0.12 * inch))
     else:
-        day_flowables.append(Spacer(1, 2.75 * inch))
-    day_flowables.append(Spacer(1, 0.2 * inch))
+        day_flowables.append(Spacer(1, 0.05 * inch))
 
     for item in items:
         label = str(item.get("label") or "").strip()
+        is_bullets = bool(item.get("is_bullets"))
+        bullets = item.get("bullets")
         paragraphs = item.get("paragraphs") or [item.get("content")]
+
         if label:
             day_flowables.append(Paragraph(escape_text(label), styles["label"]))
             day_flowables.append(Spacer(1, 0.04 * inch))
 
-        for p_idx, para in enumerate(paragraphs):
-            para_str = escape_text(str(para or "").strip())
-            if not para_str:
-                continue
-            if p_idx > 0:
-                day_flowables.append(Spacer(1, 0.06 * inch))
-            day_flowables.append(Paragraph(para_str, styles["body"]))
+        if is_bullets and bullets:
+            for b in bullets:
+                b_str = str(b).strip()
+                if not b_str:
+                    continue
+                if b_str.startswith("→") or b_str.startswith("->") or "→" in b_str[:4]:
+                    clean_b = b_str.lstrip(" -→>").strip()
+                    b_style = styles.get("bullet_subitem", styles["body"])
+                    day_flowables.append(Paragraph(f"&nbsp;&nbsp;&rarr;&nbsp;&nbsp;{escape_text(clean_b)}", b_style))
+                else:
+                    clean_b = b_str.lstrip(" •-*").strip()
+                    b_style = styles.get("bullet_item", styles["body"])
+                    day_flowables.append(Paragraph(f"&bull;&nbsp;&nbsp;{escape_text(clean_b)}", b_style))
+        else:
+            for p_idx, para in enumerate(paragraphs):
+                para_str = escape_text(str(para or "").strip())
+                if not para_str:
+                    continue
+                if p_idx > 0:
+                    day_flowables.append(Spacer(1, 0.06 * inch))
+                if item.get("is_intro"):
+                    day_flowables.append(Paragraph(para_str, styles.get("bullet_lead", styles["body"])))
+                else:
+                    day_flowables.append(Paragraph(para_str, styles["body"]))
 
-        day_flowables.append(Spacer(1, 0.08 * inch))
+        day_flowables.append(Spacer(1, 0.04 * inch))
         day_flowables.append(HRFlowable(width="100%", thickness=0.25, color=COLORS["line"]))
-        day_flowables.append(Spacer(1, 0.08 * inch))
+        day_flowables.append(Spacer(1, 0.04 * inch))
 
-    day_flowables.append(Spacer(1, 0.12 * inch))
+    day_flowables.append(Spacer(1, 0.06 * inch))
     day_flowables.append(HRFlowable(width="100%", thickness=0.4, color=COLORS["soft_grey"]))
-    day_flowables.append(Spacer(1, 0.04 * inch))
+    day_flowables.append(Spacer(1, 0.02 * inch))
     story.extend(day_flowables)
 
 

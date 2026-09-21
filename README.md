@@ -1,6 +1,6 @@
-# Andaman Darun Tours and Travels — Tourism ERP & Proposal Engine
+# Goa Darun Tours and Travels — Tourism ERP & Proposal Engine
 
-A full-stack, enterprise-grade tourism operating system tailored for Andaman island travel operations. The platform combines an AI-assisted itinerary builder, a high-fidelity 13-page PDF proposal engine, an integrated CRM (Leads, Clients, Bookings, Staff, Tasks), revenue and profit pipeline analytics, a simplified WhatsApp automation hub, and a multi-channel marketing engine.
+A full-stack, enterprise-grade tourism operating system tailored for Goa tourism operations. The platform combines an AI-assisted itinerary builder, a high-fidelity 13-page PDF proposal engine, an integrated CRM (Leads, Clients, Bookings, Staff, Tasks), revenue and profit pipeline analytics, a simplified WhatsApp automation hub, and a multi-channel marketing engine.
 
 ---
 
@@ -10,14 +10,14 @@ A full-stack, enterprise-grade tourism operating system tailored for Andaman isl
 The platform is organized as a decoupled monorepo comprising:
 - **Frontend (`apps/web`)**: A modern web application built with **Next.js (App Router)**, **React**, and **TypeScript**. It offers an interactive multi-step travel wizard, dynamic itinerary preview, full CRM management dashboards, marketing campaign attribution, and WhatsApp reminder dispatchers.
 - **Backend (`apps/api`)**: A high-performance **FastAPI** Python application responsible for business logic, catalog management, itinerary normalization, pricing and margin pipelines, WhatsApp client integration, and multi-page ReportLab PDF generation.
-- **Data Catalog (`data/`)**: Structured CSV datasets providing localized island data across Port Blair, Havelock (Swaraj Dweep), and Neil Island (Shaheed Dweep) for hotels, ferry schedules, activities, and destinations.
+- **Data Catalog (`data/`)**: Structured CSV datasets providing localized Goa data across Panaji, North Goa, Old Goa, South Goa, and Dudhsagar (South Goa) for hotels, ferry schedules, activities, and destinations.
 - **Assets Engine (`assets/`)**: High-resolution typography (Cinzel, Montserrat) and curated cover imagery for dynamic document rendering.
 
 ### 2. Core Functional Modules
 
 #### AI & Itinerary Proposal Generator
 - **Multi-Step Travel Wizard**: Captures traveler demographics, travel dates, pacing style, budget tiers, and activity preferences.
-- **Island Logistics Normalizer**: Automatically resolves ferry routes, timings, accommodation check-ins, and daily schedules across Andaman islands.
+- **Goa Movement & Logistics Normalizer**: Automatically resolves ferry routes, timings, accommodation check-ins, and daily schedules across Goa regions and destinations.
 - **ReportLab 13-Page PDF Engine**: Compiles branded luxury proposals including:
   1. Front Cover Page (Cinzel typography, metadata, client details)
   2. Trip Highlights & Experience Overview
@@ -163,10 +163,10 @@ Darun tourism/
 │                       ├── hotels.py        # Accommodation showcase and star rating cards
 │                       └── policies.py      # Invoice, Payment, Inclusions, and Agreement policy contracts
 │
-├── data/                                    # Island Tourism Catalog Data (CSV)
-│   ├── destinations.csv                     # Island points of interest, descriptions, locations
+├── data/                                    # Goa Tourism Catalog Data (CSV)
+│   ├── destinations.csv                     # Goa points of interest, descriptions, locations
 │   ├── hotels.csv                           # Accommodation catalog, price bands, ratings, amenities
-│   ├── ferries.csv                          # Inter-island ferry routes (Makruzz, Green Ocean, Govt)
+│   ├── ferries.csv                          # Goa river, boat, and ferry routes (Mandovi River Cruise, Goa River Ferry, Tiracol Ferry)
 │   └── activities.csv                       # Water sports, scuba, trekking, and heritage tours
 │
 ├── assets/                                  # Static binary design assets
@@ -177,8 +177,12 @@ Darun tourism/
 │   │   └── Montserrat-Regular.ttf           # Sans-serif regular for body text
 │   │
 │   └── images/                              # Visual assets for PDF covers and documents
-│       └── default_cover/                   # Curated high-resolution Andaman island scenery images
+│       └── default_cover/                   # Curated high-resolution Goa scenery images
 │
 └── docs/                                    # Project documentation
     └── PROJECT_HISTORY.md                   # Engineering change logs and milestone documentation
 ```
+
+
+## Goa configuration
+This variant uses Goa-specific destination, hotel, activity, and movement catalogs. The legacy `primary_island` and `daily_island_plan` field names remain in the API schema for compatibility, but the planner treats them as Goa destination regions/locations. Image mapping is intentionally unchanged in this pass.

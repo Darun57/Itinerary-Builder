@@ -3,6 +3,7 @@ from typing import Any
 
 from app.services.company_knowledge import build_recommendation_bundle
 from app.schemas.trip import TripRequest, CustomerContext, DayPlan, TransportContext
+from app.services.andaman_geography import normalize_andaman_island
 
 
 @dataclass(frozen=True)
@@ -63,20 +64,8 @@ def _first_value(values: list[str], fallback: str = "") -> str:
 
 
 def _normalize_island_name(island: str) -> str:
-    if not island:
-        return ""
-    text = str(island).lower()
-    if "havelock" in text or "swaraj" in text or "radhanagar" in text or "kalapathar" in text or "elephant beach" in text:
-        return "Swaraj Dweep"
-    if "neil" in text or "shaheed" in text or "laxmanpur" in text or "bharatpur" in text or "natural bridge" in text:
-        return "Shaheed Dweep"
-    if "baratang" in text or "limestone" in text or "mud volcano" in text:
-        return "Baratang Island"
-    if "diglipur" in text or "saddle peak" in text or "ross & smith" in text:
-        return "Diglipur"
-    if "port blair" in text or "cellular jail" in text or "corbyn" in text or "marina park" in text or "chidiya tapu" in text or "wandoor" in text or "museum" in text or "ross" in text or "north bay" in text:
-        return "Port Blair"
-    return str(island).strip()
+    """Backward-compatible wrapper around the Andaman geography normalizer."""
+    return normalize_andaman_island(island)
 
 
 def _selected_hotels_by_island(recommendations, selected_hotels: list[str]) -> dict[str, list[str]]:

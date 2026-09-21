@@ -23,6 +23,14 @@ export function MultiSelect({
 }) {
   const [open, setOpen] = React.useState(false)
 
+  // Only display selected items that actually match the valid options available
+  const displaySelected = React.useMemo(() => {
+    if (!options || options.length === 0) return selected;
+    return selected.filter((s) =>
+      options.some((o) => o.value.toLowerCase() === s.toLowerCase())
+    );
+  }, [options, selected]);
+
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger
@@ -31,8 +39,8 @@ export function MultiSelect({
         )}
       >
         <div className="flex flex-wrap gap-1 items-center overflow-hidden">
-            {selected.length > 0 ? (
-              selected.join(", ")
+            {displaySelected.length > 0 ? (
+              displaySelected.join(", ")
             ) : (
               <span className="text-muted-foreground">{placeholder}</span>
             )}

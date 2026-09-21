@@ -87,17 +87,17 @@ export function WhatsAppReminderModal({
         // Fallback local preview
         if (active) {
           if (reminderType === "custom") {
-            setMessageBody(`Hi ${clientName || "Client"}! 👋\n\n${customText || "Enter your custom message here."}\n\n— *Andaman Darun Tours and Travels*`);
+            setMessageBody(`Hi ${clientName || "Client"}! 👋\n\n${customText || "Enter your custom message here."}\n\n— *Andaman Islands Darun Tours and Travels*`);
           } else if (reminderType === "pre_trip") {
             setMessageBody(
               `Hi ${clientName || "Valued Client"}! 🌴\n\nYour trip to *${
-                initialBooking?.destination || "Andaman"
+                initialBooking?.destination || "Andaman Islands"
               }* is coming up soon!\n📅 Check-in: *${
                 initialBooking?.check_in || "Upcoming"
-              }*\n🏨 Hotel: *${initialBooking?.hotel_name || "Hotel Stay"}*\n\nReply here for any assistance.\n— *Andaman Darun Tours and Travels*`
+              }*\n🏨 Hotel: *${initialBooking?.hotel_name || "Hotel Stay"}*\n\nReply here for any assistance.\n— *Andaman Islands Darun Tours and Travels*`
             );
           } else {
-            setMessageBody(`Hi ${clientName || "Client"}!\n\nThis is a notification from Andaman Darun Tours and Travels.\n\n— *Andaman Darun Tours and Travels*`);
+            setMessageBody(`Hi ${clientName || "Client"}!\n\nThis is a notification from Andaman Islands Darun Tours and Travels.\n\n— *Andaman Islands Darun Tours and Travels*`);
           }
         }
       } finally {
@@ -397,7 +397,7 @@ export function WhatsAppReminderModal({
                 </div>
                 <div>
                   <div style={{ fontSize: "12px", fontWeight: 600, color: "#E9EDEF" }}>
-                    Andaman Darun Tours and Travels
+                    Andaman Islands Darun Tours and Travels
                   </div>
                   <div style={{ fontSize: "10px", color: "#8696A0" }}>Official WhatsApp</div>
                 </div>
@@ -442,7 +442,7 @@ export function WhatsAppReminderModal({
 
               {/* Notice */}
               <div style={{ marginTop: "14px", fontSize: "10.5px", color: "#8696A0", textAlign: "center" }}>
-                🔒 End-to-end encrypted · Andaman Darun Tours and Travels
+                🔒 End-to-end encrypted · Andaman Islands Darun Tours and Travels
               </div>
             </div>
           </div>

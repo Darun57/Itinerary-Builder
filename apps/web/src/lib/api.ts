@@ -35,21 +35,74 @@ async function safeFetch(path: string, options?: RequestInit): Promise<Response>
   }
 }
 
+function cleanTripPayload(data: Partial<TripRequestType>): any {
+  if (!data || typeof data !== "object") return data;
+  const copy: any = { ...data };
+  const numericKeys = [
+    "number_of_nights",
+    "number_of_days",
+    "number_of_adults",
+    "number_of_children",
+    "number_of_infants",
+    "number_of_senior_citizens",
+    "flight_per_person_rate",
+    "per_person_cost",
+    "child_cost",
+    "infant_cost",
+    "senior_cost",
+    "total_package_cost",
+  ];
+  for (const k of numericKeys) {
+    if (copy[k] === "" || copy[k] === null || copy[k] === undefined || isNaN(Number(copy[k]))) {
+      copy[k] = 0;
+    } else {
+      copy[k] = Number(copy[k]);
+    }
+  }
+  if (Array.isArray(copy.daily_island_plan)) {
+    copy.daily_island_plan = copy.daily_island_plan.map((dp: any, idx: number) => ({
+      day_number: Number(dp?.day_number) || (idx + 1),
+      primary_island: String(dp?.primary_island || ""),
+      attractions: Array.isArray(dp?.attractions) ? dp.attractions : [],
+      activities: Array.isArray(dp?.activities) ? dp.activities : [],
+      hotel: String(dp?.hotel || ""),
+      transfer_type: String(dp?.transfer_type || "Private Cab"),
+      ferry: String(dp?.ferry || ""),
+      ferry_timing: String(dp?.ferry_timing || ""),
+    }));
+  }
+  if (Array.isArray(copy.pricing_tiers)) {
+    copy.pricing_tiers = copy.pricing_tiers.map((pt: any) => ({
+      category: pt?.category || "adult",
+      label: pt?.label || "",
+      pax: Number(pt?.pax) || 1,
+      cost: Number(pt?.cost) || 0,
+    }));
+  }
+  return copy;
+}
+
 export async function fetchHotelRecommendations(data: Partial<TripRequestType>) {
+  const payload = cleanTripPayload(data);
   const response = await safeFetch("/recommendations/hotels", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data),
+    body: JSON.stringify(payload),
   });
-  if (!response.ok) throw new Error("Failed to fetch hotels");
+  if (!response.ok) {
+    const errText = await response.text().catch(() => "");
+    console.error("fetchHotelRecommendations error:", response.status, errText);
+    throw new Error(`Failed to fetch hotels: ${response.status} ${errText}`);
+  }
   return response.json();
 }
 
 export async function fetchActivityRecommendations(data: Partial<TripRequestType>) {
+  const payload = cleanTripPayload(data);
   const response = await safeFetch("/recommendations/activities", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data),
+    body: JSON.stringify(payload),
   });
   if (!response.ok) throw new Error("Failed to fetch activities");
   return response.json();

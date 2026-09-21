@@ -15,6 +15,7 @@ import re
 from typing import Any
 
 from app.schemas.trip import TripRequest
+from app.services.andaman_geography import normalize_andaman_island
 
 LOGGER = logging.getLogger(__name__)
 
@@ -28,29 +29,8 @@ JOURNEY_STANDARD_PREFIX = "For the places highlighted above, "
 
 
 def _normalize_island_name(name: str) -> str:
-    """Normalize island names to canonical forms."""
-    text = (name or "").strip().lower()
-    if not text:
-        return "Port Blair"
-    if "havelock" in text or "swaraj" in text:
-        return "Swaraj Dweep"
-    if "neil" in text or "shaheed" in text:
-        return "Shaheed Dweep"
-    if "baratang" in text:
-        return "Baratang Island"
-    if "ross" in text or "north bay" in text:
-        return "Ross Island & North Bay"
-    if "diglipur" in text:
-        return "Diglipur"
-    if "rangat" in text:
-        return "Rangat"
-    if "mayabunder" in text:
-        return "Mayabunder"
-    if "little andaman" in text:
-        return "Little Andaman"
-    if "port blair" in text or "cellular" in text or "corbyn" in text:
-        return "Port Blair"
-    return name.strip()
+    """Backward-compatible name for the canonical Andaman island normalizer."""
+    return normalize_andaman_island(name)
 
 
 def resolve_canonical_movement(
@@ -62,8 +42,8 @@ def resolve_canonical_movement(
     """
     Computes canonical route string:
     - Departure day -> 'Departure'
-    - Day 1 -> '(Port Blair)' or current island
-    - Inter-island transit -> 'Origin → Destination'
+    - Day 1 -> arrival base/current region
+    - Regional transit -> 'Origin → Destination'
     - Excursion day-trip returning to base -> 'Origin → Destination Return'
     - Exploration on same island -> 'Current Island'
     """
@@ -95,7 +75,7 @@ def resolve_canonical_movement(
     if day_idx == 0:
         return curr_island or "Port Blair"
 
-    # Check if excursion day trip (e.g. Day 2 Baratang return to Port Blair hotel)
+    # Check if excursion day trip returns to the previous hotel/base.
     if curr_dp and prev_dp:
         curr_hotel = (curr_dp.hotel or "").strip().lower()
         prev_hotel = (prev_dp.hotel or "").strip().lower()
@@ -114,7 +94,7 @@ def standardize_todays_journey(journey_text: str) -> str:
     if not text:
         return (
             "For the places highlighted above, private chauffeur transfers ensure "
-            "comfortable transportation and effortless island sightseeing throughout the day."
+            "comfortable transportation and effortless sightseeing across the Andaman Islands throughout the day."
         )
 
     # Check if already starts with standard phrase
@@ -182,8 +162,8 @@ def sanitize_departure_day(
     if len(existing_dep) < 30 or "enjoy" not in existing_dep.lower():
         day_dict["departure_narrative"] = (
             f"Enjoy a peaceful morning check-out at {checkout_hotel} with full luggage assistance. "
-            f"Your private chauffeur will pick you up for a smooth transfer to Veer Savarkar "
-            f"International Airport for your flight home."
+            f"Your private chauffeur will pick you up for a smooth transfer to "
+            f"Port Blair airport for your flight home."
         )
     else:
         # Ensure it mentions checkout and airport
@@ -193,7 +173,7 @@ def sanitize_departure_day(
     if len(existing_farewell) < 30 or "darun tourism" not in existing_farewell.lower():
         day_dict["farewell_narrative"] = (
             f"Darun Tourism extends its heartfelt gratitude to {customer_name} and family "
-            f"for choosing us. It was our genuine pleasure crafting your Andaman trip memories, "
+            f"for choosing us. It was our genuine pleasure crafting your Andaman Islands trip memories, "
             f"and we look forward to welcoming you back in the future."
         )
     else:
@@ -243,6 +223,8 @@ def normalize_itinerary_payload(raw_json_or_dict: Any, request: TripRequest) -> 
     if not last_night_hotel and request.selected_hotels:
         last_night_hotel = request.selected_hotels[0]
 
+    from app.services.itinerary_style import DayWiseNarrativeFormatter
+
     for idx, day in enumerate(days):
         day_num = idx + 1
         day["day_number"] = day_num
@@ -257,62 +239,23 @@ def normalize_itinerary_payload(raw_json_or_dict: Any, request: TripRequest) -> 
             )
         )
 
-        # 1. Canonical Route & Movement
+        # Canonical Route & Movement
         canonical_route = resolve_canonical_movement(idx, total_days, day, request)
         day["travel_movement"] = canonical_route
 
-        # 2. Day 1 Isolation
-        if idx == 0 and not is_departure:
+        # Day 1 Isolation (only for luxury style)
+        if idx == 0 and not is_departure and getattr(request, "day_wise_style", "luxury_narrative") == "luxury_narrative":
             sanitize_day_1(day, request)
 
-        # 3. Departure Day Lock
-        if is_departure and is_last_day:
-            sanitize_departure_day(day, request, last_night_hotel)
-            continue
-
-        # 4. Normal Days Validation
-        day["is_departure_day"] = False
-        day["departure_narrative"] = ""
-        day["farewell_narrative"] = ""
-
-        # Title / Subtitle fallback
-        if not day.get("title") or day.get("title") == "Departure":
-            island = dp.primary_island if dp else day.get("primary_island") or "Island"
-            day["title"] = f"Exploring {island}"
-        if not day.get("subtitle"):
-            day["subtitle"] = "Coastal Highlights & Island Discovery"
-
-        # Today's Journey Standard Lead-in
-        day["todays_journey"] = standardize_todays_journey(str(day.get("todays_journey") or ""))
-
-        # Hotel Alignment
-        assigned_hotel = dp.hotel if dp and dp.hotel else (
-            request.selected_hotels[idx % len(request.selected_hotels)]
-            if request.selected_hotels else ""
+        # Apply the chosen writing style formatting strategy (Luxury Narrative or Simple Itinerary)
+        DayWiseNarrativeFormatter.format_day(
+            day_idx=idx,
+            day_dict=day,
+            dp=dp,
+            request=request,
+            total_days=total_days,
+            is_departure=is_departure and is_last_day,
+            last_night_hotel=last_night_hotel,
         )
-        if assigned_hotel:
-            day["hotel"] = assigned_hotel
-            current_hotel_exp = str(day.get("hotel_experience") or "").strip()
-            # If hotel_experience is too short or doesn't mention assigned hotel, align it smoothly
-            if len(current_hotel_exp) < 20 or assigned_hotel.lower() not in current_hotel_exp.lower():
-                day["hotel_experience"] = (
-                    f"A peaceful stay at {assigned_hotel}, offering comfortable accommodation, "
-                    f"relaxing oceanfront surroundings, and warm hospitality—perfect for unwinding "
-                    f"after your journey."
-                )
-
-        # Visiting Places & Destination Story fallback
-        if not day.get("visiting_places"):
-            attractions = ", ".join(dp.attractions) if dp and dp.attractions else "scenic coastal landmarks"
-            day["visiting_places"] = (
-                f"Begin the day with curated visits to {attractions}. "
-                f"Enjoy serene beachside walks, immersive sightseeing, and memorable island discovery."
-            )
-        if not day.get("destination_story"):
-            island_label = dp.primary_island if dp else "The Andaman Islands"
-            day["destination_story"] = (
-                f"{island_label} showcases the natural splendor of the archipelago, famous for its "
-                f"azure waters, tropical lushness, and rich maritime heritage."
-            )
 
     return json.dumps(data)

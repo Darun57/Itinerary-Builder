@@ -10,6 +10,7 @@ from app.services.data_loader import (
     load_hotels,
 )
 from app.schemas.trip import TripRequest
+from app.services.andaman_geography import normalize_andaman_island
 
 
 HOTEL_RESULT_COLUMNS = [
@@ -130,6 +131,54 @@ def _clean_destination_label(text: str) -> str:
     return re.sub(r"\s*\([^)]*\)", "", str(text or "")).strip()
 
 
+def _matches_location(hotel_loc: str, preferred: set[str]) -> bool:
+    if not preferred:
+        return True
+    h_raw = str(hotel_loc or "").strip().lower()
+    h_clean = _clean_destination_label(hotel_loc).lower()
+    canon_hotel = normalize_andaman_island(hotel_loc).lower()
+
+    for p in preferred:
+        p_raw = str(p or "").strip().lower()
+        p_clean = _clean_destination_label(p).lower()
+        p_canon = normalize_andaman_island(p).lower()
+
+        if canon_hotel and p_canon and canon_hotel == p_canon:
+            return True
+        if h_raw and p_raw and (h_raw in p_raw or p_raw in h_raw):
+            return True
+        if h_clean and p_clean and (h_clean in p_clean or p_clean in h_clean):
+            return True
+        # Andaman island aliases
+        if ("havelock" in h_raw or "swaraj" in h_raw) and ("havelock" in p_raw or "swaraj" in p_raw):
+            return True
+        if ("neil" in h_raw or "shaheed" in h_raw) and ("neil" in p_raw or "shaheed" in p_raw):
+            return True
+        if "port blair" in h_raw and "port blair" in p_raw:
+            return True
+        if "diglipur" in h_raw and "diglipur" in p_raw:
+            return True
+        if "baratang" in h_raw and "baratang" in p_raw:
+            return True
+    return False
+
+
+def _category_matches(cat: str, pref: str) -> bool:
+    c = _normalize(cat)
+    p = _normalize(pref)
+    if not p:
+        return True
+    if c == p:
+        return True
+    if p in {"5 star", "luxury", "boutique", "ultra luxury"} and c in {"luxury", "boutique"}:
+        return True
+    if p in {"4 star", "premium"} and c == "premium":
+        return True
+    if p in {"3 star", "2 star", "standard", "budget"} and c in {"standard", "budget"}:
+        return True
+    return False
+
+
 def _requested_locations(items: list[str]) -> set[str]:
     if not items:
         return set()
@@ -137,9 +186,16 @@ def _requested_locations(items: list[str]) -> set[str]:
         items = [items]
     locations = set()
     for value in items:
-        cleaned = _clean_destination_label(value)
+        val = str(value or "").strip()
+        if not val or val.lower() == "departure":
+            continue
+        locations.add(_normalize(val))
+        cleaned = _clean_destination_label(val)
         if cleaned:
             locations.add(_normalize(cleaned))
+        canon = normalize_andaman_island(val)
+        if canon and canon.lower() != "departure":
+            locations.add(_normalize(canon))
     return locations
 
 
@@ -147,10 +203,26 @@ def _daily_plan_locations(plan: list) -> set[str]:
     locations: set[str] = set()
     for dp in plan:
         if hasattr(dp, "primary_island") and dp.primary_island:
-            locations.add(_normalize(_clean_destination_label(dp.primary_island)))
+            val = str(dp.primary_island).strip()
+            if val.lower() != "departure":
+                locations.add(_normalize(val))
+                cleaned = _clean_destination_label(val)
+                if cleaned:
+                    locations.add(_normalize(cleaned))
+                canon = normalize_andaman_island(val)
+                if canon and canon.lower() != "departure":
+                    locations.add(_normalize(canon))
         if hasattr(dp, "attractions"):
             for att in dp.attractions:
-                locations.add(_normalize(_clean_destination_label(att)))
+                val = str(att).strip()
+                if val.lower() != "departure":
+                    locations.add(_normalize(val))
+                    cleaned = _clean_destination_label(val)
+                    if cleaned:
+                        locations.add(_normalize(cleaned))
+                    canon = normalize_andaman_island(val)
+                    if canon and canon.lower() != "departure":
+                        locations.add(_normalize(canon))
     return locations
 
 
@@ -208,13 +280,16 @@ def recommend_hotels(request: TripRequest, for_ui: bool = False) -> pd.DataFrame
         remaining = hotels
 
     if preferred_locations:
-        location_mask = remaining["location"].astype(str).str.lower().isin(preferred_locations)
+        location_mask = remaining["location"].apply(lambda loc: _matches_location(loc, preferred_locations))
         if location_mask.any():
             remaining = remaining[location_mask].copy()
-    if category_preference:
-        category_mask = remaining["category"].astype(str).str.lower() == category_preference
-        if category_mask.any():
-            remaining = remaining[category_mask].copy()
+
+    # For UI carousel, do not strictly drop entire islands just for category mismatch.
+    # Category matches are strongly boosted in score_row.
+    if category_preference and not for_ui:
+        cat_mask = remaining["category"].apply(lambda cat: _category_matches(cat, category_preference))
+        if cat_mask.any():
+            remaining = remaining[cat_mask].copy()
 
     # Merge pinned (selected) hotels back with the filtered recommendations
     if not pinned_hotels.empty:
@@ -234,17 +309,17 @@ def recommend_hotels(request: TripRequest, for_ui: bool = False) -> pd.DataFrame
             score += _append_reason(reasons, "selected stay", 1000)
         if availability == "limited availability":
             score += _append_reason(reasons, "limited availability but still bookable", 4)
-        if preferred_locations and location in preferred_locations:
+        if preferred_locations and _matches_location(row["location"], preferred_locations):
             score += _append_reason(reasons, "destination/location match", 25)
         if trip_type and trip_type in description:
             score += _append_reason(reasons, "suited to trip type", 20)
-        if category_preference and category == category_preference:
+        if category_preference and _category_matches(category, category_preference):
             score += _append_reason(reasons, "matches selected hotel category", 45)
-        elif budget in {"premium", "premium luxury"} and category in {"4 star", "5 star"}:
+        elif budget in {"premium", "premium luxury"} and category in {"4 star", "5 star", "premium"}:
             score += _append_reason(reasons, "premium hotel fit", 20)
-        elif budget in {"luxury", "ultra luxury"} and category in {"5 star", "boutique"}:
+        elif budget in {"luxury", "ultra luxury"} and category in {"5 star", "boutique", "luxury"}:
             score += _append_reason(reasons, "luxury hotel fit", 25)
-        elif budget in {"budget", "economy"} and category in {"2 star", "3 star"}:
+        elif budget in {"budget", "economy"} and category in {"2 star", "3 star", "standard"}:
             score += _append_reason(reasons, "budget-friendly hotel fit", 20)
 
         if _contains_any(request_text, HONEYMOON_TERMS) and (
@@ -351,12 +426,12 @@ def recommend_ferries(request: TripRequest) -> pd.DataFrame:
 
         if from_location in preferred_text or to_location in preferred_text:
             score += _append_reason(reasons, "connects recommended destination", 35)
-        if "port blair" in from_location:
+        if "panaji" in from_location:
             score += _append_reason(reasons, "good arrival route", 15)
-        if request.number_of_days >= 5 and "shaheed dweep" in route_text:
-            score += _append_reason(reasons, "supports inter-island movement", 20)
-        if request.number_of_days <= 4 and "port blair" in route_text and "swaraj dweep" in route_text:
-            score += _append_reason(reasons, "efficient short-trip island transfer", 15)
+        if request.number_of_days >= 5 and any(k in route_text for k in ["south goa", "dudhsagar", "palolem", "cavelossim"]):
+            score += _append_reason(reasons, "supports wider Andaman island movement", 20)
+        if request.number_of_days <= 4 and "panaji" in route_text:
+            score += _append_reason(reasons, "efficient short-trip connection", 15)
         if _contains_any(request_text, SENIOR_TERMS) and "2 hours" in _normalize(row["duration"]):
             score -= 15
             reasons.append("reduced score for longer transfer")
@@ -400,11 +475,11 @@ def recommend_destinations(request: TripRequest) -> pd.DataFrame:
         if _contains_any(request_text, FAMILY_TERMS) and "famil" in searchable:
             score += _append_reason(reasons, "family-friendly destination", 20)
         if _contains_any(request_text, SENIOR_TERMS):
-            if name in {"port blair", "shaheed dweep", "chidiya tapu"}:
+            if name in {"panaji", "fontainhas", "dona paula", "miramar"}:
                 score += _append_reason(reasons, "gentler senior-friendly destination", 20)
-            if name == "baratang":
-                score -= 25
-                reasons.append("reduced score for longer road transfer")
+            if name in {"dudhsagar", "netravali"}:
+                score -= 10
+                reasons.append("reduced score for longer inland transfer")
 
         return score, reasons
 

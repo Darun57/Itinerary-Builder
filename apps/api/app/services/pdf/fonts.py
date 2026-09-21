@@ -65,4 +65,7 @@ def build_styles() -> dict[str, ParagraphStyle]:
         "policy_price": ParagraphStyle("policy_price", parent=base["BodyText"], fontName=fonts["body_bold"], fontSize=9.2, leading=12, textColor=COLORS["gold"], spaceAfter=2),
         "policy_badge": ParagraphStyle("policy_badge", parent=base["BodyText"], fontName=fonts["body_bold"], fontSize=7.8, leading=10, textColor=COLORS["gold"], spaceAfter=2),
         "policy_number": ParagraphStyle("policy_number", parent=base["BodyText"], fontName=fonts["heading"], fontSize=14, leading=17, textColor=COLORS["gold"], spaceAfter=2),
+        "bullet_item": ParagraphStyle("bullet_item", parent=base["BodyText"], fontName=fonts["body"], fontSize=10.2, leading=14.8, textColor=COLORS["body"], spaceAfter=3, leftIndent=12, firstLineIndent=-8),
+        "bullet_subitem": ParagraphStyle("bullet_subitem", parent=base["BodyText"], fontName=fonts["body_bold"], fontSize=9.6, leading=14.2, textColor=COLORS["dark"], spaceAfter=2, leftIndent=26, firstLineIndent=-10),
+        "bullet_lead": ParagraphStyle("bullet_lead", parent=base["BodyText"], fontName=fonts["body"], fontSize=10.2, leading=15, textColor=COLORS["dark"], spaceAfter=5),
     }

@@ -9,22 +9,23 @@ import { Input } from "@/components/ui/input";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { fetchHotelRecommendations, fetchAllHotels, createHotel, NewHotelPayload } from "@/lib/api";
 import { useWizardStore } from "../../store";
+import { resolvePrimaryIsland } from "../../utils";
 import { StepHeader } from "../StepHeader";
 import { HotelCarousel } from "../HotelCarousel";
 
-// ── Island locations available in the system ────────────────────────────────
-const ISLAND_LOCATIONS = [
+// ── Andaman hotel locations available in the system ─────────────────────────────
+const ANDAMAN_HOTEL_LOCATIONS = [
   "Port Blair",
-  "Swaraj Dweep",
-  "Shaheed Dweep",
-  "Baratang Island",
+  "Swaraj Dweep (Havelock)",
+  "Shaheed Dweep (Neil)",
+  "Baratang",
   "Diglipur",
-  "Little Andaman",
   "Rangat",
   "Mayabunder",
   "Long Island",
-  "Ross Island",
-  "North Bay Island",
+  "Little Andaman",
+  "Wandoor",
+  "Chidiya Tapu",
 ];
 
 const HOTEL_CATEGORIES = ["2 Star", "3 Star", "4 Star", "5 Star", "Boutique"];
@@ -68,8 +69,8 @@ function AddHotelModal({ onClose, onSaved }: AddHotelModalProps) {
     setError("");
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
     if (!form.hotel_name.trim()) return setError("Hotel name is required.");
     if (!form.location) return setError("Location is required.");
     if (!form.category) return setError("Category is required.");
@@ -110,7 +111,15 @@ function AddHotelModal({ onClose, onSaved }: AddHotelModalProps) {
         </div>
 
         {/* Body */}
-        <form onSubmit={handleSubmit} className="p-6 space-y-5">
+        <div
+          className="p-6 space-y-5"
+          onKeyDown={(e) => {
+            if (e.key === "Enter" && (e.target as HTMLElement).tagName !== "TEXTAREA") {
+              e.preventDefault();
+              handleSubmit();
+            }
+          }}
+        >
           {/* Hotel Name */}
           <div className="space-y-1.5">
             <label className="text-xs font-semibold text-white/60 uppercase tracking-wide">
@@ -136,8 +145,8 @@ function AddHotelModal({ onClose, onSaved }: AddHotelModalProps) {
                 onChange={(e) => handleChange("location", e.target.value)}
                 className="w-full bg-white/5 border border-white/10 text-white rounded-lg px-3 py-2.5 text-sm outline-none focus:border-primary/60 focus:ring-1 focus:ring-primary/30 transition-all"
               >
-                <option value="" className="bg-[#0E1117] text-white/40">Select island</option>
-                {ISLAND_LOCATIONS.map((loc) => (
+                <option value="" className="bg-[#0E1117] text-white/40">Select location</option>
+                {ANDAMAN_HOTEL_LOCATIONS.map((loc) => (
                   <option key={loc} value={loc} className="bg-[#0E1117] text-white">{loc}</option>
                 ))}
               </select>
@@ -225,7 +234,8 @@ function AddHotelModal({ onClose, onSaved }: AddHotelModalProps) {
               Cancel
             </button>
             <button
-              type="submit"
+              type="button"
+              onClick={() => handleSubmit()}
               disabled={saving}
               className="flex-1 py-2.5 rounded-lg text-sm font-semibold bg-primary text-primary-foreground hover:bg-primary/90 disabled:opacity-60 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2"
             >
@@ -242,7 +252,7 @@ function AddHotelModal({ onClose, onSaved }: AddHotelModalProps) {
               )}
             </button>
           </div>
-        </form>
+        </div>
       </div>
 
       <style>{`@keyframes slideUp { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }`}</style>
@@ -265,7 +275,7 @@ export default function AccommodationStep() {
   const dailyPlan = watchedValues.daily_island_plan || [];
 
   // Query 1: Recommendations tailored for this itinerary
-  const { data: recommendedHotels, isLoading, isError } = useQuery({
+  const { data: recommendedHotels, isLoading, isError, refetch } = useQuery({
     queryKey: [
       "hotels",
       currentRequestData.destination,
@@ -281,7 +291,7 @@ export default function AccommodationStep() {
     staleTime: 0,
   });
 
-  // Query 2: Full hotel catalog for instant global search across all islands & categories
+  // Query 2: Full hotel catalog for instant global search across all Andaman locations & categories
   const { data: allHotels } = useQuery({
     queryKey: ["all-hotels"],
     queryFn: fetchAllHotels,
@@ -291,9 +301,13 @@ export default function AccommodationStep() {
   // Group hotels by location. When searching, search allHotels so newly added or any-category hotels are found instantly.
   const hotelsByLocation = useMemo(() => {
     const isSearching = searchQuery.trim() !== "";
-    const sourceList = isSearching && allHotels && allHotels.length > 0
+    const sourceList = (isSearching && allHotels && allHotels.length > 0)
       ? allHotels
-      : (recommendedHotels || []);
+      : (recommendedHotels && recommendedHotels.length > 0)
+        ? recommendedHotels
+        : (allHotels && allHotels.length > 0)
+          ? allHotels
+          : [];
 
     if (!sourceList.length) return {};
 
@@ -317,9 +331,9 @@ export default function AccommodationStep() {
 
   const isDepartureDay = (day: any) => {
     if (!day) return false;
-    const island = (day.primary_island || "").toLowerCase().trim();
+    const location = (day.primary_island || "").toLowerCase().trim();
     const attractions = Array.isArray(day.attractions) ? day.attractions : [];
-    return island === "departure" || attractions.some((a: string) => String(a).toLowerCase().trim() === "departure");
+    return location === "departure" || attractions.some((a: string) => String(a).toLowerCase().trim() === "departure");
   };
 
   // Auto-assign hotels to days when selection changes
@@ -344,13 +358,21 @@ export default function AccommodationStep() {
         return day;
       }
       if (day.hotel && selectedHotels.includes(day.hotel)) return day;
-      const islandKey = (day.primary_island || "").toLowerCase().trim();
+      const resolvedIsland = resolvePrimaryIsland(day, idx);
+      const islandKey = resolvedIsland.toLowerCase().trim();
       let matched = "";
       for (const [loc, name] of Object.entries(hotelLocationMap)) {
         if (islandKey && (islandKey.includes(loc) || loc.includes(islandKey))) { matched = name; break; }
       }
       if (!matched && selectedHotels.length > 0) matched = selectedHotels[0];
-      if (matched && matched !== day.hotel) { updated = true; return { ...day, hotel: matched }; }
+      if (matched && matched !== day.hotel) { 
+        updated = true; 
+        return { ...day, primary_island: resolvedIsland, hotel: matched }; 
+      }
+      if (day.primary_island !== resolvedIsland) {
+        updated = true;
+        return { ...day, primary_island: resolvedIsland };
+      }
       return day;
     });
     if (updated) setValue("daily_island_plan", newPlan, { shouldDirty: true });
@@ -404,7 +426,7 @@ export default function AccommodationStep() {
           render={({ field }) => (
             <FormItem>
               <FormLabel>Hotel Category *</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value} value={field.value}>
+              <Select onValueChange={field.onChange} value={field.value || "3 Star"}>
                 <FormControl>
                   <SelectTrigger className="bg-background/50">
                     <SelectValue placeholder="Select category" />
@@ -461,13 +483,20 @@ export default function AccommodationStep() {
           </div>
         )}
 
-        {isLoading ? (
+        {isLoading && Object.keys(hotelsByLocation).length === 0 ? (
           <div className="p-8 text-center text-muted-foreground animate-pulse border border-dashed border-border rounded-lg bg-background/20">
             Fetching hotel recommendations...
           </div>
-        ) : isError ? (
-          <div className="p-4 text-sm text-destructive border border-destructive/20 rounded-md bg-destructive/10">
-            Failed to load hotel recommendations. Ensure the backend is running.
+        ) : isError && Object.keys(hotelsByLocation).length === 0 ? (
+          <div className="p-4 text-sm text-destructive border border-destructive/20 rounded-md bg-destructive/10 flex items-center justify-between">
+            <span>Failed to load hotel recommendations. Ensure the backend is running.</span>
+            <button
+              type="button"
+              onClick={() => refetch()}
+              className="px-3 py-1 rounded text-xs font-semibold bg-destructive text-white hover:bg-destructive/90 transition-all cursor-pointer"
+            >
+              Retry
+            </button>
           </div>
         ) : Object.keys(hotelsByLocation).length === 0 ? (
           <div className="p-8 text-center text-muted-foreground border border-dashed border-border rounded-lg bg-background/20">
@@ -475,6 +504,18 @@ export default function AccommodationStep() {
           </div>
         ) : (
           <div className="space-y-10">
+            {isError && (
+              <div className="p-3 text-xs text-amber-400 border border-amber-400/20 rounded-md bg-amber-400/10 flex items-center justify-between">
+                <span>Displaying catalog hotels (live recommendation endpoint reconnecting).</span>
+                <button
+                  type="button"
+                  onClick={() => refetch()}
+                  className="px-2.5 py-1 rounded text-xs font-medium border border-amber-400/40 hover:bg-amber-400/20 transition-all cursor-pointer"
+                >
+                  Retry
+                </button>
+              </div>
+            )}
             {Object.entries(hotelsByLocation).map(([location, hotels]) => (
               <HotelCarousel key={location} hotels={hotels as any[]} location={location} />
             ))}

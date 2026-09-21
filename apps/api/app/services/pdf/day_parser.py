@@ -106,11 +106,52 @@ def split_itinerary_into_days(itinerary_text: str) -> list[dict[str, object]]:
                 heading = f"DAY {day_num}"
 
             items = []
-            if is_dep:
-                # DEPARTURE DAY STRUCTURE:
-                # Heading: END OF THE JOURNEY
-                # Paragraph 1: departure_narrative
-                # Paragraph 2: farewell_narrative
+            is_simple = (day.get("day_wise_style") == "simple_itinerary") or bool(day.get("operational_bullets"))
+
+            if is_simple:
+                # =======================================================
+                # STYLE 2 — SIMPLE ITINERARY (OPERATIONAL BULLET FORMAT)
+                # =======================================================
+                intro = str(day.get("summary_intro") or "").strip()
+                if intro:
+                    items.append({
+                        "label": "",
+                        "paragraphs": [intro],
+                        "is_intro": True,
+                    })
+
+                bullets = day.get("operational_bullets")
+                if not bullets and day.get("visiting_places"):
+                    # Parse bullets from text lines if stored as string
+                    raw_lines = str(day["visiting_places"]).split("\n")
+                    bullets = [l.strip() for l in raw_lines if l.strip()]
+
+                if bullets:
+                    items.append({
+                        "label": "END OF THE JOURNEY" if is_dep else "TODAY'S SCHEDULE",
+                        "bullets": bullets,
+                        "is_bullets": True,
+                    })
+
+                if day.get("todays_journey"):
+                    journey_text = str(day["todays_journey"]).strip()
+                    items.append({
+                        "label": "TRANSPORT & LOGISTICS",
+                        "paragraphs": [journey_text],
+                        "content": journey_text,
+                    })
+
+                if not is_dep and day.get("hotel_experience"):
+                    hotel_text = str(day["hotel_experience"]).strip()
+                    items.append({
+                        "label": "HOTEL & OVERNIGHT",
+                        "paragraphs": [hotel_text],
+                        "content": hotel_text,
+                    })
+            elif is_dep:
+                # =======================================================
+                # STYLE 1 — LUXURY NARRATIVE: DEPARTURE DAY
+                # =======================================================
                 dep_text = str(day.get("departure_narrative") or day.get("todays_journey") or "").strip()
                 farewell_text = str(day.get("farewell_narrative") or day.get("destination_story") or "").strip()
                 dep_paragraphs = [p for p in [dep_text, farewell_text] if p]
@@ -121,7 +162,9 @@ def split_itinerary_into_days(itinerary_text: str) -> list[dict[str, object]]:
                         "content": "\n\n".join(dep_paragraphs),
                     })
             else:
-                # NORMAL DAY STRUCTURE:
+                # =======================================================
+                # STYLE 1 — LUXURY NARRATIVE: NORMAL SIGHTSEEING DAY
+                # =======================================================
                 # 1. Visiting Places And Destination Story (contains TWO distinct paragraphs)
                 visiting_places = str(day.get("visiting_places") or day.get("curated_experience") or "").strip()
                 dest_story = str(day.get("destination_story") or "").strip()
@@ -269,9 +312,9 @@ def generate_day_subtitle(day_context: dict[str, object]) -> str:
     )
     if attractions:
         selected = attractions[:2]
-        if {"Ross Island", "North Bay Island"}.issubset(set(selected)):
-            return "Historic Ross & North Bay Excursion"
-        beach_set = {"Radhanagar Beach", "Elephant Beach", "Kala Pathar Beach", "Bharatpur Beach", "Laxmanpur Beach", "Corbyn's Cove Beach", "Chidiya Tapu"}
+        if {"Baratang", "Limestone Caves"}.issubset(set(selected)):
+            return "Historic Ross & Baga Beach Excursion"
+        beach_set = {"Palolem Beach", "Grand Island", "Agonda Beach", "Benaulim Beach", "Patnem Beach", "Miramar Beach", "Dona Paula"}
         if len(selected) == 1 and selected[0] in beach_set:
             return f"Sunset at {selected[0]}"
         if len(selected) == 2:

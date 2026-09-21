@@ -44,14 +44,15 @@ export default function TripDetailsStep() {
           render={({ field }) => (
             <FormItem>
               <FormLabel>Primary Destination *</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
+              <Select onValueChange={field.onChange} value={field.value || "Andaman Islands"}>
                 <FormControl>
                   <SelectTrigger className="bg-background/50">
                     <SelectValue placeholder="Select destination" />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  <SelectItem value="Andaman and Nicobar Islands">Andaman and Nicobar Islands</SelectItem>
+                  <SelectItem value="Andaman Islands">Andaman Islands</SelectItem>
+                  <SelectItem value="Goa">Goa</SelectItem>
                   <SelectItem value="Lakshadweep">Lakshadweep</SelectItem>
                   <SelectItem value="Maldives">Maldives</SelectItem>
                 </SelectContent>
@@ -67,7 +68,7 @@ export default function TripDetailsStep() {
           render={({ field }) => (
             <FormItem>
               <FormLabel>Trip Type *</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
+              <Select onValueChange={field.onChange} value={field.value || "Leisure"}>
                 <FormControl>
                   <SelectTrigger className="bg-background/50">
                     <SelectValue placeholder="Select type" />
@@ -201,7 +202,7 @@ export default function TripDetailsStep() {
           render={({ field }) => (
             <FormItem>
               <FormLabel>Budget Category *</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
+              <Select onValueChange={field.onChange} value={field.value || "Standard"}>
                 <FormControl>
                   <SelectTrigger className="bg-background/50">
                     <SelectValue placeholder="Select budget" />
@@ -225,7 +226,7 @@ export default function TripDetailsStep() {
           render={({ field }) => (
             <FormItem>
               <FormLabel>Trip Pace *</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
+              <Select onValueChange={field.onChange} value={field.value || "Moderate"}>
                 <FormControl>
                   <SelectTrigger className="bg-background/50">
                     <SelectValue placeholder="Select pace" />
@@ -242,6 +243,86 @@ export default function TripDetailsStep() {
           )}
         />
       </div>
+
+      {/* Day-wise Itinerary Style Selection */}
+      <FormField
+        control={control}
+        name="day_wise_style"
+        render={({ field }) => (
+          <FormItem className="space-y-3">
+            <div>
+              <FormLabel className="text-base font-semibold">DAY-WISE ITINERARY STYLE</FormLabel>
+              <FormDescription>
+                Choose how the daily itinerary content is written and presented.
+              </FormDescription>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* Option 1: Luxury Narrative */}
+              <div
+                onClick={() => field.onChange("luxury_narrative")}
+                className={`cursor-pointer rounded-xl p-4 border transition-all duration-200 flex flex-col justify-between ${
+                  (field.value || "luxury_narrative") === "luxury_narrative"
+                    ? "border-[#D4AF37] bg-[#D4AF37]/10 shadow-[0_0_15px_rgba(212,175,55,0.15)]"
+                    : "border-border/60 bg-card/40 hover:border-border hover:bg-card/60"
+                }`}
+              >
+                <div className="flex items-start justify-between">
+                  <div className="flex items-center gap-2.5">
+                    <input
+                      type="radio"
+                      name="day_wise_style"
+                      checked={(field.value || "luxury_narrative") === "luxury_narrative"}
+                      onChange={() => field.onChange("luxury_narrative")}
+                      className="accent-[#D4AF37] h-4 w-4"
+                    />
+                    <span className="font-semibold text-foreground text-sm">
+                      Luxury Narrative
+                    </span>
+                  </div>
+                  <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded bg-primary/10 text-primary">
+                    Default
+                  </span>
+                </div>
+                <p className="text-xs text-muted-foreground mt-2 leading-relaxed">
+                  Detailed, polished travel storytelling for premium proposals.
+                </p>
+              </div>
+
+              {/* Option 2: Simple Itinerary */}
+              <div
+                onClick={() => field.onChange("simple_itinerary")}
+                className={`cursor-pointer rounded-xl p-4 border transition-all duration-200 flex flex-col justify-between ${
+                  field.value === "simple_itinerary"
+                    ? "border-[#25D366] bg-[#25D366]/10 shadow-[0_0_15px_rgba(37,211,102,0.15)]"
+                    : "border-border/60 bg-card/40 hover:border-border hover:bg-card/60"
+                }`}
+              >
+                <div className="flex items-start justify-between">
+                  <div className="flex items-center gap-2.5">
+                    <input
+                      type="radio"
+                      name="day_wise_style"
+                      checked={field.value === "simple_itinerary"}
+                      onChange={() => field.onChange("simple_itinerary")}
+                      className="accent-[#25D366] h-4 w-4"
+                    />
+                    <span className="font-semibold text-foreground text-sm">
+                      Simple Itinerary
+                    </span>
+                  </div>
+                  <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400">
+                    Operational
+                  </span>
+                </div>
+                <p className="text-xs text-muted-foreground mt-2 leading-relaxed">
+                  Short, practical day-wise schedule for quick client reading.
+                </p>
+              </div>
+            </div>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
 
       <DailyPlanSection numberOfDays={useWatch({ control, name: "number_of_days" }) || 0} />
     </div>

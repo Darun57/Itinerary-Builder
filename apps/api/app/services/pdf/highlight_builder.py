@@ -36,15 +36,21 @@ def _daily_plan_places(daily_island_plan: list) -> list[str]:
 
 def _extract_itinerary_destinations(itinerary_text: str) -> list[str]:
     destinations: list[str] = []
+    andaman_keywords = [
+        "Port Blair", "Cellular Jail", "Ross Island", "North Bay Island",
+        "Corbyn's Cove", "Chidiya Tapu", "Wandoor", "Jolly Buoy",
+        "Swaraj Dweep", "Havelock", "Radhanagar Beach", "Elephant Beach",
+        "Kalapathar Beach", "Shaheed Dweep", "Neil Island", "Bharatpur Beach",
+        "Natural Bridge", "Laxmanpur Beach", "Sitapur Beach",
+        "Baratang", "Limestone Caves", "Mud Volcano",
+        "Diglipur", "Ross and Smith", "Saddle Peak",
+        "Long Island", "Little Andaman", "Rangat", "Mayabunder",
+    ]
     for raw_line in itinerary_text.splitlines():
         lower_line = raw_line.lower()
-        for keyword in [
-            "port blair", "swaraj dweep", "shaheed dweep", "baratang", "diglipur",
-            "ross island", "north bay", "jolly buoy", "red skin", "chidiya tapu",
-            "wandoor", "long island", "little andaman",
-        ]:
-            if keyword in lower_line:
-                destinations.append(clean_destination_label(keyword.title()))
+        for place in andaman_keywords:
+            if place.lower() in lower_line:
+                destinations.append(clean_destination_label(place))
     return unique_values(destinations)
 
 

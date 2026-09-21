@@ -1,16 +1,35 @@
 import { z } from "zod";
 
 export const DayPlanSchema = z.object({
-  day_number: z.number(),
-  primary_island: z.string(),
-  attractions: z.array(z.string()),
-  activities: z.array(z.string()),
-  hotel: z.string(),
-  transfer_type: z.string(),
-  ferry: z.string().optional(),
-  ferry_timing: z.string().optional(),
+  day_number: z.number().default(1),
+  primary_island: z.string().default(""),
+  attractions: z.array(z.string()).default([]),
+  activities: z.array(z.string()).default([]),
+  hotel: z.string().default(""),
+  transfer_type: z.string().default(""),
+  ferry: z.string().optional().default(""),
+  ferry_timing: z.string().optional().default(""),
 });
 
+
+export const IncludedActivitySchema = z.object({
+  activity_name: z.string(),
+  quantity: z.coerce.number().min(0).default(1),
+  is_free: z.boolean().default(true),
+  location: z.string().optional().default(""),
+  category: z.string().optional().default(""),
+});
+
+export type IncludedActivityType = z.infer<typeof IncludedActivitySchema>;
+
+export const PricingTierSchema = z.object({
+  category: z.enum(["adult", "child", "infant", "senior"]),
+  label: z.string().optional().default(""),
+  pax: z.coerce.number().min(1),
+  cost: z.coerce.number().min(0),
+});
+
+export type PricingTierType = z.infer<typeof PricingTierSchema>;
 
 export const tripRequestSchema = z.object({
   // Step 1: Customer Details
@@ -48,6 +67,7 @@ export const tripRequestSchema = z.object({
 
   // Step 4: Activities
   preferred_activities: z.array(z.string()).default([]),
+  included_activities: z.array(IncludedActivitySchema).default([]),
   special_occasions: z.array(z.string()).default([]),
 
   // Step 5: Transport & Meals
@@ -58,6 +78,10 @@ export const tripRequestSchema = z.object({
   flight_option: z.string().default("Excluded"),
   flight_per_person_rate: z.coerce.number().default(0),
   per_person_cost: z.coerce.number().default(0),
+  child_cost: z.coerce.number().default(0),
+  infant_cost: z.coerce.number().default(0),
+  senior_cost: z.coerce.number().default(0),
+  pricing_tiers: z.array(PricingTierSchema).default([]),
   total_package_cost: z.coerce.number().default(0),
 
   // Step 6: Preferences & Internal
@@ -65,6 +89,7 @@ export const tripRequestSchema = z.object({
   restrictions_exclusions: z.array(z.string()).default([]),
   internal_staff_notes: z.string().default(""),
   special_requests: z.string().default(""),
+  day_wise_style: z.enum(["luxury_narrative", "simple_itinerary"]).default("luxury_narrative"),
 
   // Advanced / AI Gen details
   daily_island_plan: z.array(DayPlanSchema).default([]),
@@ -79,7 +104,7 @@ export const defaultTripValues: Partial<TripRequestType> = {
   customer_country: "India",
   customer_email: "",
   customer_phone_number: "",
-  destination: "Andaman and Nicobar Islands",
+  destination: "Andaman Islands",
   selected_destinations: [],
   number_of_nights: 1,
   number_of_days: 2,
@@ -95,12 +120,14 @@ export const defaultTripValues: Partial<TripRequestType> = {
   number_of_senior_citizens: 0,
   travel_style: [],
   trip_pace: "",
+  day_wise_style: "luxury_narrative",
   hotel_category_preference: "",
   room_type_preference: "",
   room_view_preference: "",
   hotel_selection_islands: [],
   selected_hotels: [],
   preferred_activities: [],
+  included_activities: [],
   special_occasions: [],
   transfer_type: "",
   preferred_ferries: [],
@@ -109,6 +136,10 @@ export const defaultTripValues: Partial<TripRequestType> = {
   flight_option: "Excluded",
   flight_per_person_rate: 0,
   per_person_cost: 0,
+  child_cost: 0,
+  infant_cost: 0,
+  senior_cost: 0,
+  pricing_tiers: [],
   total_package_cost: 0,
   accessibility_requirements: [],
   restrictions_exclusions: [],

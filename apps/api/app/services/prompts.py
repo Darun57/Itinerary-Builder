@@ -6,6 +6,7 @@ Only ``build_prompt`` is used by the live application (called from google_servic
 """
 from app.services.company_knowledge import build_company_context_for_request
 from app.schemas.trip import TripRequest
+from app.services.andaman_geography import normalize_andaman_island
 
 
 SYSTEM_PROMPT = """\
@@ -47,10 +48,10 @@ NARRATIVE STRUCTURE & SECTION RESPONSIBILITIES
 
 For NORMAL ITINERARY DAYS (is_departure_day = false):
 - "travel_movement": Set strictly to the canonical movement:
-  * Day 1: "Port Blair" (or arrival island)
-  * Inter-island transfer: "Origin to Destination" (e.g. "Port Blair to Swaraj Dweep", "Swaraj Dweep to Shaheed Dweep", "Shaheed Dweep to Port Blair")
-  * Day-trip excursion returning to base hotel: "Origin to Destination Return" (e.g. "Port Blair to Baratang Island Return")
-  * Exploration on same island: "Island Name" (e.g. "Swaraj Dweep")
+  * Day 1: "Port Blair" (or arrival base)
+  * Regional transfer: "Origin to Destination" (e.g. "Port Blair to Swaraj Dweep (Havelock)", "Swaraj Dweep (Havelock) to Shaheed Dweep (Neil)")
+  * Day-trip excursion returning to base hotel: "Origin to Destination Return" (e.g. "Port Blair to Baratang Return")
+  * Exploration within the same region: "Region Name" (e.g. "Swaraj Dweep (Havelock)")
 
 The body will be rendered under three clean sections:
 1. "Visiting Places And Destination Story" (contains TWO distinct paragraphs):
@@ -79,10 +80,10 @@ For DEPARTURE DAY (is_departure_day = true, typically the final day when it is d
 - Leave visiting_places, destination_story, todays_journey, and hotel_experience as empty strings "".
 The body will be rendered under:
 1. "END OF THE JOURNEY" (contains TWO distinct paragraphs):
-   - PARAGRAPH 1 (departure_narrative): Concludes the journey with comfortable hotel check-out, luggage assistance, and private transfer from the hotel to Veer Savarkar International Airport, ensuring a smooth and hassle-free journey home (2–3 sentences, ~35-50 words).
-     Example: "Enjoy a peaceful morning check-out at [Hotel] with full luggage assistance. Your private chauffeur will pick you up for a smooth transfer to Veer Savarkar International Airport for your flight home."
+   - PARAGRAPH 1 (departure_narrative): Concludes the journey with comfortable hotel check-out, luggage assistance, and private transfer from the hotel to Veer Savarkar International Airport Port Blair, ensuring a smooth and hassle-free journey home (2–3 sentences, ~35-50 words).
+     Example: "Enjoy a peaceful morning check-out at [Hotel] with full luggage assistance. Your private chauffeur will pick you up for a smooth transfer to Port Blair airport for your flight home."
    - PARAGRAPH 2 (farewell_narrative): Sincere gratitude from Darun Tourism for choosing us, pleasure in crafting memories, safe flight wishes, and welcoming them back in the future (2–4 sentences, ~40-60 words).
-     Example: "Darun Tourism extends its heartfelt gratitude to [Customer Name] and family for choosing us. It was our genuine pleasure crafting your Andaman trip memories, and we look forward to welcoming you back in the future."
+     Example: "Darun Tourism extends its heartfelt gratitude to [Customer Name] and family for choosing us. It was our genuine pleasure crafting your Andaman Islands trip memories, and we look forward to welcoming you back in the future."
 
 ============================================================
 STYLING & QUALITY RULES
@@ -120,23 +121,33 @@ def _format_list(value: object) -> str:
 
 
 def _resolve_primary_island(island_candidate: str, attractions: list[str], day_num: int, total_days: int) -> str:
-    text = (str(island_candidate or "") + " " + " ".join(attractions or [])).lower()
-    if "havelock" in text or "swaraj" in text or "radhanagar" in text or "kalapathar" in text or "elephant beach" in text:
-        return "Swaraj Dweep (Havelock)"
-    if "neil" in text or "shaheed" in text or "laxmanpur" in text or "bharatpur" in text or "natural bridge" in text:
-        return "Shaheed Dweep (Neil)"
-    if "baratang" in text or "limestone" in text or "mud volcano" in text:
-        return "Baratang Island"
-    if "ross" in text or "north bay" in text:
-        return "Ross Island & North Bay"
-    if "diglipur" in text or "saddle peak" in text or "ross & smith" in text:
-        return "Diglipur"
-    if "port blair" in text or "cellular jail" in text or "corbyn" in text or "marina park" in text or "chidiya tapu" in text or "wandoor" in text or "museum" in text:
-        return "Port Blair"
-    
+    text = (str(island_candidate or "") + " " + " ".join(attractions or [])).strip()
+    if any(a.strip().lower() == "departure" for a in attractions or []):
+        return "Departure"
+    normalized = normalize_andaman_island(text)
+    if normalized:
+        return normalized
     if day_num == 1 or day_num == total_days:
         return "Port Blair"
-    return island_candidate if island_candidate and island_candidate.lower() not in ["andaman and nicobar islands", "andaman"] else "Port Blair"
+    return "Swaraj Dweep (Havelock)"
+
+
+def _find_hotel_for_island(island: str, available_hotels: list[str]) -> str:
+    if not available_hotels:
+        return "Selected Luxury Resort"
+    island_lower = island.lower()
+    for h in available_hotels:
+        hl = h.lower()
+        if "havelock" in island_lower or "swaraj" in island_lower:
+            if any(k in hl for k in ["taj", "barefoot", "silver sand havelock", "havelock", "seashell havelock"]):
+                return h
+        elif "neil" in island_lower or "shaheed" in island_lower:
+            if any(k in hl for k in ["silver sand", "neil", "summer sands", "seashell neil"]):
+                return h
+        elif "port blair" in island_lower:
+            if any(k in hl for k in ["samssara", "symphony", "welcomhotel", "sinclairs", "peerless", "port blair", "seashell port blair"]):
+                return h
+    return available_hotels[0]
 
 
 def _format_day_by_day_database_directives(request: TripRequest) -> str:
@@ -151,10 +162,21 @@ def _format_day_by_day_database_directives(request: TripRequest) -> str:
         is_first_day = (day_num == 1)
         is_last_day = (day_num == total_days)
         
-        day_type = "ARRIVAL DAY" if is_first_day else ("DEPARTURE DAY" if is_last_day else "INTER-ISLAND / SIGHTSEEING DAY")
+        day_type = "ARRIVAL DAY" if is_first_day else ("DEPARTURE DAY" if is_last_day else "REGIONAL TRANSFER / SIGHTSEEING DAY")
         island = _resolve_primary_island(dp.primary_island if dp else "", dp.attractions if dp else [], day_num, total_days)
-        attractions = ", ".join(dp.attractions) if dp and dp.attractions else "Key island highlights"
-        activities = ", ".join(dp.activities) if dp and dp.activities else "Curated luxury experiences"
+        attractions = ", ".join(dp.attractions) if dp and dp.attractions else "Key Andaman Islands highlights"
+        
+        dp_acts = [
+            str(a).strip() for a in (dp.activities if dp and dp.activities else [])
+            if str(a).strip() and str(a).strip().lower() not in ("none", "no activity", "leisure", "relax", "free day", "")
+        ]
+        if dp_acts:
+            activities = ", ".join(dp_acts)
+            activity_rule = f"Activities for Day {day_num}: {activities}. Mention these specific scheduled activities in the day's itinerary."
+        else:
+            activities = "None"
+            activity_rule = f"NO ACTIVITIES FOR DAY {day_num}: Zero activities are chosen for this day. Under NO circumstances should any activity, water sport, or 'Activity:' line be generated. Keep the day strictly focused on sightseeing locations and relaxed leisure with NO activity line."
+
         is_departure_marked = is_last_day and (
             (dp and (dp.primary_island or "").strip().lower() == "departure")
             or (dp and any(str(a).strip().lower() == "departure" for a in (dp.attractions or [])))
@@ -162,10 +184,12 @@ def _format_day_by_day_database_directives(request: TripRequest) -> str:
         )
         if is_departure_marked:
             hotel = "None (Departure Day - No overnight stay)"
+        elif dp and dp.hotel and str(dp.hotel).strip().lower() not in ["none", ""]:
+            hotel = dp.hotel
         else:
-            hotel = dp.hotel if dp and dp.hotel else (hotels[(day_num - 1) % len(hotels)] if hotels else "Selected Luxury Resort")
+            hotel = _find_hotel_for_island(island, hotels)
         
-        transfer_info = "No inter-island ferry transfer today"
+        transfer_info = "No ferry or boat transfer today"
         ferry_operator = ""
         ferry_timing = ""
         transfer_type = ""
@@ -180,9 +204,9 @@ def _format_day_by_day_database_directives(request: TripRequest) -> str:
                 transfer_info = f"Transfer: {transfer_type}"
         
         day_role = (
-            "STRICT MANDATE: Day 1 is ONLY ARRIVAL & WELCOME (is_departure_day = false). Narrative MUST focus strictly on landing at Veer Savarkar International Airport, warm private driver greeting, hotel transfer, check-in, and initial evening exploration. Generate visiting_places, destination_story, todays_journey, and hotel_experience. NEVER mention departure, return flights, or airport security on Day 1."
+            "STRICT MANDATE: Day 1 is ONLY ARRIVAL & WELCOME (is_departure_day = false). Narrative MUST focus strictly on arrival at Port Blair / Veer Savarkar International Airport, warm private driver greeting, hotel transfer, check-in, and initial evening exploration. Generate visiting_places, destination_story, todays_journey, and hotel_experience. NEVER mention departure, return flights, or airport security on Day 1."
             if is_first_day else (
-                "STRICT MANDATE: This is the FINAL DAY DEPARTURE (is_departure_day = true). Under 'END OF THE JOURNEY', generate: (1) departure_narrative: comfortable morning at hotel, luggage assistance, private transfer from hotel to Veer Savarkar International Airport, smooth flight departure. (2) farewell_narrative: sincere thanks from Darun Tourism for choosing us, cherished memories, safe travels, and warm wishes to welcome them back. Set is_departure_day to true, title and subtitle to 'Departure'. Set visiting_places, destination_story, todays_journey, and hotel_experience to empty strings."
+                "STRICT MANDATE: This is the FINAL DAY DEPARTURE (is_departure_day = true). Under 'END OF THE JOURNEY', generate: (1) departure_narrative: comfortable morning at hotel, luggage assistance, private transfer from hotel to Veer Savarkar International Airport Port Blair, smooth flight departure. (2) farewell_narrative: sincere thanks from Darun Tourism for choosing us, cherished memories, safe travels, and warm wishes to welcome them back. Set is_departure_day to true, title and subtitle to 'Departure'. Set visiting_places, destination_story, todays_journey, and hotel_experience to empty strings."
                 if is_last_day else
                 "NARRATIVE ROLE: Normal sightseeing day (is_departure_day = false). Under 'Visiting Places And Destination Story', generate: visiting_places (places and activities narrative, 2-4 sentences) and destination_story (destination history/geography/beauty, 2-4 sentences). Under 'Today's Journey', generate todays_journey (transport logistics starting with 'For the places highlighted above...', 2-4 sentences). Under 'Hotel Experience', generate hotel_experience (hotel atmosphere and hospitality, 2-4 sentences)."
             )
@@ -195,6 +219,7 @@ def _format_day_by_day_database_directives(request: TripRequest) -> str:
   <PrimaryIsland>{island}</PrimaryIsland>
   <Attractions>{attractions}</Attractions>
   <Activities>{activities}</Activities>
+  <ActivityRule>{activity_rule}</ActivityRule>
   <MandatoryHotel>{hotel}</MandatoryHotel>
   <Logistics>
     <TransportMode>{transfer_type}</TransportMode>
@@ -218,7 +243,39 @@ def build_prompt(request: TripRequest) -> str:
     """
     company_context = build_company_context_for_request(request)
     day_directives = _format_day_by_day_database_directives(request)
-    
+
+    style_directive = ""
+    if getattr(request, "day_wise_style", "luxury_narrative") in ["simple_itinerary", "simple"]:
+        style_directive = """
+============================================================
+DAY-WISE WRITING STYLE: SIMPLE ITINERARY (TRAVEL AGENCY STYLE)
+============================================================
+You are an experienced Andaman travel operations executive preparing a client-facing itinerary.
+Convert the supplied structured travel data into a concise day-wise itinerary.
+Use short bullet points.
+
+Prioritize:
+1. Transfers
+2. Check-in/check-out
+3. Sightseeing
+4. Activities
+5. Meals
+6. Overnight stay
+
+Use only the supplied data.
+Never invent attractions, transportation, timings, hotels or activities.
+Do not write destination essays.
+Do not write travel-blog content.
+Do not use generic AI marketing language (avoid 'immerse yourself', 'breathtaking beauty', 'vibrant charm', 'tropical paradise').
+Do not repeat hotel descriptions.
+The output should be immediately understandable to a traveler scanning the itinerary.
+
+For "visiting_places": write short operational lines starting with '• ' for pickup/transfers, check-in, 'Proceed for sightseeing:' with '  → Attraction', and '• Overnight stay at [Location]'.
+For "destination_story": leave as empty string ("").
+For "todays_journey": write a single concise sentence specifying the exact vehicle/ferry.
+For "hotel_experience": write a single concise sentence specifying the hotel and meal plan.
+"""
+
     return f"""\
 {SYSTEM_PROMPT}
 
@@ -252,6 +309,7 @@ Write a structured JSON itinerary adhering strictly to the XML database directiv
   <ServiceContext>
     <SelectedHotels>{_format_list(request.selected_hotels)}</SelectedHotels>
     <PreferredActivities>{_format_list(request.preferred_activities)}</PreferredActivities>
+    <ComplimentaryActivities>{", ".join([f"{a.quantity}x {a.activity_name} (Free Included)" if getattr(a, "quantity", 1) > 1 else f"{a.activity_name} (Free Included)" for a in getattr(request, "included_activities", []) if getattr(a, "quantity", 0) > 0]) or "None"}</ComplimentaryActivities>
     <TransferType>{request.transfer_type}</TransferType>
     <PreferredFerries>{_format_list(request.preferred_ferries)}</PreferredFerries>
     <MealPlan>{request.meal_plan}</MealPlan>
@@ -273,6 +331,8 @@ AUTHORITATIVE DAY-BY-DAY SAAS DATABASE DIRECTIVES:
 COMPANY INVENTORY CONTEXT:
 ============================================================
 {company_context}
+
+{style_directive}
 
 Formatting requirements:
 - Generate exactly {request.number_of_days} day objects in the "days" array, indexed from day_number 1 to {request.number_of_days}.

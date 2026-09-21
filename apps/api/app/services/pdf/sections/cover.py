@@ -67,7 +67,7 @@ def render_footer(canvas, doc, request: TripRequest = None) -> None:
         canvas.line(doc.leftMargin, 34, PAGE_WIDTH - doc.rightMargin, 34)
         canvas.setFont("Helvetica-Bold", 8.5)
         canvas.setFillColor(COLORS["dark"])
-        canvas.drawString(doc.leftMargin, 18, "Andaman Darun Tours & Travels")
+        canvas.drawString(doc.leftMargin, 18, "Darun Tourism | Andaman Specialist")
         canvas.setFont("Helvetica", 8.5)
         canvas.drawString(doc.leftMargin + 155, 18, "|   Luxury Travel Specialists")
         canvas.setFillColor(COLORS["gold"])

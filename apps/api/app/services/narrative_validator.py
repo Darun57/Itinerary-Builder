@@ -66,7 +66,7 @@ def evaluate_quality_score(day_dict: dict[str, Any], request: TripRequest) -> tu
     failed_rules = []
     section_scores: dict[str, float] = {}
 
-    destination = (request.destination or "Andaman").lower()
+    destination = (request.destination or "Andaman Islands").lower()
     selected_hotels = [h.lower() for h in (request.selected_hotels or [])]
     is_departure = bool(day_dict.get("is_departure_day"))
 
@@ -146,7 +146,7 @@ def evaluate_quality_score(day_dict: dict[str, Any], request: TripRequest) -> tu
 def validate_consistency(days: list[dict[str, Any]], request: TripRequest) -> tuple[bool, list[str]]:
     """
     Stage 3: Cross-Day Consistency & Timeline Logic Validator.
-    Checks sequence, inter-island transport matching, and arrival/departure rules.
+    Checks sequence, regional transport matching, and arrival/departure rules.
     """
     errors = []
     total_days = len(days)
@@ -179,14 +179,14 @@ def validate_consistency(days: list[dict[str, Any]], request: TripRequest) -> tu
                     errors.append(f"Day 1 contains departure/return flight term: '{term}'. Day 1 must be arrival only.")
                     break
 
-        # Inter-island transport logic check
+        # Regional transport logic check
         if idx > 0:
             prev_island = str(days[idx - 1].get("primary_island") or "").strip().lower()
             curr_island = str(day.get("primary_island") or "").strip().lower()
             if prev_island and curr_island and prev_island != curr_island:
                 combined_text = (journey + " " + str(day.get("travel_movement") or "")).lower()
                 if "ferry" not in combined_text and "transfer" not in combined_text and "flight" not in combined_text:
-                    errors.append(f"Day {day_num} changes island from {prev_island} to {curr_island} but journey mentions no transfer/ferry.")
+                    errors.append(f"Day {day_num} changes region from {prev_island} to {curr_island} but journey mentions no transfer, ferry, or boat movement.")
 
     return (len(errors) == 0, errors)
 

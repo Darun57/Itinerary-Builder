@@ -2,6 +2,7 @@
 PDF rendering: policy pages (Things To Do, Payment, Cancellation, T&C, Inclusions, Payment Details).
 """
 from io import BytesIO
+from pathlib import Path
 
 from PIL import Image as PILImage, ImageDraw
 from reportlab.lib import colors
@@ -112,7 +113,7 @@ def _icon_list_card(title: str, icon: str, items: list[str], styles: dict[str, P
 
 
 def render_things_to_do_page(story: list, styles: dict[str, ParagraphStyle]) -> None:
-    _render_policy_page_title(story, styles, "THINGS TO DO IN ANDAMAN", "Signature island experiences curated for elevated Andaman journeys.")
+    _render_policy_page_title(story, styles, "THINGS TO DO IN ANDAMAN", "Signature Andaman Islands experiences curated for an elevated journey.")
     category_width = (PAGE_INNER_WIDTH - 14) / 2
     category_cards = []
     for category, items in THINGS_TO_DO_CATEGORIES:
@@ -207,8 +208,8 @@ def render_payment_policy_page(story: list, styles: dict[str, ParagraphStyle], r
 
     preamble_text = (
         f"This Travel Agency Payment Agreement (\"Agreement\") is made effective as of <b>{eff_date}</b> "
-        f"by and between <b>Andaman Darun Tours and Travels</b>, a duly licensed travel agency with its principal "
-        f"office located at <b>Andaman &amp; Nicobar Islands, India</b> (\"Agency\"), and <b>{client_name}</b>, "
+        f"by and between <b>Andaman Islands Darun Tours and Travels</b>, a duly licensed travel agency with its principal "
+        f"office located at <b>Andaman Islands, India</b> (\"Agency\"), and <b>{client_name}</b>, "
         f"with a mailing address of <b>{client_addr}</b> (\"Client\"). The purpose of this Agreement is to define the "
         f"financial terms and conditions pertaining to the travel services provided by the Agency to the Client."
     )
@@ -229,7 +230,7 @@ def render_payment_policy_page(story: list, styles: dict[str, ParagraphStyle], r
     story.append(Paragraph("The provision of travel arrangements is governed by the following operational conditions:", s_sec_intro))
     story.append(Paragraph("• <b>Tentative Reservations:</b> All hotel rooms, vehicle transfers, and ferry seats remain tentative until advance payment is received and formally acknowledged by the Agency.", s_bullet))
     story.append(Paragraph("• <b>Availability &amp; Rate Validity:</b> Services remain subject to operational availability. Quoted rates remain valid for 7 days from proposal date; statutory tax or tariff increases post-confirmation are payable by the Client.", s_bullet))
-    story.append(Paragraph("• <b>Voucher &amp; Ticket Release:</b> Official hotel confirmation vouchers, inter-island ferry boarding passes, and activity permits are issued following settlement of payments.", s_bullet))
+    story.append(Paragraph("• <b>Voucher &amp; Ticket Release:</b> Official hotel confirmation vouchers, inter-island ferry tickets, and activity permits are issued following settlement of payments.", s_bullet))
 
 
 def render_cancellation_policy_page(story: list, styles: dict[str, ParagraphStyle], request: TripRequest = None) -> None:
@@ -246,8 +247,8 @@ def render_cancellation_policy_page(story: list, styles: dict[str, ParagraphStyl
 
     preamble_text = (
         f"This Travel Agency Cancellation Agreement (\"Agreement\") is made effective as of <b>{eff_date}</b> "
-        f"by and between <b>Andaman Darun Tours and Travels</b>, a duly licensed travel agency with its principal "
-        f"office located at <b>Andaman &amp; Nicobar Islands, India</b> (\"Agency\"), and <b>{client_name}</b>, "
+        f"by and between <b>Andaman Islands Darun Tours and Travels</b>, a duly licensed travel agency with its principal "
+        f"office located at <b>Andaman Islands, India</b> (\"Agency\"), and <b>{client_name}</b>, "
         f"with a mailing address of <b>{client_addr}</b> (\"Client\"). The purpose of this Agreement is to define "
         f"the cancellation timelines, supplier conditions, and refund terms pertaining to the travel services provided by the Agency to the Client."
     )
@@ -265,7 +266,7 @@ def render_cancellation_policy_page(story: list, styles: dict[str, ParagraphStyl
     story.append(Paragraph("Cancellations and amendments are subject to the following contractual conditions:", s_sec_intro))
 
     story.append(Paragraph("• <b>Peak Season Bookings:</b> Reservations falling between December 15 and January 15 (Christmas &amp; New Year), long holiday weekends, and festive dates are 100% non-refundable once confirmed.", s_bullet))
-    story.append(Paragraph("• <b>Carrier &amp; Ferry Policies:</b> Flights and inter-island private ferries (Makruzz, Nautika, Green Ocean) follow the respective carrier cancellation and refund rules.", s_bullet))
+    story.append(Paragraph("• <b>Carrier &amp; Ferry Policies:</b> Inter-island ferry services (Makruzz, Green Ocean, Nautika, DSS) and flight bookings follow the respective carrier cancellation and refund rules.", s_bullet))
     story.append(Paragraph("• <b>Unused Services:</b> No refund or credit is issued for unused room nights, missed sightseeing, untaken meals, or unavailed sea activities.", s_bullet))
     story.append(Paragraph("• <b>Force Majeure Disruptions:</b> The Agency is not liable for weather-induced ferry cancellations, flight delays, or administrative beach closures. Rescheduling will be arranged subject to availability.", s_bullet))
     story.append(Paragraph("• <b>Refund Settlement Timeline:</b> Eligible and approved refunds are processed within 15 to 30 working days following supplier reconciliation.", s_bullet))
@@ -285,8 +286,8 @@ def render_terms_conditions_pages(story: list, styles: dict[str, ParagraphStyle]
 
     preamble_text = (
         f"This Travel Agency Terms and Conditions Agreement (\"Agreement\") is made effective as of <b>{eff_date}</b> "
-        f"by and between <b>Andaman Darun Tours and Travels</b>, a duly licensed travel agency with its principal "
-        f"office located at <b>Andaman &amp; Nicobar Islands, India</b> (\"Agency\"), and <b>{client_name}</b>, "
+        f"by and between <b>Andaman Islands Darun Tours and Travels</b>, a duly licensed travel agency with its principal "
+        f"office located at <b>Andaman Islands, India</b> (\"Agency\"), and <b>{client_name}</b>, "
         f"with a mailing address of <b>{client_addr}</b> (\"Client\"). The purpose of this Agreement is to establish the "
         f"contractual terms, operational guidelines, and mutual responsibilities governing the travel services provided by the Agency."
     )
@@ -298,7 +299,7 @@ def render_terms_conditions_pages(story: list, styles: dict[str, ParagraphStyle]
     story.append(Paragraph("• <b>Hotel Substitution:</b> If a confirmed hotel becomes unavailable due to overbooking, maintenance, or operational constraints, a property of equal or superior category shall be provided.", s_bullet))
     story.append(Paragraph("• <b>Check-In and Check-Out:</b> Hotel check-in (12:00 PM) and check-out (08:00 AM / 09:00 AM) timings are strictly governed by hotel policies. Early check-in or late check-out is subject to room availability.", s_bullet))
     story.append(Paragraph("• <b>Transportation Protocol:</b> Private air-conditioned vehicle transfers operate point-to-point as per the approved sightseeing plan and are not available for non-itinerary leisure transit.", s_bullet))
-    story.append(Paragraph("• <b>Ferry &amp; Sea Movements:</b> Inter-island ferry operations remain subject to naval directives, weather conditions, and port safety clearances. Schedules may be altered in the interest of passenger safety.", s_bullet))
+    story.append(Paragraph("• <b>Ferry &amp; Sea Movements:</b> Inter-island ferry and boat transfers remain subject to weather, operating conditions, and Port Management Board directives. Schedules may be altered in the interest of passenger safety.", s_bullet))
 
     story.append(Paragraph("2. Documentation, Liability &amp; Acceptance", s_sec_title))
     story.append(Paragraph("The provision of services is subject to regulatory compliance and liability boundaries:", s_sec_intro))
@@ -319,7 +320,18 @@ def render_inclusions_exclusions_page(story: list, styles: dict[str, ParagraphSt
     story.append(PageBreak())
     _render_policy_page_title(story, styles, "INCLUSIONS & EXCLUSIONS", "A concise service summary for guest review and confirmation.")
     column_width = (PAGE_INNER_WIDTH - 14) / 2
-    inclusions = _icon_list_card("INCLUSIONS", "✓", INCLUSION_ITEMS, styles, column_width, COLORS["card"])
+    
+    inclusion_list = []
+    if hasattr(request, "included_activities") and request.included_activities:
+        for act in request.included_activities:
+            qty = getattr(act, "quantity", 1)
+            name = getattr(act, "activity_name", str(act))
+            if qty > 0:
+                qty_str = f"{qty}x " if qty > 1 else ""
+                inclusion_list.append(f"Complimentary Activity: {qty_str}{name}")
+    inclusion_list.extend(INCLUSION_ITEMS)
+
+    inclusions = _icon_list_card("INCLUSIONS", "✓", inclusion_list, styles, column_width, COLORS["card"])
     exclusions = _icon_list_card("EXCLUSIONS", "✗", EXCLUSION_ITEMS, styles, column_width, COLORS["soft_white"])
     table = Table([[inclusions, exclusions]], colWidths=[column_width, column_width], hAlign="CENTER")
     table.setStyle(TableStyle([
@@ -364,7 +376,7 @@ def render_payment_details_page(story: list, styles: dict[str, ParagraphStyle]) 
         Paragraph(escape_text("PAY BY QR"), styles["policy_card_title"]),
         HRFlowable(width="100%", thickness=0.45, color=COLORS["gold"]),
         Spacer(1, 0.12 * inch),
-        Image(r"C:\Users\darun\Downloads\company qr code.jpeg", width=1.95 * inch, height=1.95 * inch, kind="proportional"),
+        Image(str(Path(__file__).resolve().parents[6] / "assets" / "images" / "qr_code.jpeg"), width=1.95 * inch, height=1.95 * inch, kind="proportional"),
         Spacer(1, 0.08 * inch),
         Paragraph(escape_text("Scan to Pay"), styles["policy_card_title"]),
         Paragraph(escape_text("UPI / Bank Transfer Accepted"), styles["fine"]),
@@ -387,7 +399,7 @@ def render_payment_details_page(story: list, styles: dict[str, ParagraphStyle]) 
         ("BEST REGARDS", "policy_card_title"),
         ("Hemawathi", "day_title"),
         ("Proprietor", "label"),
-        ("Andaman Darun Tour and Travels", "body"),
+        ("Andaman Islands Darun Tour and Travels", "body"),
         ("Phone", "label"),
         ("+91 9474238991", "body"),
         ("+91 9933242718", "body"),
@@ -427,7 +439,9 @@ def render_invoice_page(story: list, styles: dict[str, ParagraphStyle], request:
     client_nat        = str(request.customer_nationality or "—").strip()
     n_adults          = int(request.number_of_adults or 0)
     n_children        = int(request.number_of_children or 0)
-    destination       = str(request.destination or "Andaman & Nicobar Islands").strip()
+    n_infants         = int(getattr(request, "number_of_infants", 0) or 0)
+    n_seniors         = int(getattr(request, "number_of_senior_citizens", 0) or 0)
+    destination       = str(request.destination or "Andaman Islands").strip()
     arrival           = str(request.arrival_date or "—").strip()
     departure         = str(request.departure_date or "—").strip()
     trip_type         = str(request.trip_type or "Leisure").strip()
@@ -439,6 +453,9 @@ def render_invoice_page(story: list, styles: dict[str, ParagraphStyle], request:
     hotel_cat         = str(request.hotel_category_preference or "—").strip()
     activities        = list(request.preferred_activities or [])
     pp_cost           = float(request.per_person_cost or 0)
+    child_cost        = float(getattr(request, "child_cost", 0) or 0)
+    infant_cost       = float(getattr(request, "infant_cost", 0) or 0)
+    senior_cost       = float(getattr(request, "senior_cost", 0) or 0)
     total_cost        = float(request.total_package_cost or 0)
     lead_id           = str(request.lead_id or "").strip()
     # ─────────────────────────────────────────────────────────────────
@@ -447,20 +464,58 @@ def render_invoice_page(story: list, styles: dict[str, ParagraphStyle], request:
     invoice_no   = f"ADT-{lead_id[:6].upper()}" if lead_id else f"ADT-{_date.today().strftime('%y%m%d')}"
     invoice_date = _date.today().strftime("%d %b %Y")
     duration_txt = f"{arrival}  →  {departure}" if arrival != "—" else "As Per Booking"
-    pax_total    = n_adults + n_children
-    subtotal     = pp_cost * pax_total if pp_cost > 0 and pax_total > 0 else total_cost
-    grand_total  = total_cost if total_cost > 0 else subtotal
-
-    if grand_total > 0:
-        base_subtotal = grand_total / 1.05
-        tax_amount    = grand_total - base_subtotal
-        sub_str       = f"Rs. {base_subtotal:,.0f}"
-        tax_str       = f"Rs. {tax_amount:,.0f}"
-        grand_str     = f"Rs. {grand_total:,.0f}"
+    pricing_tiers = getattr(request, "pricing_tiers", None) or []
+    has_tiered   = bool(pricing_tiers or n_children > 0 or n_infants > 0 or n_seniors > 0)
+    pax_total    = n_adults + n_children + n_infants + n_seniors
+    if pricing_tiers:
+        calc_package_sum = sum(
+            float(t.get("pax", 1) if isinstance(t, dict) else getattr(t, "pax", 1)) *
+            float(t.get("cost", 0.0) if isinstance(t, dict) else getattr(t, "cost", 0.0))
+            for t in pricing_tiers
+        )
     else:
-        sub_str       = "As Per Quote"
-        tax_str       = "Included"
-        grand_str     = "As Per Quote"
+        calc_package_sum = (n_adults * pp_cost) + (n_children * child_cost) + (n_infants * infant_cost) + (n_seniors * senior_cost)
+    flight_sum   = (flight_rate * pax_total) if flight_opt and flight_opt.lower() != "excluded" else 0
+
+    # 1. Determine pure tour package cost (land package: hotels, transfers, sightseeing, activities)
+    if pricing_tiers and calc_package_sum > 0:
+        pure_package_cost = calc_package_sum
+    elif has_tiered and calc_package_sum > 0:
+        pure_package_cost = calc_package_sum
+    elif pp_cost > 0 and pax_total > 0 and not has_tiered:
+        pure_package_cost = pp_cost * pax_total
+    elif total_cost > 0:
+        if flight_sum > 0 and total_cost > flight_sum:
+            pure_package_cost = total_cost - flight_sum
+        else:
+            pure_package_cost = total_cost
+    elif calc_package_sum > 0:
+        pure_package_cost = calc_package_sum
+    else:
+        pure_package_cost = 0
+
+    # 2. Total service subtotal (pure package + air transportation)
+    total_service_subtotal = pure_package_cost + flight_sum
+
+    # 3. 5% GST is calculated ONLY on the included tour package cost (NEVER on airfare)
+    if pure_package_cost > 0:
+        tax_amount  = round(pure_package_cost * 0.05)
+        grand_total = total_service_subtotal + tax_amount
+        sub_str     = f"Rs. {total_service_subtotal:,.0f}"
+        tax_str     = f"Rs. {tax_amount:,.0f}"
+        grand_str   = f"Rs. {grand_total:,.0f}"
+    elif total_service_subtotal > 0:
+        tax_amount  = 0
+        grand_total = total_service_subtotal
+        sub_str     = f"Rs. {total_service_subtotal:,.0f}"
+        tax_str     = "—"
+        grand_str   = f"Rs. {grand_total:,.0f}"
+    else:
+        tax_amount  = 0
+        grand_total = 0
+        sub_str     = "As Per Quote"
+        tax_str     = "5% GST"
+        grand_str   = "As Per Quote"
 
     def fmt_inr(v: float) -> str:
         return f"Rs. {v:,.0f}" if v > 0 else "As Per Quote"
@@ -479,10 +534,10 @@ def render_invoice_page(story: list, styles: dict[str, ParagraphStyle], request:
     s_cl_info    = _style("inv_cl_info",   "policy_card_body", fontSize=8.5, leading=12, textColor=C_MUTED)
     s_th         = _style("inv_th",        "policy_card_title",fontSize=8.5, leading=11, textColor=C_DARK, letterSpacing=0.5)
     s_th_r       = _style("inv_th_r",      "policy_card_title",fontSize=8.5, leading=11, textColor=C_DARK, letterSpacing=0.5, alignment=2)
-    s_td_label   = _style("inv_td_l",      "policy_card_title",fontSize=9,  leading=12, textColor=C_DARK)
-    s_td_desc    = _style("inv_td_d",      "policy_card_body", fontSize=8,  leading=11, textColor=C_MUTED)
-    s_td_rate    = _style("inv_td_rate",   "policy_card_body", fontSize=8.5, leading=12, textColor=C_DARK, alignment=2)
-    s_td_amt     = _style("inv_td_amt",    "policy_price",     fontSize=9,  leading=12, textColor=C_DARK, alignment=2)
+    s_td_label   = _style("inv_td_l",      "policy_card_title",fontSize=9,  leading=13, textColor=C_DARK)
+    s_td_desc    = _style("inv_td_d",      "policy_card_body", fontSize=8.5,leading=13, textColor=C_MUTED)
+    s_td_rate    = _style("inv_td_rate",   "policy_card_body", fontSize=8.5,leading=13, textColor=C_DARK, alignment=2)
+    s_td_amt     = _style("inv_td_amt",    "policy_price",     fontSize=9,  leading=13, textColor=C_DARK, alignment=2)
     s_tot_h      = _style("inv_tot_h",     "policy_card_title",fontSize=8.5, leading=11, textColor=C_MUTED, letterSpacing=0.5)
     s_tot_h_r    = _style("inv_tot_h_r",   "policy_card_title",fontSize=8.5, leading=11, textColor=C_MUTED, letterSpacing=0.5, alignment=2)
     s_tot_v      = _style("inv_tot_v",     "policy_card_title",fontSize=10.5,leading=14, textColor=C_DARK)
@@ -502,8 +557,8 @@ def render_invoice_page(story: list, styles: dict[str, ParagraphStyle], request:
     right_header = [
         Paragraph("ANDAMAN DARUN TOURS AND TRAVELS", s_co_name),
         Spacer(1, 4),
-        Paragraph("Andaman & Nicobar Islands, India", s_co_info),
-        Paragraph("andamandaruntoursandtravel@gmail.com", s_co_info),
+        Paragraph("Andaman Islands, India", s_co_info),
+        Paragraph("andamandaruntourandtravels@gmail.com", s_co_info),
         Paragraph("+91 94742 38991  |  +91 99332 42718", s_co_info),
         Paragraph("www.andamandaruntourism.in", s_co_info),
     ]
@@ -528,9 +583,16 @@ def render_invoice_page(story: list, styles: dict[str, ParagraphStyle], request:
     # ═══════════════════════════════════════════════════════════
     # SECTION 2 — CLIENT INFO  +  INVOICE META
     # ═══════════════════════════════════════════════════════════
-    pax_str = f"{n_adults} Adult{'s' if n_adults != 1 else ''}"
+    pax_parts = []
+    if n_adults > 0:
+        pax_parts.append(f"{n_adults} Adult{'s' if n_adults != 1 else ''}")
     if n_children > 0:
-        pax_str += f"  +  {n_children} Child{'ren' if n_children > 1 else ''}"
+        pax_parts.append(f"{n_children} Child{'ren' if n_children > 1 else ''}")
+    if n_infants > 0:
+        pax_parts.append(f"{n_infants} Infant{'s' if n_infants != 1 else ''}")
+    if n_seniors > 0:
+        pax_parts.append(f"{n_seniors} Senior{'s' if n_seniors != 1 else ''}")
+    pax_str = "  +  ".join(pax_parts) if pax_parts else f"{pax_total} Guests"
 
     client_block = [
         Paragraph(escape_text(client_name), s_cl_name),
@@ -630,20 +692,77 @@ def render_invoice_page(story: list, styles: dict[str, ParagraphStyle], request:
         acts_desc = ",  ".join(top_acts)
         line_items.append(("Activities", escape_text(acts_desc), "Included in Package", "—"))
 
+    # — Complimentary Included Activities
+    if hasattr(request, "included_activities") and request.included_activities:
+        comp_acts = []
+        for act in request.included_activities:
+            qty = getattr(act, "quantity", 1)
+            name = getattr(act, "activity_name", str(act))
+            if qty > 0:
+                qty_str = f"{qty}x " if qty > 1 else ""
+                comp_acts.append(f"{qty_str}{name}")
+        if comp_acts:
+            line_items.append(("Complimentary Activities", escape_text(", ".join(comp_acts)), "Complimentary (Free)", "Included"))
+
     # — Tour Guide / Manager
     line_items.append(("Tour Management", "Dedicated Tour Manager & Guide", "Included in Package", "—"))
 
     # — Package Cost
-    pp_rate_str = fmt_inr(pp_cost) + " / Person" if pp_cost > 0 else "As Per Quote"
-    pp_amt_str  = fmt_inr(pp_cost * pax_total) if pp_cost > 0 and pax_total > 0 else "As Per Quote"
-    line_items.append(("Package Cost", f"Per Person  ×  {pax_total} Pax", pp_rate_str, pp_amt_str))
+    if pricing_tiers:
+        cat_labels = {
+            "adult": "Adults",
+            "child": "Child",
+            "infant": "Infant",
+            "senior": "Senior",
+        }
+        desc_lines = []
+        rate_lines = []
+        for t in pricing_tiers:
+            pax = int(t.get("pax", 1) if isinstance(t, dict) else getattr(t, "pax", 1))
+            cost = float(t.get("cost", 0.0) if isinstance(t, dict) else getattr(t, "cost", 0.0))
+            cat = str(t.get("category", "adult") if isinstance(t, dict) else getattr(t, "category", "adult"))
+            label_val = str(t.get("label", "") if isinstance(t, dict) else getattr(t, "label", "") or "")
+            custom_label = label_val or cat_labels.get(cat, cat.title())
+            desc_lines.append(f"Per Person ({custom_label})  ×  {pax:02d} Pax")
+            rate_str = f"{fmt_inr(cost)} / Person" if cost > 0 else ("Complimentary" if cat == "infant" else ("As Per Quote" if cat in ("adult", "senior") else "Included in Package"))
+            rate_lines.append(rate_str)
+
+        amt_str = fmt_inr(calc_package_sum) if calc_package_sum > 0 else (fmt_inr(pure_package_cost) if pure_package_cost > 0 else "—")
+        line_items.append(("Package Cost", desc_lines, rate_lines, amt_str))
+    elif has_tiered:
+        desc_lines = []
+        rate_lines = []
+        if n_adults > 0:
+            desc_lines.append(f"Per Person (Adults)  ×  {n_adults:02d} Pax")
+            rate_lines.append(f"{fmt_inr(pp_cost)} / Person" if pp_cost > 0 else "As Per Quote")
+        if n_children > 0:
+            desc_lines.append(f"Per Person (Child)  ×  {n_children:02d} Pax")
+            rate_lines.append(f"{fmt_inr(child_cost)} / Person" if child_cost > 0 else "Included in Package")
+        if n_infants > 0:
+            desc_lines.append(f"Per Person (Infant)  ×  {n_infants:02d} Pax")
+            rate_lines.append(f"{fmt_inr(infant_cost)} / Person" if infant_cost > 0 else "Complimentary")
+        if n_seniors > 0:
+            desc_lines.append(f"Per Person (Senior)  ×  {n_seniors:02d} Pax")
+            rate_lines.append(f"{fmt_inr(senior_cost)} / Person" if senior_cost > 0 else "As Per Quote")
+        amt_str = fmt_inr(calc_package_sum) if calc_package_sum > 0 else (fmt_inr(pure_package_cost) if pure_package_cost > 0 else "—")
+        line_items.append(("Package Cost", desc_lines, rate_lines, amt_str))
+    else:
+        pp_rate_str = fmt_inr(pp_cost) + " / Person" if pp_cost > 0 else "As Per Quote"
+        pp_amt_str  = fmt_inr(pp_cost * pax_total) if pp_cost > 0 and pax_total > 0 else (fmt_inr(total_cost) if total_cost > 0 else "As Per Quote")
+        line_items.append(("Package Cost", f"Per Person  ×  {pax_total:02d} Pax", pp_rate_str, pp_amt_str))
 
     # Build rows
     def _svc_row(svc, desc, rate, amt):
+        desc_list = desc if isinstance(desc, list) else [desc]
+        rate_list = rate if isinstance(rate, list) else [rate]
+        
+        desc_paras = [Paragraph(escape_text(d), s_td_desc) for d in desc_list]
+        rate_paras = [Paragraph(escape_text(r), s_td_rate) for r in rate_list]
+        
         return [
             [Paragraph(escape_text(svc),  s_td_label)],
-            [Paragraph(escape_text(desc), s_td_desc)],
-            [Paragraph(escape_text(rate), s_td_rate)],
+            desc_paras,
+            rate_paras,
             [Paragraph(escape_text(amt),  s_td_amt)],
         ]
 
@@ -653,7 +772,7 @@ def render_invoice_page(story: list, styles: dict[str, ParagraphStyle], request:
 
     n_rows = len(svc_data)
     svc_ts = [
-        ("VALIGN",        (0, 0), (-1, -1), "MIDDLE"),
+        ("VALIGN",        (0, 0), (-1, -1), "TOP"),
         ("LEFTPADDING",   (0, 0), (-1, -1), 8),
         ("RIGHTPADDING",  (0, 0), (-1, -1), 8),
         ("TOPPADDING",    (0, 0), (-1, -1), 7),
@@ -716,7 +835,7 @@ def render_invoice_page(story: list, styles: dict[str, ParagraphStyle], request:
     story.append(HRFlowable(width="100%", thickness=0.6, color=C_LINE))
     story.append(Spacer(1, 0.08 * inch))
     footer_left  = Paragraph("www.andamandaruntourism.in", s_footer)
-    footer_right = Paragraph("andamandaruntoursandtravel@gmail.com", ParagraphStyle(
+    footer_right = Paragraph("andamandaruntourandtravels@gmail.com", ParagraphStyle(
         "inv_footer_r", parent=s_footer, alignment=2
     ))
     footer_table = Table([[footer_left, footer_right]], colWidths=[W * 0.5, W * 0.5])

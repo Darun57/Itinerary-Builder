@@ -7,6 +7,7 @@ import { tripRequestSchema, TripRequestType } from "../schema";
 import { useWizardStore } from "../store";
 import { useMutation } from "@tanstack/react-query";
 import { generateAIItinerary } from "@/lib/api";
+import { resolvePrimaryIsland } from "../utils";
 import { Loader2 } from "lucide-react";
 
 import CustomerStep from "./steps/CustomerStep";
@@ -100,41 +101,20 @@ export default function WizardForm() {
       const plan = data.daily_island_plan.slice(0, data.number_of_days);
       
       data.daily_island_plan = plan.map((day: any, idx: number) => {
-        const resolvePrimaryIsland = (candidate: string, attractions: string[]) => {
-          const text = (candidate + " " + (attractions || []).join(" ")).toLowerCase();
-          if (text.includes("havelock") || text.includes("swaraj") || text.includes("radhanagar") || text.includes("kalapathar") || text.includes("elephant beach")) {
-            return "Swaraj Dweep (Havelock)";
-          }
-          if (text.includes("neil") || text.includes("shaheed") || text.includes("laxmanpur") || text.includes("bharatpur") || text.includes("natural bridge")) {
-            return "Shaheed Dweep (Neil)";
-          }
-          if (text.includes("baratang") || text.includes("limestone") || text.includes("mud volcano")) {
-            return "Baratang Island";
-          }
-          if (text.includes("ross") || text.includes("north bay")) {
-            return "Ross Island & North Bay";
-          }
-          if (text.includes("diglipur") || text.includes("saddle peak") || text.includes("ross & smith")) {
-            return "Diglipur";
-          }
-          if (text.includes("port blair") || text.includes("cellular jail") || text.includes("corbyn") || text.includes("marina park") || text.includes("chidiya tapu") || text.includes("wandoor") || text.includes("museum")) {
-            return "Port Blair";
-          }
-          return idx === 0 ? "Port Blair" : (candidate && candidate.toLowerCase() !== "andaman and nicobar islands" ? candidate : "Port Blair");
-        };
-
-        const primaryIsland = resolvePrimaryIsland(day.primary_island || "", day.attractions || []);
+        const cleanAttractions = day.attractions || [];
+        const primaryIsland = resolvePrimaryIsland(day, idx);
         const transferType = day.transfer_type || data.transfer_type || "Private Cab";
         const isLastDay = idx === plan.length - 1;
         const isDeparture = isLastDay && (
           primaryIsland.toLowerCase().trim() === "departure" ||
-          (day.attractions || []).some((a: string) => String(a).toLowerCase().trim() === "departure")
+          cleanAttractions.some((a: string) => String(a).toLowerCase().trim() === "departure")
         );
 
         return {
           ...day,
           day_number: idx + 1,
           primary_island: primaryIsland,
+          attractions: cleanAttractions.length > 0 ? cleanAttractions : (idx === 0 ? ["Cellular Jail", "Corbyn's Cove Beach"] : ["Radhanagar Beach", "Elephant Beach"]),
           transfer_type: transferType,
           ferry: day.ferry || "None",
           hotel: isDeparture ? "" : (day.hotel || ""),
@@ -205,6 +185,7 @@ export default function WizardForm() {
                       { icon: "ti-building", label: "Hotels", value: methods.getValues("hotel_category_preference") || "—" },
                       { icon: "ti-car", label: "Transfer", value: methods.getValues("transfer_type") || "—" },
                       { icon: "ti-tools-kitchen-2", label: "Meal Plan", value: methods.getValues("meal_plan") || "—" },
+                      { icon: "ti-file-text", label: "Writing Style", value: methods.getValues("day_wise_style") === "simple_itinerary" ? "Simple Itinerary (Operational)" : "Luxury Narrative" },
                     ].map(item => (
                       <div key={item.label} style={{ display: "flex", alignItems: "center", gap: "12px", padding: "12px 16px", background: "#F9FAFB", borderRadius: "10px", border: "1px solid #E5E7EB" }}>
                         <div style={{ width: "34px", height: "34px", borderRadius: "9px", background: "rgba(20,33,61,0.07)", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--navy)", flexShrink: 0 }}>

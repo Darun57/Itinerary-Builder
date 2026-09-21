@@ -20,7 +20,7 @@ const INITIAL_CAMPAIGNS: Campaign[] = [
   {
     id: "camp-1",
     title: "Diwali Island Getaway 2026",
-    package: "5D/4N Havelock & Neil Luxury Escape",
+    package: "5D/4N North Andaman Islands & South Andaman Islands Luxury Escape",
     channel: "all",
     status: "active",
     reach: 14200,
@@ -33,7 +33,7 @@ const INITIAL_CAMPAIGNS: Campaign[] = [
   {
     id: "camp-2",
     title: "Honeymoon Sunset Cruise Special",
-    package: "6D/5N Port Blair & Havelock Romance Tour",
+    package: "6D/5N Panaji & North Andaman Islands Romance Tour",
     channel: "whatsapp",
     status: "active",
     reach: 8900,
@@ -46,7 +46,7 @@ const INITIAL_CAMPAIGNS: Campaign[] = [
   {
     id: "camp-3",
     title: "Monsoon Serenity Scuba Blast",
-    package: "4D/3N Elephant Beach & Coral Safari",
+    package: "4D/3N Grand Island & Coral Safari",
     channel: "instagram",
     status: "scheduled",
     reach: 5400,
@@ -61,33 +61,33 @@ const INITIAL_CAMPAIGNS: Campaign[] = [
 const PROMO_PACKAGES = [
   {
     id: "pkg-1",
-    name: "Luxury Havelock & Neil Island Odyssey",
+    name: "Luxury North Andaman Islands & South Andaman Islands Odyssey",
     duration: "5 Days / 4 Nights",
     startingPrice: "₹38,000 / couple",
     resort: "Symphony Palms Beach Resort / Taj Exotica",
     tags: ["Best Seller", "Couples & Family"],
-    description: "Private transfers, cruise tickets on Makruzz/Nautika, sunset at Radhanagar Beach, and private beach dinner.",
-    messageText: `🌴 *Darun Tourism Exclusive - Luxury Andaman Getaway* 🌴\n\n✨ Experience 5 Days / 4 Nights in Havelock & Neil Island.\n🛎️ Stay at premium beach villas with ocean views.\n🚤 Private ferry transfers via Nautika/Makruzz.\n🤿 Complimentary snorkeling & sunset dining!\n\nSpecial Festival Offer: Use Code *DARUNLUXURY* for 15% OFF.\nBook your bespoke itinerary now with Darun Tourism!`,
+    description: "Private transfers, cruise tickets on Mandovi River Cruise/Mandovi River Cruise, sunset at Palolem Beach, and private beach dinner.",
+    messageText: `🌴 *Darun Tourism Exclusive - Luxury Andaman Islands Getaway* 🌴\n\n✨ Experience 5 Days / 4 Nights in North Andaman Islands & South Andaman Islands.\n🛎️ Stay at premium beach villas with ocean views.\n🚤 Private ferry transfers via Mandovi River Cruise/Mandovi River Cruise.\n🤿 Complimentary snorkeling & sunset dining!\n\nSpecial Festival Offer: Use Code *DARUNLUXURY* for 15% OFF.\nBook your bespoke itinerary now with Darun Tourism!`,
   },
   {
     id: "pkg-2",
-    name: "Andaman Adventure & Coral Explorer",
+    name: "Andaman Islands Adventure & Coral Explorer",
     duration: "6 Days / 5 Nights",
     startingPrice: "₹45,000 / couple",
-    resort: "Seashell Havelock & Coral Reef Neil",
+    resort: "Seashell North Andaman Islands & Coral Reef South Andaman Islands",
     tags: ["Adventure", "Scuba & Trekking"],
-    description: "Includes PADI Discovery Scuba at Nemo Reef, Sea Walk at Elephant Beach, and Baratang Limestone Caves trek.",
-    messageText: `🌊 *Underwater Adventure in the Andamans with Darun Tourism* 🐠\n\n6D/5N of crystal-clear turquoise waters & coral reefs!\n✔️ Discover Scuba Diving with underwater 4K video\n✔️ Jet Ski & Banana Ride at Elephant Beach\n✔️ Luxury island stays & curated dining\n\nLimited slots available. Reply 'DETAILS' to get your personalized plan!`,
+    description: "Includes PADI Discovery Scuba at Grand Island, Sea Walk at Grand Island, and Dudhsagar Limestone Caves trek.",
+    messageText: `🌊 *Underwater Adventure in the Andaman Islandss with Darun Tourism* 🐠\n\n6D/5N of crystal-clear turquoise waters & coral reefs!\n✔️ Discover Scuba Diving with underwater 4K video\n✔️ Jet Ski & Banana Ride at Grand Island\n✔️ Luxury island stays & curated dining\n\nLimited slots available. Reply 'DETAILS' to get your personalized plan!`,
   },
   {
     id: "pkg-3",
-    name: "Signature Port Blair & Island Romance",
+    name: "Signature Panaji & Island Romance",
     duration: "4 Days / 3 Nights",
     startingPrice: "₹29,000 / couple",
-    resort: "Sinclairs Bayview Port Blair",
+    resort: "Sinclairs Bayview Panaji",
     tags: ["Weekend Special", "Romantic Escape"],
-    description: "Cellular Jail light & sound show VIP seats, Corbyn's Cove sunset, and Chidiyatapu bird sanctuary.",
-    messageText: `🌅 *Romantic Weekend Escape to the Andamans* 🥂\n\nCurated 4D/3N quick getaway by Darun Tourism.\nIndulge in private oceanfront suites, candlelit dinners, and serene sunset cruises.\n\nExclusive discount code *ROMANCE26* gives flat ₹4,000 off this week!`,
+    description: "Basilica of Bom Jesus light & sound show VIP seats, Dona Paula sunset, and a private South Andaman Islands coastal experience.",
+    messageText: `🌅 *Romantic Weekend Escape to the Andaman Islandss* 🥂\n\nCurated 4D/3N quick getaway by Darun Tourism.\nIndulge in private oceanfront suites, candlelit dinners, and serene sunset cruises.\n\nExclusive discount code *ROMANCE26* gives flat ₹4,000 off this week!`,
   },
 ];
 
@@ -115,7 +115,7 @@ export function MarketingHub() {
   // Broadcast modal/state
   const [broadcastTarget, setBroadcastTarget] = useState<"leads" | "clients" | "all">("leads");
   const [broadcastText, setBroadcastText] = useState(
-    `🌴 *Exclusive Andaman Travel Offer from Darun Tourism* 🌴\n\nPlan your dream tropical vacation with our customized luxury itineraries!\n✨ 15% discount with promo code *DARUNVIP15*\n🌊 Private beachfront resorts & luxury ferries included.\n\nReply to this message or call our travel expert to design your trip!`
+    `🌴 *Exclusive Andaman Islands Travel Offer from Darun Tourism* 🌴\n\nPlan your dream tropical vacation with our customized luxury itineraries!\n✨ 15% discount with promo code *DARUNVIP15*\n🌊 Private beachfront resorts & luxury ferries included.\n\nReply to this message or call our travel expert to design your trip!`
   );
 
   const showToast = (msg: string) => {
@@ -142,7 +142,7 @@ export function MarketingHub() {
     const newCamp: Campaign = {
       id: `camp-${Date.now()}`,
       title: newTitle.trim(),
-      package: newPackage.trim() || "Andaman Bespoke Tour",
+      package: newPackage.trim() || "Andaman Islands Bespoke Tour",
       channel: newChannel,
       status: "active",
       reach: 0,
@@ -213,7 +213,7 @@ export function MarketingHub() {
             <h1 style={{ fontSize: "24px", fontWeight: 700, margin: 0 }}>Marketing & Campaigns</h1>
           </div>
           <p style={{ color: "var(--text-dim)", fontSize: "13.5px", margin: 0 }}>
-            Launch luxury Andaman promotions, broadcast WhatsApp offers to leads, and drive new high-value bookings.
+            Launch luxury Andaman Islands promotions, broadcast WhatsApp offers to leads, and drive new high-value bookings.
           </p>
         </div>
 
@@ -907,7 +907,7 @@ export function MarketingHub() {
                 <input
                   type="text"
                   required
-                  placeholder="e.g. Andaman Island Romance Blast"
+                  placeholder="e.g. Andaman Islands Island Romance Blast"
                   value={newTitle}
                   onChange={(e) => setNewTitle(e.target.value)}
                   style={{
@@ -929,7 +929,7 @@ export function MarketingHub() {
                 </label>
                 <input
                   type="text"
-                  placeholder="e.g. 5D/4N Havelock & Neil Luxury Escape"
+                  placeholder="e.g. 5D/4N North Andaman Islands & South Andaman Islands Luxury Escape"
                   value={newPackage}
                   onChange={(e) => setNewPackage(e.target.value)}
                   style={{

@@ -3,7 +3,6 @@ from pathlib import Path
 import pandas as pd
 from pandas.errors import EmptyDataError, ParserError
 
-
 PROJECT_ROOT = Path(__file__).resolve().parents[4]
 DATA_DIR = PROJECT_ROOT / "data"
 
@@ -95,27 +94,11 @@ def load_hotels() -> pd.DataFrame:
     return frame[HOTEL_COLUMNS]
 
 
-_LOCATION_PREFIX_MAP: dict[str, str] = {
-    "port blair": "PB",
-    "swaraj dweep": "SD",
-    "havelock": "SD",
-    "shaheed dweep": "ND",
-    "neil": "ND",
-    "baratang": "BT",
-    "diglipur": "DG",
-    "little andaman": "LA",
-    "rangat": "RG",
-    "mayabunder": "MB",
-}
-
-
 def _next_hotel_id(location: str) -> str:
-    """Generate the next sequential hotel_id for a given location prefix."""
-    loc_key = location.strip().lower()
-    prefix = _LOCATION_PREFIX_MAP.get(loc_key, "OT")  # OT = Other
+    """Generate the next sequential Andaman hotel_id."""
     try:
         existing = load_hotels()
-        pattern = f"HTL-{prefix}-"
+        pattern = "HTL-AND-"
         matched = existing["hotel_id"].astype(str).str.startswith(pattern)
         if matched.any():
             nums = (
@@ -130,7 +113,7 @@ def _next_hotel_id(location: str) -> str:
             next_num = 1
     except Exception:
         next_num = 1
-    return f"HTL-{prefix}-{next_num:03d}"
+    return f"HTL-AND-{next_num:03d}"
 
 
 def append_hotel(hotel: dict) -> dict:
