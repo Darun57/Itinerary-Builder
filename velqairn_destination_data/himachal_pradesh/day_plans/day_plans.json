@@ -1,0 +1,70 @@
+[
+  {
+    "id": "himachal-pradesh:shimla_manali:5n6d",
+    "region": "himachal-pradesh",
+    "day_count": 6,
+    "nights": 5,
+    "suitability": [
+      "hills",
+      "family",
+      "honeymoon"
+    ],
+    "constraints": [
+      "Check mountain road traffic clearance during snowfall."
+    ],
+    "sequence": [
+      {
+        "day": 1,
+        "location": "himachal-pradesh:shimla",
+        "theme": "Arrival & Shimla Mall Road",
+        "anchors": [
+          "himachal-pradesh:shimla:mall_road"
+        ],
+        "activity_slots": []
+      },
+      {
+        "day": 2,
+        "location": "himachal-pradesh:shimla",
+        "theme": "Kufri Snow View & Jakhoo Temple",
+        "anchors": [],
+        "activity_slots": []
+      },
+      {
+        "day": 3,
+        "location": "himachal-pradesh:manali",
+        "theme": "Scenic Valley Transit to Manali via Kullu",
+        "anchors": [],
+        "activity_slots": []
+      },
+      {
+        "day": 4,
+        "location": "himachal-pradesh:manali",
+        "theme": "Solang Valley Adventure & Paragliding",
+        "anchors": [
+          "himachal-pradesh:manali:solang_valley"
+        ],
+        "activity_slots": [
+          "himachal-pradesh:manali:paragliding"
+        ]
+      },
+      {
+        "day": 5,
+        "location": "himachal-pradesh:manali",
+        "theme": "Atal Tunnel & Sissu Lahaul Excursion",
+        "anchors": [
+          "himachal-pradesh:manali:atal_tunnel"
+        ],
+        "activity_slots": [
+          "himachal-pradesh:manali:snow_activity"
+        ]
+      },
+      {
+        "day": 6,
+        "location": "himachal-pradesh:manali",
+        "theme": "Old Manali Cafes & Departure",
+        "anchors": [],
+        "activity_slots": []
+      }
+    ]
+  }
+]

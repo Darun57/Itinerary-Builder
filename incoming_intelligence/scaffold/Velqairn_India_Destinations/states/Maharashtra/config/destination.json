@@ -1,0 +1,8 @@
+{
+  "name": "Maharashtra",
+  "slug": "maharashtra",
+  "scope": "state",
+  "status": "scaffold",
+  "protected_reference": false,
+  "namespace": "velqairn:maharashtra"
+}

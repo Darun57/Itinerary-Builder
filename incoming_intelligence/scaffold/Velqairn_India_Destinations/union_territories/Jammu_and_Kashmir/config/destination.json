@@ -1,0 +1,8 @@
+{
+  "name": "Jammu and Kashmir",
+  "slug": "jammu-and-kashmir",
+  "scope": "union_territory",
+  "status": "scaffold",
+  "protected_reference": false,
+  "namespace": "velqairn:jammu-and-kashmir"
+}

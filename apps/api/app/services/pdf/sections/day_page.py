@@ -101,7 +101,25 @@ def _estimate_day_block_height(items: list[dict[str, object]], has_image: bool) 
 
 
 def _fallback_day_section(day_number: int, request: TripRequest) -> dict[str, object]:
-    base_destination = clean_destination_label(request.destination or "Andaman Islands")
+    from app.services.destination_registry import get_destination_context
+    ctx = get_destination_context(request.destination, request)
+    base_destination = ctx.display_name or clean_destination_label(request.destination or "Selected Destination")
+
+    # Resolve departure hub: use ctx.entry_hub if available, else neutral phrase
+    # NEVER invent "{destination} Airport"
+    if ctx.entry_hub:
+        departure_hub = ctx.entry_hub
+    else:
+        departure_hub = "the airport"
+
+    # Destination-neutral phrases
+    if ctx.is_andaman:
+        holiday_phrase = "island holiday"
+        getaway_phrase = "island getaway"
+    else:
+        holiday_phrase = "memorable journey"
+        getaway_phrase = "travel experience"
+
     is_departure = (day_number == request.number_of_days)
     is_simple = (getattr(request, "day_wise_style", "luxury_narrative") in ["simple_itinerary", "simple"])
 
@@ -111,7 +129,7 @@ def _fallback_day_section(day_number: int, request: TripRequest) -> dict[str, ob
             bullets = [
                 "Breakfast at hotel",
                 "Hotel check-out and luggage assistance",
-                f"Private transfer to Veer Savarkar International Airport, Port Blair",
+                f"Private transfer to {departure_hub}",
                 "Board scheduled return flight with memorable experiences",
             ]
             return {
@@ -145,8 +163,8 @@ def _fallback_day_section(day_number: int, request: TripRequest) -> dict[str, ob
                 {
                     "label": "END OF THE JOURNEY",
                     "paragraphs": [
-                        f"After a relaxed morning at the hotel, the journey concludes with a comfortable transfer from the hotel to the airport. Our team will assist {request.customer_name or 'the guests'} and their family with their departure, ensuring a smooth and hassle-free journey as they head back home with wonderful memories of their island holiday.",
-                        f"As the journey comes to an end, we sincerely thank {request.customer_name or 'the guests'} and their family for choosing Darun Tourism to be a part of their memorable island getaway. It has been our pleasure to create beautiful experiences and cherished moments for your family throughout the journey. We wish you a safe and comfortable departure, and hope to welcome you again soon for another unforgettable adventure.",
+                        f"After a relaxed morning at the hotel, the journey concludes with a comfortable transfer from the hotel to {departure_hub}. Our team will assist {request.customer_name or 'the guests'} and their family with their departure, ensuring a smooth and hassle-free journey as they head back home with wonderful memories of their {holiday_phrase}.",
+                        f"As the journey comes to an end, we sincerely thank {request.customer_name or 'the guests'} and their family for choosing Darun Tourism to be a part of their memorable {getaway_phrase}. It has been our pleasure to create beautiful experiences and cherished moments for your family throughout the journey. We wish you a safe and comfortable departure, and hope to welcome you again soon for another unforgettable adventure.",
                     ],
                 }
             ],
@@ -188,6 +206,19 @@ def _fallback_day_section(day_number: int, request: TripRequest) -> dict[str, ob
             ],
         }
 
+    if ctx.is_andaman:
+        story_paras = [
+            f"The day begins with curated exploration of the iconic highlights of {base_destination}, tailored for relaxation and island discovery.",
+            f"Surrounded by the azure waters of the Bay of Bengal, {base_destination} offers a serene harmony of tropical scenery, coastal history, and island charm.",
+        ]
+        journey_para = "For the places highlighted above, private vehicle transfers ensure a smooth and relaxing day of sightseeing across the island."
+    else:
+        story_paras = [
+            f"The day begins with curated exploration of the iconic highlights of {base_destination}, tailored for relaxation and cultural discovery.",
+            f"Set amidst beautiful landscapes and rich local culture, {base_destination} offers a wonderful blend of scenic beauty, heritage, and regional charm.",
+        ]
+        journey_para = f"For the places highlighted above, private vehicle transfers ensure a smooth and relaxing day of sightseeing across {base_destination}."
+
     return {
         "heading": heading,
         "is_departure_day": False,
@@ -195,16 +226,11 @@ def _fallback_day_section(day_number: int, request: TripRequest) -> dict[str, ob
         "items": [
             {
                 "label": "Visiting Places And Destination Story",
-                "paragraphs": [
-                    f"The day begins with curated exploration of the iconic highlights of {base_destination}, tailored for relaxation and island discovery.",
-                    f"Surrounded by the azure waters of the Bay of Bengal, {base_destination} offers a serene harmony of tropical scenery, coastal history, and island charm.",
-                ],
+                "paragraphs": story_paras,
             },
             {
                 "label": "Today's Journey",
-                "paragraphs": [
-                    "For the places highlighted above, private vehicle transfers ensure a smooth and relaxing day of sightseeing across the island."
-                ],
+                "paragraphs": [journey_para],
             },
             {
                 "label": "Hotel Experience",

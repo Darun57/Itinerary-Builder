@@ -1,0 +1,15 @@
+{
+  "region": "ladakh",
+  "rules": [
+    {
+      "id": "namespace_isolation",
+      "severity": "error",
+      "rule": "All Ladakh entities must start with ladakh:."
+    },
+    {
+      "id": "mandatory_acclimatization",
+      "severity": "error",
+      "rule": "Day 1 must be spent at Leh base altitude for medical acclimatization."
+    }
+  ]
+}

@@ -1,3 +1,5 @@
+import { getDestinationDayDefaults } from "./destinationDefaults";
+
 export const CANONICAL_ISLANDS = [
   "Port Blair",
   "Swaraj Dweep (Havelock)",
@@ -11,12 +13,27 @@ export const CANONICAL_ISLANDS = [
 
 export function resolvePrimaryIsland(
   day?: { primary_island?: any; attractions?: any; ferry?: any },
-  dayIdx: number = 0
+  dayIdx: number = 0,
+  destination?: string
 ): string {
+  const primary = typeof day?.primary_island === "string" ? day.primary_island.trim() : "";
+  const isAndaman = !destination || destination.toLowerCase().includes("andaman");
+
+  // Non-Andaman destination: respect explicitly specified primary_island or fall back to destination default region
+  if (!isAndaman) {
+    if (primary) {
+      return primary;
+    }
+    const defaults = getDestinationDayDefaults(destination);
+    if (defaults && defaults.length > 0) {
+      return defaults[dayIdx % defaults.length].region;
+    }
+    return "";
+  }
+
   const attractions = Array.isArray(day?.attractions) ? day.attractions : [];
   const attractionsText = attractions.join(" ").toLowerCase();
   const ferryText = typeof day?.ferry === "string" ? day.ferry.toLowerCase() : "";
-  const primary = typeof day?.primary_island === "string" ? day.primary_island.trim() : "";
 
   // 1. Distinct attractions have highest priority because user specifically chose them in Step 2
   if (["havelock", "swaraj", "radhanagar", "elephant beach", "kalapathar", "vijaynagar"].some(k => attractionsText.includes(k))) {

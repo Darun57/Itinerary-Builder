@@ -1,0 +1,13 @@
+ferry_id,operator,from_location,to_location,departure_time,arrival_time,duration
+TRF-GOA-001,Goa River Ferry,Panaji,Betim,08:00,08:15,15 minutes
+TRF-GOA-002,Goa River Ferry,Betim,Panaji,08:30,08:45,15 minutes
+TRF-GOA-003,Goa River Ferry,Ribandar,Chorao Island,09:00,09:15,15 minutes
+TRF-GOA-004,Goa River Ferry,Chorao Island,Ribandar,09:30,09:45,15 minutes
+TRF-GOA-005,Goa River Ferry,Old Goa,Divar Island,10:00,10:15,15 minutes
+TRF-GOA-006,Goa River Ferry,Divar Island,Old Goa,10:30,10:45,15 minutes
+TRF-GOA-007,Tiracol Ferry,Querim,Tiracol,09:00,09:10,10 minutes
+TRF-GOA-008,Tiracol Ferry,Tiracol,Querim,09:20,09:30,10 minutes
+TRF-GOA-009,Mandovi Sunset Cruise,Panaji Waterfront,Mandovi River,17:30,19:30,2 hours
+TRF-GOA-010,Mandovi Evening Cruise,Panaji Waterfront,Mandovi River,19:00,21:00,2 hours
+TRF-GOA-011,South Goa Dolphin Boat,Palolem,Arabian Sea,08:00,10:00,2 hours
+TRF-GOA-012,Cavelossim River Cruise,Cavelossim,Sal River,16:30,19:00,2 hours 30 minutes

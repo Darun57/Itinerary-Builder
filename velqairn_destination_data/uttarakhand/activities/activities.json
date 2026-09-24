@@ -1,0 +1,38 @@
+[
+  {
+    "id": "uttarakhand:rishikesh:river_rafting_16km",
+    "destination_id": "uttarakhand:rishikesh",
+    "name": "16 km Ganga White Water River Rafting (Shivpuri to NIM Beach)",
+    "category": "Adventure",
+    "duration_minutes_min": 120,
+    "duration_minutes_max": 180,
+    "best_for": [
+      "rafting",
+      "rapids"
+    ],
+    "seasonality": [
+      "sep_to_jun"
+    ],
+    "booking_required": true,
+    "price_status": "fixed",
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "uttarakhand:jim_corbett:jeep_safari",
+    "destination_id": "uttarakhand:jim_corbett",
+    "name": "Exclusive Open 4x4 Gypsy Wildlife Safari",
+    "category": "Wildlife",
+    "duration_minutes_min": 180,
+    "duration_minutes_max": 240,
+    "best_for": [
+      "tigers",
+      "safari"
+    ],
+    "seasonality": [
+      "oct_to_jun"
+    ],
+    "booking_required": true,
+    "price_status": "fixed",
+    "source_status": "official_tourism_seed"
+  }
+]

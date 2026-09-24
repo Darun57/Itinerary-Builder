@@ -1,0 +1,13 @@
+{
+  "transport_modes": ["road"],
+  "supports_ferry": false,
+  "supports_houseboat": false,
+  "requires_altitude_validation": false,
+  "requires_acclimatization_logic": false,
+  "supports_multi_city_circuit": false,
+  "seasonality_required": true,
+  "default_base_location_id": "goa:candolim",
+  "typical_circuit_pace": "slow",
+  "recommended_min_days": 3,
+  "recommended_max_days": 7
+}

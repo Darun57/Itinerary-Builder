@@ -1,0 +1,902 @@
+[
+  {
+    "id": "goa:vagator:w_goa",
+    "location_id": "goa:vagator",
+    "name": "W Goa",
+    "category": "5 Star",
+    "star_rating": 5,
+    "room_type": "Wonderful Garden View Room",
+    "description": "Luxury beachfront resort near Vagator with premium rooms and villas suited to high-end leisure travel.",
+    "status": "known"
+  },
+  {
+    "id": "goa:vagator:jw_marriott_goa",
+    "location_id": "goa:vagator",
+    "name": "JW Marriott Goa",
+    "category": "5 Star",
+    "star_rating": 5,
+    "room_type": "Deluxe Room",
+    "description": "Luxury resort in Vagator with upscale rooms, wellness facilities, dining, and family-oriented recreation.",
+    "status": "known"
+  },
+  {
+    "id": "goa:anjuna:the_westin_goa",
+    "location_id": "goa:anjuna",
+    "name": "The Westin Goa",
+    "category": "5 Star",
+    "star_rating": 5,
+    "room_type": "Deluxe Guest Room",
+    "description": "Luxury North Goa resort positioned for beach, dining, and wellness-led stays.",
+    "status": "known"
+  },
+  {
+    "id": "goa:arpora:renaissance_goa_baga_arpora_hotel",
+    "location_id": "goa:arpora",
+    "name": "Renaissance Goa Baga-Arpora Hotel",
+    "category": "5 Star",
+    "star_rating": 5,
+    "room_type": "Deluxe Room",
+    "description": "Upscale resort-style stay close to North Goa's beach and entertainment corridor.",
+    "status": "known"
+  },
+  {
+    "id": "goa:baga:radisson_resort_goa_baga",
+    "location_id": "goa:baga",
+    "name": "Radisson Resort Goa Baga",
+    "category": "5 Star",
+    "star_rating": 5,
+    "room_type": "Superior Room",
+    "description": "Resort accommodation in the Baga area suited to beach-focused and leisure itineraries.",
+    "status": "known"
+  },
+  {
+    "id": "goa:candolim:radisson_hotel_goa_candolim",
+    "location_id": "goa:candolim",
+    "name": "Radisson Hotel Goa Candolim",
+    "category": "4 Star",
+    "star_rating": 4,
+    "room_type": "Superior Room",
+    "description": "Central Candolim hotel suited to beach access, family stays, and North Goa sightseeing.",
+    "status": "known"
+  },
+  {
+    "id": "goa:candolim:park_inn_by_radisson_goa_candolim",
+    "location_id": "goa:candolim",
+    "name": "Park Inn by Radisson Goa Candolim",
+    "category": "4 Star",
+    "star_rating": 4,
+    "room_type": "Deluxe Room",
+    "description": "Comfort-focused Candolim stay with practical access to the North Goa coast.",
+    "status": "known"
+  },
+  {
+    "id": "goa:candolim:hyatt_centric_candolim_goa",
+    "location_id": "goa:candolim",
+    "name": "Hyatt Centric Candolim Goa",
+    "category": "5 Star",
+    "star_rating": 5,
+    "room_type": "1 King Bed With Balcony",
+    "description": "Modern full-service hotel on Candolim Road, positioned for exploring North Goa beaches and attractions.",
+    "status": "known"
+  },
+  {
+    "id": "goa:candolim:novotel_goa_candolim",
+    "location_id": "goa:candolim",
+    "name": "Novotel Goa Candolim",
+    "category": "5 Star",
+    "star_rating": 5,
+    "room_type": "Superior Room",
+    "description": "Family-friendly Candolim hotel with multiple pools and access to nearby beaches.",
+    "status": "known"
+  },
+  {
+    "id": "goa:candolim:novotel_goa_resort_spa",
+    "location_id": "goa:candolim",
+    "name": "Novotel Goa Resort & Spa",
+    "category": "5 Star",
+    "star_rating": 5,
+    "room_type": "Deluxe Room",
+    "description": "Resort-style Candolim property near beaches with family and wellness facilities.",
+    "status": "known"
+  },
+  {
+    "id": "goa:calangute:le_m_ridien_goa_calangute",
+    "location_id": "goa:calangute",
+    "name": "Le M\u00e9ridien Goa, Calangute",
+    "category": "5 Star",
+    "star_rating": 5,
+    "room_type": "Deluxe Room",
+    "description": "Contemporary resort in Calangute suited to beach holidays and family trips.",
+    "status": "known"
+  },
+  {
+    "id": "goa:calangute:fairfield_by_marriott_goa_calangute",
+    "location_id": "goa:calangute",
+    "name": "Fairfield by Marriott Goa Calangute",
+    "category": "4 Star",
+    "star_rating": 4,
+    "room_type": "Deluxe Room",
+    "description": "Modern Calangute hotel with easy access to the main beach and local dining.",
+    "status": "known"
+  },
+  {
+    "id": "goa:anjuna:fairfield_by_marriott_goa_anjuna",
+    "location_id": "goa:anjuna",
+    "name": "Fairfield by Marriott Goa Anjuna",
+    "category": "4 Star",
+    "star_rating": 4,
+    "room_type": "Deluxe Room",
+    "description": "North Goa stay close to Anjuna beach, cafes, and the area's evening scene.",
+    "status": "known"
+  },
+  {
+    "id": "goa:candolim:taj_fort_aguada_resort_spa_goa",
+    "location_id": "goa:candolim",
+    "name": "Taj Fort Aguada Resort & Spa, Goa",
+    "category": "5 Star",
+    "star_rating": 5,
+    "room_type": "Superior Room",
+    "description": "Heritage-style luxury resort in the Fort Aguada area overlooking the coast.",
+    "status": "known"
+  },
+  {
+    "id": "goa:candolim:taj_holiday_village_resort_spa_goa",
+    "location_id": "goa:candolim",
+    "name": "Taj Holiday Village Resort & Spa, Goa",
+    "category": "5 Star",
+    "star_rating": 5,
+    "room_type": "Cottage Room",
+    "description": "Large beachfront resort with cottage-style accommodation and premium leisure positioning.",
+    "status": "known"
+  },
+  {
+    "id": "goa:calangute:hard_rock_hotel_goa",
+    "location_id": "goa:calangute",
+    "name": "Hard Rock Hotel Goa",
+    "category": "5 Star",
+    "star_rating": 5,
+    "room_type": "Deluxe Room",
+    "description": "Music-themed resort in North Goa suited to leisure, families, and event-oriented stays.",
+    "status": "known"
+  },
+  {
+    "id": "goa:candolim:fortune_select_candolim",
+    "location_id": "goa:candolim",
+    "name": "Fortune Select Candolim",
+    "category": "4 Star",
+    "star_rating": 4,
+    "room_type": "Deluxe Room",
+    "description": "Upscale Candolim stay suited to practical premium holidays and business-leisure combinations.",
+    "status": "known"
+  },
+  {
+    "id": "goa:candolim:golden_tulip_goa",
+    "location_id": "goa:candolim",
+    "name": "Golden Tulip Goa",
+    "category": "4 Star",
+    "star_rating": 4,
+    "room_type": "Deluxe Room",
+    "description": "Resort-style accommodation in Candolim for families and leisure travellers.",
+    "status": "known"
+  },
+  {
+    "id": "goa:candolim:whispering_palms_beach_resort",
+    "location_id": "goa:candolim",
+    "name": "Whispering Palms Beach Resort",
+    "category": "4 Star",
+    "star_rating": 4,
+    "room_type": "Deluxe Room",
+    "description": "Beach-oriented Candolim resort with a relaxed leisure profile.",
+    "status": "known"
+  },
+  {
+    "id": "goa:candolim:lemon_tree_amarante_beach_resort_goa",
+    "location_id": "goa:candolim",
+    "name": "Lemon Tree Amarante Beach Resort, Goa",
+    "category": "4 Star",
+    "star_rating": 4,
+    "room_type": "Deluxe Room",
+    "description": "Comfortable North Goa resort suited to families and short premium stays.",
+    "status": "known"
+  },
+  {
+    "id": "goa:candolim:santana_beach_resort",
+    "location_id": "goa:candolim",
+    "name": "Santana Beach Resort",
+    "category": "4 Star",
+    "star_rating": 4,
+    "room_type": "Deluxe Room",
+    "description": "Established beach resort in Candolim with garden-style leisure accommodation.",
+    "status": "known"
+  },
+  {
+    "id": "goa:candolim:de_alturas_resort",
+    "location_id": "goa:candolim",
+    "name": "De Alturas Resort",
+    "category": "4 Star",
+    "star_rating": 4,
+    "room_type": "Deluxe Room",
+    "description": "Candolim resort suited to beach holidays and family travel.",
+    "status": "known"
+  },
+  {
+    "id": "goa:arpora:resort_rio",
+    "location_id": "goa:arpora",
+    "name": "Resort Rio",
+    "category": "5 Star",
+    "star_rating": 5,
+    "room_type": "Deluxe Room",
+    "description": "Large resort property in Arpora suitable for families, groups, and leisure packages.",
+    "status": "known"
+  },
+  {
+    "id": "goa:calangute:neelam_the_grand",
+    "location_id": "goa:calangute",
+    "name": "Neelam The Grand",
+    "category": "4 Star",
+    "star_rating": 4,
+    "room_type": "Deluxe Room",
+    "description": "Central Calangute hotel suited to practical beach holidays and group packages.",
+    "status": "known"
+  },
+  {
+    "id": "goa:candolim:the_acacia_hotel_spa_goa",
+    "location_id": "goa:candolim",
+    "name": "The Acacia Hotel & Spa Goa",
+    "category": "4 Star",
+    "star_rating": 4,
+    "room_type": "Deluxe Room",
+    "description": "Modern Candolim property with spa-oriented leisure positioning.",
+    "status": "known"
+  },
+  {
+    "id": "goa:saligao:storii_by_itc_hotels_shanti_morada_goa",
+    "location_id": "goa:saligao",
+    "name": "Storii By ITC Hotels Shanti Morada, Goa",
+    "category": "5 Star",
+    "star_rating": 5,
+    "room_type": "Luxury Room",
+    "description": "Boutique luxury property in a restored heritage setting near North Goa beaches.",
+    "status": "known"
+  },
+  {
+    "id": "goa:calangute:ibis_styles_goa_calangute",
+    "location_id": "goa:calangute",
+    "name": "ibis Styles Goa Calangute",
+    "category": "4 Star",
+    "star_rating": 4,
+    "room_type": "Standard Room",
+    "description": "Modern value-upscale Calangute stay suited to family and short-stay itineraries.",
+    "status": "known"
+  },
+  {
+    "id": "goa:calangute:bloomsuites_calangute",
+    "location_id": "goa:calangute",
+    "name": "BloomSuites | Calangute",
+    "category": "3 Star",
+    "star_rating": 3,
+    "room_type": "Deluxe Room",
+    "description": "Contemporary mid-range Calangute hotel positioned for beach access and short leisure breaks.",
+    "status": "known"
+  },
+  {
+    "id": "goa:anjuna:bloom_hotel_anjuna",
+    "location_id": "goa:anjuna",
+    "name": "Bloom Hotel - Anjuna",
+    "category": "3 Star",
+    "star_rating": 3,
+    "room_type": "Deluxe Room",
+    "description": "Modern hotel base for Anjuna beach, cafes, and market experiences.",
+    "status": "known"
+  },
+  {
+    "id": "goa:baga:la_calypso_hotel",
+    "location_id": "goa:baga",
+    "name": "La Calypso Hotel",
+    "category": "4 Star",
+    "star_rating": 4,
+    "room_type": "Deluxe Room",
+    "description": "Baga-area hotel suited to lively beach holidays and convenient sightseeing.",
+    "status": "known"
+  },
+  {
+    "id": "goa:baga:the_park_baga_river_goa",
+    "location_id": "goa:baga",
+    "name": "The Park Baga River Goa",
+    "category": "4 Star",
+    "star_rating": 4,
+    "room_type": "Deluxe Room",
+    "description": "Boutique-style stay near the Baga river and beach area.",
+    "status": "known"
+  },
+  {
+    "id": "goa:panaji:hotel_fidalgo",
+    "location_id": "goa:panaji",
+    "name": "Hotel Fidalgo",
+    "category": "4 Star",
+    "star_rating": 4,
+    "room_type": "Executive Room",
+    "description": "Established Panaji city hotel suited to business, heritage, and short city stays.",
+    "status": "known"
+  },
+  {
+    "id": "goa:panaji:ginger_goa_panjim",
+    "location_id": "goa:panaji",
+    "name": "Ginger Goa - Panjim",
+    "category": "3 Star",
+    "star_rating": 3,
+    "room_type": "Superior Room",
+    "description": "Modern city hotel for practical stays in Panaji.",
+    "status": "known"
+  },
+  {
+    "id": "goa:panaji:the_crown_goa",
+    "location_id": "goa:panaji",
+    "name": "The Crown Goa",
+    "category": "5 Star",
+    "star_rating": 5,
+    "room_type": "Deluxe Room",
+    "description": "Luxury city hotel overlooking the Mandovi River and suited to premium Panaji stays.",
+    "status": "known"
+  },
+  {
+    "id": "goa:panaji:vivanta_goa_panaji",
+    "location_id": "goa:panaji",
+    "name": "Vivanta Goa, Panaji",
+    "category": "5 Star",
+    "star_rating": 5,
+    "room_type": "Deluxe Room",
+    "description": "Contemporary premium hotel in Panaji with city and riverfront access.",
+    "status": "known"
+  },
+  {
+    "id": "goa:miramar:goa_marriott_resort_spa",
+    "location_id": "goa:miramar",
+    "name": "Goa Marriott Resort & Spa",
+    "category": "5 Star",
+    "star_rating": 5,
+    "room_type": "Deluxe Sea View Room",
+    "description": "Beachfront luxury resort on the Mandovi side with premium rooms and spa facilities.",
+    "status": "known"
+  },
+  {
+    "id": "goa:bambolim:grand_hyatt_goa",
+    "location_id": "goa:bambolim",
+    "name": "Grand Hyatt Goa",
+    "category": "5 Star",
+    "star_rating": 5,
+    "room_type": "Grand Room",
+    "description": "Large luxury resort overlooking Bambolim Bay with gardens, pools, and premium rooms and suites.",
+    "status": "known"
+  },
+  {
+    "id": "goa:dona_paula:taj_cidade_de_goa_horizon_goa",
+    "location_id": "goa:dona_paula",
+    "name": "Taj Cidade de Goa Horizon, Goa",
+    "category": "5 Star",
+    "star_rating": 5,
+    "room_type": "Superior Room",
+    "description": "Modern luxury property around Dona Paula with bay views and easy Panaji access.",
+    "status": "known"
+  },
+  {
+    "id": "goa:dona_paula:cidade_de_goa_ihcl_seleqtions",
+    "location_id": "goa:dona_paula",
+    "name": "Cidade de Goa - IHCL SeleQtions",
+    "category": "5 Star",
+    "star_rating": 5,
+    "room_type": "Deluxe Room",
+    "description": "Established coastal resort in Dona Paula suited to premium family and leisure stays.",
+    "status": "known"
+  },
+  {
+    "id": "goa:panaji:doubletree_by_hilton_goa_panaji",
+    "location_id": "goa:panaji",
+    "name": "DoubleTree by Hilton Goa - Panaji",
+    "category": "5 Star",
+    "star_rating": 5,
+    "room_type": "Guest Room",
+    "description": "Contemporary hotel suited to premium city and leisure stays around Panaji.",
+    "status": "known"
+  },
+  {
+    "id": "goa:panaji:the_fern_kadamba_hotel_and_spa_goa",
+    "location_id": "goa:panaji",
+    "name": "The Fern Kadamba Hotel and Spa Goa",
+    "category": "4 Star",
+    "star_rating": 4,
+    "room_type": "Winter Green Room",
+    "description": "Comfortable city-side hotel with spa facilities and access to Panaji and Old Goa.",
+    "status": "known"
+  },
+  {
+    "id": "goa:miramar:varanda_do_mar",
+    "location_id": "goa:miramar",
+    "name": "Varanda Do Mar",
+    "category": "4 Star",
+    "star_rating": 4,
+    "room_type": "Deluxe Room",
+    "description": "Seaside boutique-style hotel near Miramar and Panaji.",
+    "status": "known"
+  },
+  {
+    "id": "goa:fontainhas:panjim_inn",
+    "location_id": "goa:fontainhas",
+    "name": "Panjim Inn",
+    "category": "Boutique",
+    "star_rating": 3,
+    "room_type": "Heritage Room",
+    "description": "Heritage guesthouse-style stay in the Fontainhas quarter, suited to culture-focused travellers.",
+    "status": "known"
+  },
+  {
+    "id": "goa:panaji:panjim_residency",
+    "location_id": "goa:panaji",
+    "name": "Panjim Residency",
+    "category": "3 Star",
+    "star_rating": 3,
+    "room_type": "Standard Room",
+    "description": "GTDC city accommodation in Panaji suitable for practical central stays.",
+    "status": "known"
+  },
+  {
+    "id": "goa:miramar:miramar_residency",
+    "location_id": "goa:miramar",
+    "name": "Miramar Residency",
+    "category": "3 Star",
+    "star_rating": 3,
+    "room_type": "Standard Room",
+    "description": "GTDC beach-side accommodation near Miramar and Panaji.",
+    "status": "known"
+  },
+  {
+    "id": "goa:mapusa:mapusa_residency",
+    "location_id": "goa:mapusa",
+    "name": "Mapusa Residency",
+    "category": "3 Star",
+    "star_rating": 3,
+    "room_type": "Standard Room",
+    "description": "GTDC city accommodation providing a practical base for North Goa touring.",
+    "status": "known"
+  },
+  {
+    "id": "goa:calangute:calangute_residency",
+    "location_id": "goa:calangute",
+    "name": "Calangute Residency",
+    "category": "3 Star",
+    "star_rating": 3,
+    "room_type": "Standard Room",
+    "description": "GTDC beach-area accommodation near Calangute for budget-conscious packages.",
+    "status": "known"
+  },
+  {
+    "id": "goa:arossim:itc_grand_goa_resort_spa",
+    "location_id": "goa:arossim",
+    "name": "ITC Grand Goa Resort & Spa",
+    "category": "5 Star",
+    "star_rating": 5,
+    "room_type": "Garden View Premium Room",
+    "description": "Luxury beachfront resort in South Goa with Portuguese-inspired architecture, gardens, lagoons, spa, and beach access.",
+    "status": "known"
+  },
+  {
+    "id": "goa:majorda:alila_diwa_goa",
+    "location_id": "goa:majorda",
+    "name": "Alila Diwa Goa",
+    "category": "5 Star",
+    "star_rating": 5,
+    "room_type": "Guest Room",
+    "description": "Luxury resort in Majorda with a tranquil South Goa setting and premium rooms and suites.",
+    "status": "known"
+  },
+  {
+    "id": "goa:mobor:the_st_regis_goa_resort",
+    "location_id": "goa:mobor",
+    "name": "The St. Regis Goa Resort",
+    "category": "5 Star",
+    "star_rating": 5,
+    "room_type": "Deluxe Garden View Room",
+    "description": "Luxury resort near Mobor with extensive grounds, spa, dining, and beach-oriented experiences.",
+    "status": "known"
+  },
+  {
+    "id": "goa:benaulim:taj_exotica_resort_spa_goa",
+    "location_id": "goa:benaulim",
+    "name": "Taj Exotica Resort & Spa, Goa",
+    "category": "5 Star",
+    "star_rating": 5,
+    "room_type": "Garden Villa",
+    "description": "Luxury South Goa resort set amid landscaped grounds near Benaulim beach.",
+    "status": "known"
+  },
+  {
+    "id": "goa:cavelossim:the_leela_goa",
+    "location_id": "goa:cavelossim",
+    "name": "The Leela Goa",
+    "category": "5 Star",
+    "star_rating": 5,
+    "room_type": "Deluxe Garden View Room",
+    "description": "Luxury resort in South Goa with extensive gardens, lagoons, and beach access.",
+    "status": "known"
+  },
+  {
+    "id": "goa:canacona:the_lalit_golf_spa_resort_goa",
+    "location_id": "goa:canacona",
+    "name": "The LaLiT Golf & Spa Resort Goa",
+    "category": "5 Star",
+    "star_rating": 5,
+    "room_type": "Garden View Suite",
+    "description": "Large luxury resort near Talpona and the southern coast, suited to premium retreats.",
+    "status": "known"
+  },
+  {
+    "id": "goa:cavelossim:radisson_blu_resort_goa_cavelossim_beach",
+    "location_id": "goa:cavelossim",
+    "name": "Radisson Blu Resort Goa Cavelossim Beach",
+    "category": "5 Star",
+    "star_rating": 5,
+    "room_type": "Superior Room",
+    "description": "Upscale beachfront resort in Cavelossim with rooms, suites, spa, pool, and beach access.",
+    "status": "known"
+  },
+  {
+    "id": "goa:varca:caravela_beach_resort_goa",
+    "location_id": "goa:varca",
+    "name": "Caravela Beach Resort Goa",
+    "category": "5 Star",
+    "star_rating": 5,
+    "room_type": "Garden View Room",
+    "description": "Beach resort in Varca suited to family and premium leisure packages.",
+    "status": "known"
+  },
+  {
+    "id": "goa:cavelossim:holiday_inn_resort_goa",
+    "location_id": "goa:cavelossim",
+    "name": "Holiday Inn Resort Goa",
+    "category": "5 Star",
+    "star_rating": 5,
+    "room_type": "Garden View Room",
+    "description": "Beachfront South Goa resort suited to family holidays, couples, and group stays.",
+    "status": "known"
+  },
+  {
+    "id": "goa:varca:zuri_white_sands_goa_resort_casino",
+    "location_id": "goa:varca",
+    "name": "Zuri White Sands, Goa Resort & Casino",
+    "category": "5 Star",
+    "star_rating": 5,
+    "room_type": "Deluxe Room",
+    "description": "Large Varca beachfront resort suited to premium leisure and family stays.",
+    "status": "known"
+  },
+  {
+    "id": "goa:utorda:planet_hollywood_beach_resort_goa",
+    "location_id": "goa:utorda",
+    "name": "Planet Hollywood Beach Resort Goa",
+    "category": "5 Star",
+    "star_rating": 5,
+    "room_type": "Deluxe Room",
+    "description": "Upscale beachfront resort near Utorda and Majorda, suited to leisure-focused packages.",
+    "status": "known"
+  },
+  {
+    "id": "goa:utorda:kenilworth_resort_spa_goa",
+    "location_id": "goa:utorda",
+    "name": "Kenilworth Resort & Spa Goa",
+    "category": "5 Star",
+    "star_rating": 5,
+    "room_type": "Deluxe Room",
+    "description": "Established beachfront resort in South Goa with a strong leisure and family profile.",
+    "status": "known"
+  },
+  {
+    "id": "goa:arossim:heritage_village_resort_spa_goa",
+    "location_id": "goa:arossim",
+    "name": "Heritage Village Resort & Spa Goa",
+    "category": "5 Star",
+    "star_rating": 5,
+    "room_type": "Superior Room",
+    "description": "Resort-style property near Arossim focused on beach holidays, wellness, and family leisure.",
+    "status": "known"
+  },
+  {
+    "id": "goa:utorda:royal_orchid_beach_resort_spa_goa",
+    "location_id": "goa:utorda",
+    "name": "Royal Orchid Beach Resort & Spa Goa",
+    "category": "5 Star",
+    "star_rating": 5,
+    "room_type": "Club Room",
+    "description": "Beach resort in Utorda suited to family and couples' holidays.",
+    "status": "known"
+  },
+  {
+    "id": "goa:betalbatim:beleza_by_the_beach",
+    "location_id": "goa:betalbatim",
+    "name": "Beleza By The Beach",
+    "category": "4 Star",
+    "star_rating": 4,
+    "room_type": "Deluxe Room",
+    "description": "Relaxed South Goa boutique resort near Betalbatim beach.",
+    "status": "known"
+  },
+  {
+    "id": "goa:betalbatim:nanu_beach_resort_spa",
+    "location_id": "goa:betalbatim",
+    "name": "Nanu Beach Resort & Spa",
+    "category": "4 Star",
+    "star_rating": 4,
+    "room_type": "Deluxe Room",
+    "description": "South Goa resort suited to families and relaxed beach itineraries.",
+    "status": "known"
+  },
+  {
+    "id": "goa:benaulim:azaya_beach_resort_goa",
+    "location_id": "goa:benaulim",
+    "name": "Azaya Beach Resort Goa",
+    "category": "5 Star",
+    "star_rating": 5,
+    "room_type": "Premium Room",
+    "description": "Modern beachfront resort around Benaulim with an upscale leisure profile.",
+    "status": "known"
+  },
+  {
+    "id": "goa:cavelossim:novotel_goa_dona_sylvia_resort",
+    "location_id": "goa:cavelossim",
+    "name": "Novotel Goa Dona Sylvia Resort",
+    "category": "5 Star",
+    "star_rating": 5,
+    "room_type": "Deluxe Room",
+    "description": "Large resort-style property near Cavelossim suited to family and beach holidays.",
+    "status": "known"
+  },
+  {
+    "id": "goa:varca:regenta_resort_varca",
+    "location_id": "goa:varca",
+    "name": "Regenta Resort Varca",
+    "category": "4 Star",
+    "star_rating": 4,
+    "room_type": "Deluxe Room",
+    "description": "Comfortable resort near Varca beach for mid-range premium packages.",
+    "status": "known"
+  },
+  {
+    "id": "goa:varca:sterling_goa_varca",
+    "location_id": "goa:varca",
+    "name": "Sterling Goa Varca",
+    "category": "4 Star",
+    "star_rating": 4,
+    "room_type": "Deluxe Room",
+    "description": "Family-oriented resort base near the South Goa beach belt.",
+    "status": "known"
+  },
+  {
+    "id": "goa:colva:the_golden_crown_hotel_spa",
+    "location_id": "goa:colva",
+    "name": "The Golden Crown Hotel & Spa",
+    "category": "4 Star",
+    "star_rating": 4,
+    "room_type": "Deluxe Room",
+    "description": "Colva-area hotel suited to practical premium stays and beach holidays.",
+    "status": "known"
+  },
+  {
+    "id": "goa:colva:soul_vacation_resort_spa",
+    "location_id": "goa:colva",
+    "name": "Soul Vacation Resort & Spa",
+    "category": "4 Star",
+    "star_rating": 4,
+    "room_type": "Wellness Room",
+    "description": "Wellness-oriented boutique resort in Colva suited to couples and relaxation-focused packages.",
+    "status": "known"
+  },
+  {
+    "id": "goa:colva:colva_kinara",
+    "location_id": "goa:colva",
+    "name": "Colva Kinara",
+    "category": "3 Star",
+    "star_rating": 3,
+    "room_type": "Deluxe Room",
+    "description": "Convenient Colva base for beach-focused itineraries.",
+    "status": "known"
+  },
+  {
+    "id": "goa:colva:colva_residency",
+    "location_id": "goa:colva",
+    "name": "Colva Residency",
+    "category": "3 Star",
+    "star_rating": 3,
+    "room_type": "Standard Room",
+    "description": "GTDC beach-area accommodation for practical South Goa stays.",
+    "status": "known"
+  },
+  {
+    "id": "goa:margao:margao_residency",
+    "location_id": "goa:margao",
+    "name": "Margao Residency",
+    "category": "3 Star",
+    "star_rating": 3,
+    "room_type": "Standard Room",
+    "description": "GTDC city accommodation near Margao for South Goa touring.",
+    "status": "known"
+  },
+  {
+    "id": "goa:vasco_da_gama:vasco_residency",
+    "location_id": "goa:vasco_da_gama",
+    "name": "Vasco Residency",
+    "category": "3 Star",
+    "star_rating": 3,
+    "room_type": "Standard Room",
+    "description": "GTDC city accommodation near Vasco and useful for airport-area stopovers.",
+    "status": "known"
+  },
+  {
+    "id": "goa:bicholim:mayem_lake_view",
+    "location_id": "goa:bicholim",
+    "name": "Mayem Lake View",
+    "category": "2 Star",
+    "star_rating": 3,
+    "room_type": "Standard Room",
+    "description": "GTDC economy-style stay suited to inland Goa nature trips.",
+    "status": "known"
+  },
+  {
+    "id": "goa:old_goa:old_goa_residency",
+    "location_id": "goa:old_goa",
+    "name": "Old Goa Residency",
+    "category": "3 Star",
+    "star_rating": 3,
+    "room_type": "Standard Room",
+    "description": "GTDC accommodation near Old Goa heritage monuments.",
+    "status": "known"
+  },
+  {
+    "id": "goa:ponda:farmagudi_residency",
+    "location_id": "goa:ponda",
+    "name": "Farmagudi Residency",
+    "category": "3 Star",
+    "star_rating": 3,
+    "room_type": "Standard Room",
+    "description": "GTDC inland accommodation useful for temple and spice-plantation circuits.",
+    "status": "known"
+  },
+  {
+    "id": "goa:cavelossim:the_byke_old_anchor_beach_resort",
+    "location_id": "goa:cavelossim",
+    "name": "The Byke Old Anchor Beach Resort",
+    "category": "4 Star",
+    "star_rating": 4,
+    "room_type": "Deluxe Room",
+    "description": "Large resort-style property near Cavelossim suited to family and leisure packages.",
+    "status": "known"
+  },
+  {
+    "id": "goa:varca:club_mahindra_varca_beach_resort",
+    "location_id": "goa:varca",
+    "name": "Club Mahindra Varca Beach Resort",
+    "category": "4 Star",
+    "star_rating": 4,
+    "room_type": "Superior Room",
+    "description": "Family-oriented resort near Varca beach with leisure facilities.",
+    "status": "known"
+  },
+  {
+    "id": "goa:cavelossim:ramada_by_wyndham_goa_cavelossim",
+    "location_id": "goa:cavelossim",
+    "name": "Ramada by Wyndham Goa Cavelossim",
+    "category": "4 Star",
+    "star_rating": 4,
+    "room_type": "Deluxe Room",
+    "description": "Comfortable resort base in the Cavelossim beach corridor.",
+    "status": "known"
+  },
+  {
+    "id": "goa:old_goa:the_fern_kadamba_hotel_spa_goa",
+    "location_id": "goa:old_goa",
+    "name": "The Fern Kadamba Hotel & Spa Goa",
+    "category": "4 Star",
+    "star_rating": 4,
+    "room_type": "Winter Green Room",
+    "description": "City-and-heritage oriented hotel useful for Old Goa and Panaji touring.",
+    "status": "known"
+  },
+  {
+    "id": "goa:margao:hotel_nanutel_margao",
+    "location_id": "goa:margao",
+    "name": "Hotel Nanutel Margao",
+    "category": "3 Star",
+    "star_rating": 3,
+    "room_type": "Executive Room",
+    "description": "Established Margao hotel suited to business and practical South Goa stays.",
+    "status": "known"
+  },
+  {
+    "id": "goa:vasco_da_gama:hotel_surya_palace_goa",
+    "location_id": "goa:vasco_da_gama",
+    "name": "Hotel Surya Palace Goa",
+    "category": "3 Star",
+    "star_rating": 3,
+    "room_type": "Deluxe Room",
+    "description": "City hotel suitable for airport-area stopovers and short stays.",
+    "status": "known"
+  },
+  {
+    "id": "goa:palolem:nirmala_resort_goa",
+    "location_id": "goa:palolem",
+    "name": "Nirmala Resort Goa",
+    "category": "3 Star",
+    "star_rating": 3,
+    "room_type": "Deluxe Room",
+    "description": "Leisure accommodation near the Palolem coastal area.",
+    "status": "known"
+  },
+  {
+    "id": "goa:palolem:palolem_beach_resort",
+    "location_id": "goa:palolem",
+    "name": "Palolem Beach Resort",
+    "category": "3 Star",
+    "star_rating": 3,
+    "room_type": "Deluxe Room",
+    "description": "Beach-area accommodation suited to relaxed Canacona itineraries.",
+    "status": "known"
+  },
+  {
+    "id": "goa:patnem:neelchand",
+    "location_id": "goa:patnem",
+    "name": "Neelchand",
+    "category": "3 Star",
+    "star_rating": 3,
+    "room_type": "Deluxe Room",
+    "description": "Quiet coastal stay near Patnem suited to couples and wellness trips.",
+    "status": "known"
+  },
+  {
+    "id": "goa:palolem:the_tubki_resort",
+    "location_id": "goa:palolem",
+    "name": "The Tubki Resort",
+    "category": "4 Star",
+    "star_rating": 4,
+    "room_type": "Deluxe Room",
+    "description": "Resort-style stay in the Palolem/Patnem area for leisure travellers.",
+    "status": "known"
+  },
+  {
+    "id": "goa:palolem:sobit_sarovar_portico_goa",
+    "location_id": "goa:palolem",
+    "name": "Sobit Sarovar Portico Goa",
+    "category": "4 Star",
+    "star_rating": 4,
+    "room_type": "Deluxe Room",
+    "description": "Modern resort accommodation in the southern beach belt.",
+    "status": "known"
+  },
+  {
+    "id": "goa:canacona:the_lalit_golf_spa_resort_goa_villa",
+    "location_id": "goa:canacona",
+    "name": "The Lalit Golf & Spa Resort Goa - Villa",
+    "category": "5 Star",
+    "star_rating": 5,
+    "room_type": "Luxury Villa",
+    "description": "Villa-style luxury inventory for premium southern Goa itineraries.",
+    "status": "known"
+  },
+  {
+    "id": "goa:margao:goa_woodlands_hotel",
+    "location_id": "goa:margao",
+    "name": "Goa Woodlands Hotel",
+    "category": "3 Star",
+    "star_rating": 3,
+    "room_type": "Deluxe Room",
+    "description": "City hotel for practical South Goa touring and business stays.",
+    "status": "known"
+  },
+  {
+    "id": "goa:margao:hotel_tanishq",
+    "location_id": "goa:margao",
+    "name": "Hotel Tanishq",
+    "category": "3 Star",
+    "star_rating": 3,
+    "room_type": "Deluxe Room",
+    "description": "Budget-conscious city accommodation useful for inland and South Goa itineraries.",
+    "status": "known"
+  }
+]

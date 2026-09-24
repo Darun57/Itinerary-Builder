@@ -1,0 +1,8 @@
+{
+  "name": "Madhya Pradesh",
+  "slug": "madhya-pradesh",
+  "scope": "state",
+  "status": "scaffold",
+  "protected_reference": false,
+  "namespace": "velqairn:madhya-pradesh"
+}

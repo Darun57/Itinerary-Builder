@@ -1,0 +1,8 @@
+{
+  "name": "Odisha",
+  "slug": "odisha",
+  "scope": "state",
+  "status": "scaffold",
+  "protected_reference": false,
+  "namespace": "velqairn:odisha"
+}

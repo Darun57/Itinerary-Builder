@@ -1,0 +1,8 @@
+{
+  "name": "Delhi",
+  "slug": "delhi",
+  "scope": "union_territory",
+  "status": "scaffold",
+  "protected_reference": false,
+  "namespace": "velqairn:delhi"
+}

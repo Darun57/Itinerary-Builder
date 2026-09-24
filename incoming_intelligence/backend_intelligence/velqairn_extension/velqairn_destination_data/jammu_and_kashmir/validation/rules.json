@@ -1,0 +1,10 @@
+{
+  "region":"jammu-and-kashmir",
+  "rules":[
+    {"id":"destination_namespace","severity":"error","rule":"Every referenced location, attraction, activity, hotel and movement must start with jammu-and-kashmir:."},
+    {"id":"weather","severity":"error","rule":"Mountain activities and road movements must remain weather/access dependent until verified for the travel date."},
+    {"id":"gondola","severity":"error","rule":"Never present Gondola inventory, ticket availability or operating status as confirmed without live verification."},
+    {"id":"pricing","severity":"error","rule":"Do not invent activity, transfer or hotel prices from seed data."},
+    {"id":"seasonality","severity":"warning","rule":"Winter sports and snow-dependent experiences require seasonal suitability checks."}
+  ]
+}

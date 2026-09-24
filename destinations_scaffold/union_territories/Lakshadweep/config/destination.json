@@ -1,0 +1,8 @@
+{
+  "name": "Lakshadweep",
+  "slug": "lakshadweep",
+  "scope": "union_territory",
+  "status": "scaffold",
+  "protected_reference": false,
+  "namespace": "velqairn:lakshadweep"
+}

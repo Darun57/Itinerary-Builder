@@ -1,0 +1,130 @@
+[
+  {
+    "id": "goa:north_goa:3n4d",
+    "region": "goa",
+    "day_count": 4,
+    "nights": 3,
+    "suitability": [
+      "beach",
+      "leisure",
+      "nightlife",
+      "couples"
+    ],
+    "constraints": [
+      "Keep evening sunset windows uncompressed."
+    ],
+    "sequence": [
+      {
+        "day": 1,
+        "location": "goa:candolim",
+        "theme": "Arrival & Candolim Beach",
+        "anchors": [
+          "goa:candolim"
+        ],
+        "activity_slots": [
+          "sunset_leisure"
+        ]
+      },
+      {
+        "day": 2,
+        "location": "goa:candolim",
+        "theme": "Fort Aguada & Coastal Water Sports",
+        "anchors": [
+          "goa:attr:fort_aguada_exploration"
+        ],
+        "activity_slots": [
+          "baga_water_sports_session"
+        ]
+      },
+      {
+        "day": 3,
+        "location": "goa:vagator",
+        "theme": "Anjuna, Chapora Fort & Vagator Sunset",
+        "anchors": [
+          "goa:attr:chapora_fort_sunset"
+        ],
+        "activity_slots": [
+          "anjuna_market_coast_experience"
+        ]
+      },
+      {
+        "day": 4,
+        "location": "goa:panaji",
+        "theme": "Fontainhas Walk & Departure",
+        "anchors": [
+          "goa:panaji"
+        ],
+        "activity_slots": []
+      }
+    ]
+  },
+  {
+    "id": "goa:complete:5n6d",
+    "region": "goa",
+    "day_count": 6,
+    "nights": 5,
+    "suitability": [
+      "family",
+      "luxury",
+      "heritage",
+      "relaxation"
+    ],
+    "constraints": [
+      "Allocate dedicated transit window when shifting from North to South Goa resort."
+    ],
+    "sequence": [
+      {
+        "day": 1,
+        "location": "goa:panaji",
+        "theme": "Arrival + Fontainhas Latin Quarter",
+        "anchors": [
+          "goa:panaji"
+        ],
+        "activity_slots": []
+      },
+      {
+        "day": 2,
+        "location": "goa:candolim",
+        "theme": "North Goa Beaches & Fort Aguada",
+        "anchors": [
+          "goa:candolim"
+        ],
+        "activity_slots": []
+      },
+      {
+        "day": 3,
+        "location": "goa:old_goa",
+        "theme": "Old Goa UNESCO Heritage Churches & Mandovi Cruise",
+        "anchors": [
+          "goa:old_goa"
+        ],
+        "activity_slots": []
+      },
+      {
+        "day": 4,
+        "location": "goa:colva",
+        "theme": "South Goa Transition & Colva Beach Leisure",
+        "anchors": [
+          "goa:colva"
+        ],
+        "activity_slots": []
+      },
+      {
+        "day": 5,
+        "location": "goa:palolem",
+        "theme": "Palolem Crescent Beach & Coastal Kayaking",
+        "anchors": [
+          "goa:palolem"
+        ],
+        "activity_slots": []
+      },
+      {
+        "day": 6,
+        "location": "goa:panaji",
+        "theme": "Departure",
+        "anchors": [],
+        "activity_slots": []
+      }
+    ]
+  }
+]

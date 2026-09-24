@@ -1,0 +1,8 @@
+{
+  "name": "Uttarakhand",
+  "slug": "uttarakhand",
+  "scope": "state",
+  "status": "scaffold",
+  "protected_reference": false,
+  "namespace": "velqairn:uttarakhand"
+}

@@ -1,0 +1,37 @@
+[
+  {
+    "id": "ladakh:leh:acclimatization_walk",
+    "destination_id": "ladakh:leh",
+    "name": "Leh Gentle Acclimatization Walk & Market",
+    "category": "Wellness",
+    "duration_minutes_min": 60,
+    "duration_minutes_max": 90,
+    "best_for": [
+      "acclimatization"
+    ],
+    "seasonality": [
+      "may_to_oct"
+    ],
+    "booking_required": false,
+    "price_status": "fixed",
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "ladakh:nubra:bactrian_camel_safari",
+    "destination_id": "ladakh:nubra",
+    "name": "Hunder Sand Dunes Double-Humped Camel Safari",
+    "category": "Adventure",
+    "duration_minutes_min": 45,
+    "duration_minutes_max": 60,
+    "best_for": [
+      "dunes",
+      "camels"
+    ],
+    "seasonality": [
+      "may_to_oct"
+    ],
+    "booking_required": false,
+    "price_status": "fixed",
+    "source_status": "official_tourism_seed"
+  }
+]

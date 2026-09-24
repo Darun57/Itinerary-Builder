@@ -1,0 +1,50 @@
+[
+  {
+    "id": "ladakh:leh:shanti_stupa",
+    "destination_id": "ladakh:leh",
+    "name": "Shanti Stupa Sunset & Valley Panorama",
+    "category": "culture",
+    "suggested_duration_minutes": 90,
+    "best_for": [
+      "sunset",
+      "meditation"
+    ],
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "ladakh:leh:khardung_la",
+    "destination_id": "ladakh:leh",
+    "name": "Khardung La Pass (5,359m Highest Motorway)",
+    "category": "adventure",
+    "suggested_duration_minutes": 60,
+    "best_for": [
+      "high_altitude",
+      "snow"
+    ],
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "ladakh:nubra:diskit_monastery",
+    "destination_id": "ladakh:nubra",
+    "name": "Diskit Monastery & Giant Maitreya Buddha",
+    "category": "culture",
+    "suggested_duration_minutes": 90,
+    "best_for": [
+      "buddha",
+      "views"
+    ],
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "ladakh:pangong:pangong_lake",
+    "destination_id": "ladakh:pangong",
+    "name": "Pangong Tso High Altitude Blue Salt Lake",
+    "category": "nature",
+    "suggested_duration_minutes": 240,
+    "best_for": [
+      "colors",
+      "lake"
+    ],
+    "source_status": "official_tourism_seed"
+  }
+]

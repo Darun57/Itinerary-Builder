@@ -274,6 +274,18 @@ export default function AccommodationStep() {
   const selectedHotels: string[] = (watchedValues.selected_hotels as string[]) || [];
   const dailyPlan = watchedValues.daily_island_plan || [];
 
+  const destinationStr = (currentRequestData.destination || "").toLowerCase();
+  const isAndaman = !destinationStr || destinationStr.includes("andaman");
+  const regionParam = isAndaman
+    ? undefined
+    : destinationStr.includes("rajasthan")
+    ? "rajasthan"
+    : destinationStr.includes("kashmir")
+    ? "jammu-and-kashmir"
+    : destinationStr.includes("goa")
+    ? "goa"
+    : destinationStr.replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+
   // Query 1: Recommendations tailored for this itinerary
   const { data: recommendedHotels, isLoading, isError, refetch } = useQuery({
     queryKey: [
@@ -291,10 +303,10 @@ export default function AccommodationStep() {
     staleTime: 0,
   });
 
-  // Query 2: Full hotel catalog for instant global search across all Andaman locations & categories
+  // Query 2: Full hotel catalog for instant global search across locations & categories
   const { data: allHotels } = useQuery({
-    queryKey: ["all-hotels"],
-    queryFn: fetchAllHotels,
+    queryKey: ["all-hotels", regionParam],
+    queryFn: () => fetchAllHotels(regionParam),
     staleTime: 1000 * 60 * 5,
   });
 
@@ -358,7 +370,7 @@ export default function AccommodationStep() {
         return day;
       }
       if (day.hotel && selectedHotels.includes(day.hotel)) return day;
-      const resolvedIsland = resolvePrimaryIsland(day, idx);
+      const resolvedIsland = isAndaman ? resolvePrimaryIsland(day, idx) : (day.primary_island || "");
       const islandKey = resolvedIsland.toLowerCase().trim();
       let matched = "";
       for (const [loc, name] of Object.entries(hotelLocationMap)) {
@@ -376,7 +388,7 @@ export default function AccommodationStep() {
       return day;
     });
     if (updated) setValue("daily_island_plan", newPlan, { shouldDirty: true });
-  }, [selectedHotels.join(","), recommendedHotels, allHotels]);
+  }, [selectedHotels.join(","), recommendedHotels, allHotels, isAndaman]);
 
   const numberOfDays = Number(currentRequestData.number_of_days) || 0;
   const arrivalDate = currentRequestData.arrival_date || "";
@@ -516,8 +528,8 @@ export default function AccommodationStep() {
                 </button>
               </div>
             )}
-            {Object.entries(hotelsByLocation).map(([location, hotels]) => (
-              <HotelCarousel key={location} hotels={hotels as any[]} location={location} />
+            {Object.entries(hotelsByLocation).map(([location, hotels], locIdx) => (
+              <HotelCarousel key={location || `loc-${locIdx}`} hotels={hotels as any[]} location={location} />
             ))}
           </div>
         )}

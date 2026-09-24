@@ -1,0 +1,551 @@
+[
+  {
+    "id": "goa:panaji",
+    "region": "goa",
+    "name": "Panaji",
+    "type": "city",
+    "best_for": [
+      "arrival",
+      "heritage",
+      "riverfront",
+      "city stays"
+    ],
+    "recommended_nights_min": 1,
+    "recommended_nights_max": 3,
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "goa:fontainhas",
+    "region": "goa",
+    "name": "Fontainhas",
+    "type": "coastal_beach",
+    "best_for": [
+      "heritage",
+      "photography",
+      "culture",
+      "short stays"
+    ],
+    "recommended_nights_min": 0,
+    "recommended_nights_max": 1,
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "goa:old_goa",
+    "region": "goa",
+    "name": "Old Goa",
+    "type": "coastal_beach",
+    "best_for": [
+      "heritage",
+      "churches",
+      "history"
+    ],
+    "recommended_nights_min": 0,
+    "recommended_nights_max": 1,
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "goa:dona_paula",
+    "region": "goa",
+    "name": "Dona Paula",
+    "type": "coastal_beach",
+    "best_for": [
+      "sunset",
+      "views",
+      "romance"
+    ],
+    "recommended_nights_min": 0,
+    "recommended_nights_max": 1,
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "goa:divar_island",
+    "region": "goa",
+    "name": "Divar Island",
+    "type": "coastal_beach",
+    "best_for": [
+      "culture",
+      "slow travel",
+      "villages",
+      "nature"
+    ],
+    "recommended_nights_min": 1,
+    "recommended_nights_max": 2,
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "goa:candolim",
+    "region": "goa",
+    "name": "Candolim",
+    "type": "coastal_beach",
+    "best_for": [
+      "premium stays",
+      "beaches",
+      "families"
+    ],
+    "recommended_nights_min": 2,
+    "recommended_nights_max": 4,
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "goa:calangute",
+    "region": "goa",
+    "name": "Calangute",
+    "type": "coastal_beach",
+    "best_for": [
+      "beach",
+      "families",
+      "water activities"
+    ],
+    "recommended_nights_min": 1,
+    "recommended_nights_max": 3,
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "goa:baga",
+    "region": "goa",
+    "name": "Baga",
+    "type": "coastal_beach",
+    "best_for": [
+      "nightlife",
+      "beach",
+      "water activities"
+    ],
+    "recommended_nights_min": 1,
+    "recommended_nights_max": 3,
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "goa:anjuna",
+    "region": "goa",
+    "name": "Anjuna",
+    "type": "coastal_beach",
+    "best_for": [
+      "bohemian",
+      "markets",
+      "beach",
+      "nightlife"
+    ],
+    "recommended_nights_min": 1,
+    "recommended_nights_max": 3,
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "goa:vagator",
+    "region": "goa",
+    "name": "Vagator",
+    "type": "coastal_beach",
+    "best_for": [
+      "sunset",
+      "premium stays",
+      "beach"
+    ],
+    "recommended_nights_min": 1,
+    "recommended_nights_max": 3,
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "goa:chapora",
+    "region": "goa",
+    "name": "Chapora",
+    "type": "coastal_beach",
+    "best_for": [
+      "forts",
+      "photography",
+      "sunset"
+    ],
+    "recommended_nights_min": 0,
+    "recommended_nights_max": 1,
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "goa:morjim",
+    "region": "goa",
+    "name": "Morjim",
+    "type": "coastal_beach",
+    "best_for": [
+      "relaxation",
+      "beach",
+      "couples"
+    ],
+    "recommended_nights_min": 2,
+    "recommended_nights_max": 4,
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "goa:ashwem",
+    "region": "goa",
+    "name": "Ashwem",
+    "type": "coastal_beach",
+    "best_for": [
+      "wellness",
+      "beach",
+      "slow travel"
+    ],
+    "recommended_nights_min": 1,
+    "recommended_nights_max": 3,
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "goa:mandrem",
+    "region": "goa",
+    "name": "Mandrem",
+    "type": "coastal_beach",
+    "best_for": [
+      "wellness",
+      "beach",
+      "families"
+    ],
+    "recommended_nights_min": 1,
+    "recommended_nights_max": 3,
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "goa:arambol",
+    "region": "goa",
+    "name": "Arambol",
+    "type": "coastal_beach",
+    "best_for": [
+      "bohemian",
+      "beach",
+      "sunset"
+    ],
+    "recommended_nights_min": 1,
+    "recommended_nights_max": 3,
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "goa:aguada",
+    "region": "goa",
+    "name": "Aguada",
+    "type": "coastal_beach",
+    "best_for": [
+      "heritage",
+      "beach",
+      "views"
+    ],
+    "recommended_nights_min": 0,
+    "recommended_nights_max": 1,
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "goa:panaji_waterfront",
+    "region": "goa",
+    "name": "Panaji Waterfront",
+    "type": "coastal_beach",
+    "best_for": [
+      "cruise",
+      "sunset",
+      "city"
+    ],
+    "recommended_nights_min": 0,
+    "recommended_nights_max": 1,
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "goa:grand_island",
+    "region": "goa",
+    "name": "Grand Island",
+    "type": "coastal_beach",
+    "best_for": [
+      "scuba",
+      "snorkelling",
+      "adventure"
+    ],
+    "recommended_nights_min": 0,
+    "recommended_nights_max": 1,
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "goa:bogmalo",
+    "region": "goa",
+    "name": "Bogmalo",
+    "type": "coastal_beach",
+    "best_for": [
+      "beach",
+      "diving",
+      "airport access"
+    ],
+    "recommended_nights_min": 1,
+    "recommended_nights_max": 2,
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "goa:majorda",
+    "region": "goa",
+    "name": "Majorda",
+    "type": "coastal_beach",
+    "best_for": [
+      "premium stays",
+      "beach",
+      "wellness"
+    ],
+    "recommended_nights_min": 2,
+    "recommended_nights_max": 4,
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "goa:colva",
+    "region": "goa",
+    "name": "Colva",
+    "type": "coastal_beach",
+    "best_for": [
+      "beach",
+      "families",
+      "easy access"
+    ],
+    "recommended_nights_min": 1,
+    "recommended_nights_max": 3,
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "goa:benaulim",
+    "region": "goa",
+    "name": "Benaulim",
+    "type": "coastal_beach",
+    "best_for": [
+      "relaxation",
+      "families",
+      "beach"
+    ],
+    "recommended_nights_min": 2,
+    "recommended_nights_max": 4,
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "goa:varca",
+    "region": "goa",
+    "name": "Varca",
+    "type": "coastal_beach",
+    "best_for": [
+      "premium stays",
+      "beach",
+      "relaxation"
+    ],
+    "recommended_nights_min": 2,
+    "recommended_nights_max": 4,
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "goa:cavelossim",
+    "region": "goa",
+    "name": "Cavelossim",
+    "type": "coastal_beach",
+    "best_for": [
+      "luxury",
+      "beach",
+      "honeymoon"
+    ],
+    "recommended_nights_min": 2,
+    "recommended_nights_max": 4,
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "goa:mobor",
+    "region": "goa",
+    "name": "Mobor",
+    "type": "coastal_beach",
+    "best_for": [
+      "luxury",
+      "beach",
+      "water activities"
+    ],
+    "recommended_nights_min": 2,
+    "recommended_nights_max": 4,
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "goa:agonda",
+    "region": "goa",
+    "name": "Agonda",
+    "type": "coastal_beach",
+    "best_for": [
+      "honeymoon",
+      "relaxation",
+      "beach"
+    ],
+    "recommended_nights_min": 2,
+    "recommended_nights_max": 4,
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "goa:palolem",
+    "region": "goa",
+    "name": "Palolem",
+    "type": "coastal_beach",
+    "best_for": [
+      "honeymoon",
+      "beach",
+      "sunset"
+    ],
+    "recommended_nights_min": 2,
+    "recommended_nights_max": 4,
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "goa:patnem",
+    "region": "goa",
+    "name": "Patnem",
+    "type": "coastal_beach",
+    "best_for": [
+      "wellness",
+      "quiet beach",
+      "couples"
+    ],
+    "recommended_nights_min": 1,
+    "recommended_nights_max": 3,
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "goa:cabo_de_rama",
+    "region": "goa",
+    "name": "Cabo de Rama",
+    "type": "coastal_beach",
+    "best_for": [
+      "forts",
+      "views",
+      "road trip"
+    ],
+    "recommended_nights_min": 0,
+    "recommended_nights_max": 1,
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "goa:netravali",
+    "region": "goa",
+    "name": "Netravali",
+    "type": "coastal_beach",
+    "best_for": [
+      "wildlife",
+      "waterfalls",
+      "offbeat"
+    ],
+    "recommended_nights_min": 1,
+    "recommended_nights_max": 2,
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "goa:dudhsagar",
+    "region": "goa",
+    "name": "Dudhsagar",
+    "type": "coastal_beach",
+    "best_for": [
+      "waterfall",
+      "adventure",
+      "nature"
+    ],
+    "recommended_nights_min": 0,
+    "recommended_nights_max": 1,
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "goa:collem",
+    "region": "goa",
+    "name": "Collem",
+    "type": "coastal_beach",
+    "best_for": [
+      "adventure",
+      "wildlife",
+      "waterfall"
+    ],
+    "recommended_nights_min": 0,
+    "recommended_nights_max": 1,
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "goa:ponda",
+    "region": "goa",
+    "name": "Ponda",
+    "type": "coastal_beach",
+    "best_for": [
+      "temples",
+      "spice plantations",
+      "culture"
+    ],
+    "recommended_nights_min": 1,
+    "recommended_nights_max": 2,
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "goa:spice_plantation_belt",
+    "region": "goa",
+    "name": "Spice Plantation Belt",
+    "type": "coastal_beach",
+    "best_for": [
+      "culture",
+      "food",
+      "nature"
+    ],
+    "recommended_nights_min": 0,
+    "recommended_nights_max": 1,
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "goa:saligao",
+    "region": "goa",
+    "name": "Saligao",
+    "type": "coastal_beach",
+    "best_for": [
+      "heritage",
+      "food",
+      "slow travel"
+    ],
+    "recommended_nights_min": 0,
+    "recommended_nights_max": 1,
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "goa:assagao",
+    "region": "goa",
+    "name": "Assagao",
+    "type": "coastal_beach",
+    "best_for": [
+      "boutique",
+      "food",
+      "heritage"
+    ],
+    "recommended_nights_min": 1,
+    "recommended_nights_max": 2,
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "goa:siolim",
+    "region": "goa",
+    "name": "Siolim",
+    "type": "coastal_beach",
+    "best_for": [
+      "slow travel",
+      "local culture"
+    ],
+    "recommended_nights_min": 1,
+    "recommended_nights_max": 2,
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "goa:tiracol",
+    "region": "goa",
+    "name": "Tiracol",
+    "type": "coastal_beach",
+    "best_for": [
+      "fort",
+      "views",
+      "offbeat"
+    ],
+    "recommended_nights_min": 0,
+    "recommended_nights_max": 1,
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "goa:miramar",
+    "region": "goa",
+    "name": "Miramar",
+    "type": "coastal_beach",
+    "best_for": [
+      "sunset",
+      "city",
+      "beach"
+    ],
+    "recommended_nights_min": 0,
+    "recommended_nights_max": 1,
+    "source_status": "official_tourism_seed"
+  }
+]

@@ -1,0 +1,8 @@
+{
+  "name": "Puducherry",
+  "slug": "puducherry",
+  "scope": "union_territory",
+  "status": "scaffold",
+  "protected_reference": false,
+  "namespace": "velqairn:puducherry"
+}

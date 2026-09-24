@@ -14,6 +14,14 @@ from app.services.prompts import build_fast_prompt_text
 from app.services.narrative_validator import validate_full_itinerary
 from app.services.generation_logger import log_generation_event
 from app.services.andaman_geography import default_andaman_island, normalize_andaman_island
+from app.services.destination_registry import (
+    is_additive_destination,
+    load_destinations,
+    load_attractions,
+    get_destination_display_name,
+    get_destination_base_location,
+)
+from app.services.destination_planner import build_destination_prompt
 
 
 REQUEST_TIMEOUT_MS = 120000  # 2 minutes — Gemini needs time for multi-day itineraries
@@ -170,7 +178,72 @@ ANDAMAN_DAY_DIRECTIVES = [
 ]
 
 
+def _ensure_additive_payload_integrity(request: TripRequest) -> None:
+    num_days = max(1, request.number_of_days or 1)
+    request.number_of_days = num_days
+    dest = (getattr(request, "destination", "") or "").strip()
+    locs = load_destinations(dest)
+    attrs = load_attractions(dest)
+    base_loc = get_destination_base_location(dest)
+
+    current_plan = request.daily_island_plan or []
+    new_plan = []
+    for idx in range(num_days):
+        day_num = idx + 1
+        is_final_departure = (day_num == num_days)
+        loc = locs[idx % len(locs)] if locs else {}
+        default_loc = loc.get("name") or base_loc
+        default_loc_id = loc.get("id") or ""
+        matched_attrs = [a.get("name") for a in attrs if a.get("destination_id") == default_loc_id]
+        default_attractions = matched_attrs[:2] if matched_attrs else [default_loc]
+
+        if idx < len(current_plan):
+            dp = current_plan[idx]
+        else:
+            from app.schemas.trip import DayPlan
+            dp = DayPlan(
+                day_number=day_num,
+                primary_island=default_loc,
+                attractions=default_attractions,
+                activities=[],
+                hotel="",
+                transfer_type=request.transfer_type or "Private AC Cab",
+                ferry="None",
+                ferry_timing=""
+            )
+
+        if not dp.primary_island:
+            dp.primary_island = default_loc
+
+        if not dp.attractions:
+            dp.attractions = default_attractions
+
+        if not dp.transfer_type:
+            dp.transfer_type = request.transfer_type or "Private AC Cab"
+
+        # Departure day detection
+        is_dep_day = is_final_departure and (
+            (dp.primary_island or "").strip().lower() == "departure"
+            or any(str(a).strip().lower() == "departure" for a in (dp.attractions or []))
+        )
+        if is_dep_day:
+            dp.hotel = ""
+            dp.primary_island = "Departure"
+            dp.attractions = ["Departure"]
+        elif not dp.hotel:
+            dp.hotel = request.selected_hotels[0] if request.selected_hotels else ""
+
+        new_plan.append(dp)
+    request.daily_island_plan = new_plan
+
+
 def _ensure_payload_integrity(request: TripRequest) -> None:
+    destination = getattr(request, "destination", "") or ""
+    if is_additive_destination(destination):
+        _ensure_additive_payload_integrity(request)
+        return
+
+    # Canonical Andaman behavior (PROTECTED — 100% UNCHANGED)
     num_days = max(1, request.number_of_days or 1)
     request.number_of_days = num_days
     
@@ -261,9 +334,15 @@ def _is_retryable_error(error: Exception) -> bool:
 
 def _generate_once(client: genai.Client, model: str, request: TripRequest) -> str:
     expected_days = max(1, request.number_of_days or 1)
+    destination = getattr(request, "destination", "") or ""
+    prompt_content = (
+        build_destination_prompt(request)
+        if is_additive_destination(destination)
+        else build_fast_prompt_text(request)
+    )
     stream = client.models.generate_content_stream(
         model=model.strip(),
-        contents=build_fast_prompt_text(request),
+        contents=prompt_content,
         config=_build_config(),
     )
     parts: list[str] = []
@@ -365,9 +444,58 @@ def _archive_raw_response(generation_id: str, raw_text: str, model: str) -> None
     LOGGER.info("Archived raw Gemini response to %s", file_path)
 
 
-def _generate_fallback_itinerary(request: TripRequest) -> str:
+def _generate_destination_fallback(request: TripRequest) -> str:
+    region = request.destination or "Destination"
     num_days = max(1, request.number_of_days or 1)
+    guest_name = request.customer_name or "Guest"
+    locs = load_destinations(region)
+    attrs = load_attractions(region)
+    days = []
+    for i in range(num_days):
+        day_num = i + 1
+        is_departure = (day_num == num_days)
+        loc = locs[(day_num - 1) % len(locs)] if locs else {"name": "Regional Hub", "id": "hub"}
+        loc_name = loc.get("name", "Regional Hub")
+        matched_attrs = [a.get("name") for a in attrs if a.get("destination_id") == loc.get("id")]
+        attr_text = ", ".join(matched_attrs[:2]) if matched_attrs else "local sights and cultural landmarks"
+
+        if is_departure:
+            days.append({
+                "day_number": day_num, "title": f"Departure from {loc_name}", "subtitle": "Departure",
+                "primary_island": loc_name, "travel_movement": "Departure", "is_departure_day": True,
+                "visiting_places": "", "destination_story": "", "todays_journey": "", "hotel_experience": "",
+                "curated_experience": "",
+                "departure_narrative": f"Following a relaxed morning check-out, {guest_name} will be assisted with private chauffeur transfer to the departure airport for the onward journey home.",
+                "farewell_narrative": f"Darun Tourism extends sincere gratitude to {guest_name} and companions for choosing our bespoke travel curation. We look forward to welcoming you back in the future.",
+                "expert_insider_notes": "Allow sufficient transit time for regional traffic and airport check-in.",
+                "next_day_transition": "Safe travels on your journey home.", "hotel": "",
+                "activities": ["Airport Transfer"], "attractions": ["Airport / Transit Terminal"], "image_keyword": f"{region.lower()}_departure"
+            })
+        else:
+            days.append({
+                "day_number": day_num, "title": f"{loc_name} Discovery", "subtitle": f"Experience the essence of {loc_name}",
+                "primary_island": loc_name, "travel_movement": loc_name if day_num == 1 else f"Transfer to {loc_name}", "is_departure_day": False,
+                "visiting_places": f"Begin your exploration of {loc_name} visiting {attr_text}. Immerse yourself in the authentic character and heritage of the region.",
+                "destination_story": f"{loc_name} is one of the most distinctive destinations in {region}, celebrated for its rich history, cultural significance, and scenic beauty.",
+                "todays_journey": "For the places highlighted above, private chauffeur transfers ensure comfortable transit across all destinations.",
+                "hotel_experience": "Enjoy a comfortable evening stay at your curated accommodation, offering refined hospitality and relaxing surroundings.",
+                "curated_experience": "", "departure_narrative": "", "farewell_narrative": "",
+                "expert_insider_notes": "Morning visits provide the best lighting and most relaxed atmosphere.",
+                "next_day_transition": "Prepare for the next stage of your bespoke journey.",
+                "hotel": request.selected_hotels[0] if request.selected_hotels else "Curated Boutique Stay",
+                "activities": ["Cultural Sightseeing"], "attractions": matched_attrs[:2] if matched_attrs else [loc_name],
+                "image_keyword": f"{region.lower()}_{loc_name.lower().replace(' ', '_')}"
+            })
+    from app.services.itinerary_normalizer import normalize_itinerary_payload
+    return normalize_itinerary_payload(json.dumps({"days": days}, indent=2), request)
+
+
+def _generate_fallback_itinerary(request: TripRequest) -> str:
     destination = request.destination or "Andaman Islands"
+    if is_additive_destination(destination):
+        return _generate_destination_fallback(request)
+
+    num_days = max(1, request.number_of_days or 1)
     hotel_name = request.selected_hotels[0] if request.selected_hotels else "Andaman Luxury Resort"
     guest_name = request.customer_name or "Guest"
     days = []

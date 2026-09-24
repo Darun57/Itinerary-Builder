@@ -1,0 +1,8 @@
+{
+  "name": "Tamil Nadu",
+  "slug": "tamil-nadu",
+  "scope": "state",
+  "status": "scaffold",
+  "protected_reference": false,
+  "namespace": "velqairn:tamil-nadu"
+}

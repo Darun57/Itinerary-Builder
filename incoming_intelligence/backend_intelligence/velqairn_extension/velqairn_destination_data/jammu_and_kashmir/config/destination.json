@@ -1,0 +1,10 @@
+{
+  "region_id": "jammu-and-kashmir",
+  "name": "Jammu & Kashmir",
+  "namespace": "velqairn:jammu-and-kashmir",
+  "status": "seeded",
+  "source_type": "official_tourism_seed",
+  "protected_reference": false,
+  "live_verification_required_for": ["hotel_availability", "activity_price", "movement_time", "opening_hours", "weather_access", "permit_status", "seasonal_operations"],
+  "supported_planning_modes": ["leisure", "luxury", "honeymoon", "family", "winter", "adventure", "culture", "nature"]
+}

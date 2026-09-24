@@ -1,0 +1,38 @@
+[
+  {
+    "id": "himachal-pradesh:manali:solang_valley",
+    "destination_id": "himachal-pradesh:manali",
+    "name": "Solang Valley Adventure Arena",
+    "category": "adventure",
+    "suggested_duration_minutes": 180,
+    "best_for": [
+      "paragliding",
+      "snow_activities"
+    ],
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "himachal-pradesh:manali:atal_tunnel",
+    "destination_id": "himachal-pradesh:manali",
+    "name": "Atal Tunnel & Sissu Lahaul View",
+    "category": "nature",
+    "suggested_duration_minutes": 240,
+    "best_for": [
+      "mountain_views",
+      "engineering"
+    ],
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "himachal-pradesh:shimla:mall_road",
+    "destination_id": "himachal-pradesh:shimla",
+    "name": "Shimla Mall Road & Ridge",
+    "category": "heritage",
+    "suggested_duration_minutes": 120,
+    "best_for": [
+      "walking",
+      "colonial_heritage"
+    ],
+    "source_status": "official_tourism_seed"
+  }
+]

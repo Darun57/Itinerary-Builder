@@ -1,0 +1,15 @@
+{
+  "region": "goa",
+  "rules": [
+    {
+      "id": "destination_namespace",
+      "severity": "error",
+      "rule": "Every referenced location, attraction, activity, hotel and movement must start with goa:."
+    },
+    {
+      "id": "north_south_transit",
+      "severity": "error",
+      "rule": "North Goa and South Goa activities should not be commuted daily without scheduled intercity transit time."
+    }
+  ]
+}

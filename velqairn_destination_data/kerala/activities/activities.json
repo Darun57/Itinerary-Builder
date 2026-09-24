@@ -1,0 +1,57 @@
+[
+  {
+    "id": "kerala:alleppey:houseboat_overnight",
+    "destination_id": "kerala:alleppey",
+    "name": "Private Traditional Deluxe Houseboat Cruise",
+    "category": "Cruise",
+    "duration_minutes_min": 360,
+    "duration_minutes_max": 720,
+    "best_for": [
+      "houseboat",
+      "culinary",
+      "relaxation"
+    ],
+    "seasonality": [
+      "all_year"
+    ],
+    "booking_required": true,
+    "price_status": "supplier_required",
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "kerala:thekkady:spice_plantation",
+    "destination_id": "kerala:thekkady",
+    "name": "Guided Organic Spice Plantation Walk",
+    "category": "Nature",
+    "duration_minutes_min": 60,
+    "duration_minutes_max": 90,
+    "best_for": [
+      "spices",
+      "botanical"
+    ],
+    "seasonality": [
+      "all_year"
+    ],
+    "booking_required": false,
+    "price_status": "fixed",
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "kerala:munnar:tea_gardens_trail",
+    "destination_id": "kerala:munnar",
+    "name": "Munnar Scenic Tea Estate Walking Trail",
+    "category": "Nature",
+    "duration_minutes_min": 90,
+    "duration_minutes_max": 120,
+    "best_for": [
+      "photography",
+      "tea"
+    ],
+    "seasonality": [
+      "all_year"
+    ],
+    "booking_required": false,
+    "price_status": "fixed",
+    "source_status": "official_tourism_seed"
+  }
+]

@@ -1,0 +1,11 @@
+{
+  "version": "0.1.0",
+  "scope": ["rajasthan", "jammu-and-kashmir"],
+  "protected_reference": "Darun Tourism / Andaman existing implementation",
+  "collections": ["destinations", "attractions", "activities", "movements", "day_plans", "validation"],
+  "hotel_inventory": "not seeded",
+  "room_inventory": "not seeded",
+  "pricing": "not seeded",
+  "source_policy": "official tourism seeds plus clearly labelled planning estimates",
+  "live_verification_required": true
+}

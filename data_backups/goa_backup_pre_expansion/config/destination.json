@@ -1,0 +1,24 @@
+{
+  "region_id": "goa",
+  "name": "Goa",
+  "namespace": "velqairn:goa",
+  "status": "seeded",
+  "source_type": "official_tourism_seed",
+  "protected_reference": false,
+  "live_verification_required_for": [
+    "hotel_availability",
+    "activity_price",
+    "movement_time",
+    "water_sports_seasonality"
+  ],
+  "supported_planning_modes": [
+    "leisure",
+    "luxury",
+    "beach",
+    "family",
+    "honeymoon",
+    "nightlife",
+    "heritage",
+    "adventure"
+  ]
+}

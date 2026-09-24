@@ -1,0 +1,58 @@
+[
+  {
+    "id": "ladakh:leh",
+    "region": "ladakh",
+    "name": "Leh (Base 3,500m)",
+    "type": "city",
+    "best_for": [
+      "acclimatization",
+      "monasteries",
+      "culture"
+    ],
+    "recommended_nights_min": 2,
+    "recommended_nights_max": 4,
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "ladakh:nubra",
+    "region": "ladakh",
+    "name": "Nubra Valley (Hunder & Diskit)",
+    "type": "circuit_stop",
+    "best_for": [
+      "dunes",
+      "camels",
+      "monastery"
+    ],
+    "recommended_nights_min": 1,
+    "recommended_nights_max": 2,
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "ladakh:pangong",
+    "region": "ladakh",
+    "name": "Pangong Tso (High Lake 4,250m)",
+    "type": "circuit_stop",
+    "best_for": [
+      "lake",
+      "stargazing",
+      "photography"
+    ],
+    "recommended_nights_min": 1,
+    "recommended_nights_max": 2,
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "ladakh:kargil",
+    "region": "ladakh",
+    "name": "Kargil",
+    "type": "town",
+    "best_for": [
+      "war_memorial",
+      "history",
+      "transit"
+    ],
+    "recommended_nights_min": 1,
+    "recommended_nights_max": 2,
+    "source_status": "official_tourism_seed"
+  }
+]

@@ -1,0 +1,41 @@
+[
+  {
+    "id": "ladakh:leh-to-nubra",
+    "region": "ladakh",
+    "from_destination_id": "ladakh:leh",
+    "to_destination_id": "ladakh:nubra",
+    "mode": "road",
+    "estimated_duration_minutes_min": 240,
+    "estimated_duration_minutes_max": 330,
+    "planning_status": "planning_estimate",
+    "notes": [
+      "Crossing Khardung La pass at 17,982 ft. Oxygen cylinders carried in vehicle."
+    ]
+  },
+  {
+    "id": "ladakh:nubra-to-pangong",
+    "region": "ladakh",
+    "from_destination_id": "ladakh:nubra",
+    "to_destination_id": "ladakh:pangong",
+    "mode": "road",
+    "estimated_duration_minutes_min": 270,
+    "estimated_duration_minutes_max": 360,
+    "planning_status": "planning_estimate",
+    "notes": [
+      "Scenic mountain off-road route via Shyok River corridor."
+    ]
+  },
+  {
+    "id": "ladakh:pangong-to-leh",
+    "region": "ladakh",
+    "from_destination_id": "ladakh:pangong",
+    "to_destination_id": "ladakh:leh",
+    "mode": "road",
+    "estimated_duration_minutes_min": 270,
+    "estimated_duration_minutes_max": 330,
+    "planning_status": "planning_estimate",
+    "notes": [
+      "Crossing Chang La Pass (5,360m) back to Indus Valley."
+    ]
+  }
+]

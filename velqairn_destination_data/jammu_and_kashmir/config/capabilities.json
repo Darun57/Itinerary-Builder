@@ -1,0 +1,13 @@
+{
+  "transport_modes": ["road", "shikara"],
+  "supports_ferry": false,
+  "supports_houseboat": true,
+  "requires_altitude_validation": true,
+  "requires_acclimatization_logic": false,
+  "supports_multi_city_circuit": true,
+  "seasonality_required": true,
+  "default_base_location_id": "jammu-and-kashmir:srinagar",
+  "typical_circuit_pace": "moderate",
+  "recommended_min_days": 4,
+  "recommended_max_days": 9
+}

@@ -1,0 +1,26 @@
+[
+  {
+    "id": "uttarakhand:rishikesh:triveni_ghat",
+    "destination_id": "uttarakhand:rishikesh",
+    "name": "Triveni Ghat Evening Ganga Aarti",
+    "category": "spiritual",
+    "suggested_duration_minutes": 90,
+    "best_for": [
+      "spiritual",
+      "aarti"
+    ],
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "uttarakhand:jim_corbett:dhikala_zone",
+    "destination_id": "uttarakhand:jim_corbett",
+    "name": "Dhikala Forest Grasslands & River Ramganga",
+    "category": "wildlife",
+    "suggested_duration_minutes": 240,
+    "best_for": [
+      "tigers",
+      "elephants"
+    ],
+    "source_status": "official_tourism_seed"
+  }
+]

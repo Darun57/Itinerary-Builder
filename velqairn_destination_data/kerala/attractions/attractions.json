@@ -1,0 +1,50 @@
+[
+  {
+    "id": "kerala:kochi:fort_kochi",
+    "destination_id": "kerala:kochi",
+    "name": "Fort Kochi & Chinese Fishing Nets",
+    "category": "heritage",
+    "suggested_duration_minutes": 90,
+    "best_for": [
+      "history",
+      "photography"
+    ],
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "kerala:munnar:tea_museum",
+    "destination_id": "kerala:munnar",
+    "name": "KDHP Tea Museum & Factory",
+    "category": "heritage",
+    "suggested_duration_minutes": 75,
+    "best_for": [
+      "tea_tasting",
+      "education"
+    ],
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "kerala:thekkady:periyar_lake",
+    "destination_id": "kerala:thekkady",
+    "name": "Periyar Lake Boating & Sanctuary",
+    "category": "nature",
+    "suggested_duration_minutes": 120,
+    "best_for": [
+      "wildlife",
+      "safari"
+    ],
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "kerala:alleppey:backwaters",
+    "destination_id": "kerala:alleppey",
+    "name": "Alleppey Backwaters & Punnamada Lake",
+    "category": "nature",
+    "suggested_duration_minutes": 240,
+    "best_for": [
+      "houseboat",
+      "relaxation"
+    ],
+    "source_status": "official_tourism_seed"
+  }
+]

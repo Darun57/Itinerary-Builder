@@ -1,0 +1,8 @@
+{
+  "name": "Karnataka",
+  "slug": "karnataka",
+  "scope": "state",
+  "status": "scaffold",
+  "protected_reference": false,
+  "namespace": "velqairn:karnataka"
+}

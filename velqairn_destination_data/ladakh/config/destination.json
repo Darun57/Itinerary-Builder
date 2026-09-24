@@ -1,0 +1,20 @@
+{
+  "region_id": "ladakh",
+  "name": "Ladakh",
+  "namespace": "velqairn:ladakh",
+  "status": "active",
+  "source_type": "official_tourism_seed",
+  "protected_reference": false,
+  "live_verification_required_for": [
+    "khardung_la_weather_clearance",
+    "inner_line_permit",
+    "pangong_lake_night_temperature"
+  ],
+  "supported_planning_modes": [
+    "adventure",
+    "high_altitude",
+    "biking",
+    "monasteries",
+    "photography"
+  ]
+}

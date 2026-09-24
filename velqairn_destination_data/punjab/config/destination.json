@@ -1,0 +1,14 @@
+{
+  "region_id": "punjab",
+  "name": "Punjab",
+  "namespace": "velqairn:punjab",
+  "status": "scaffold",
+  "source_type": "scaffold_only",
+  "protected_reference": false,
+  "live_verification_required_for": [
+    "all_unverified_records"
+  ],
+  "supported_planning_modes": [
+    "leisure"
+  ]
+}

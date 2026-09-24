@@ -1,0 +1,11 @@
+[
+{"id":"rajasthan:jaipur","region":"rajasthan","name":"Jaipur","type":"city","best_for":["heritage","luxury","shopping","culture","family","honeymoon"],"recommended_nights_min":2,"recommended_nights_max":3,"source_status":"official_tourism_seed"},
+{"id":"rajasthan:jodhpur","region":"rajasthan","name":"Jodhpur","type":"city","best_for":["heritage","forts","culture","luxury","photography"],"recommended_nights_min":1,"recommended_nights_max":2,"source_status":"official_tourism_seed"},
+{"id":"rajasthan:udaipur","region":"rajasthan","name":"Udaipur","type":"city","best_for":["luxury","honeymoon","lakes","heritage","romance"],"recommended_nights_min":2,"recommended_nights_max":3,"source_status":"official_tourism_seed"},
+{"id":"rajasthan:jaisalmer","region":"rajasthan","name":"Jaisalmer","type":"city","best_for":["desert","heritage","luxury","culture","photography"],"recommended_nights_min":2,"recommended_nights_max":3,"source_status":"official_tourism_seed"},
+{"id":"rajasthan:pushkar","region":"rajasthan","name":"Pushkar","type":"town","best_for":["culture","pilgrimage","slow_travel","photography"],"recommended_nights_min":1,"recommended_nights_max":2,"source_status":"official_tourism_seed"},
+{"id":"rajasthan:ajmer","region":"rajasthan","name":"Ajmer","type":"town","best_for":["pilgrimage","culture","heritage"],"recommended_nights_min":0,"recommended_nights_max":1,"source_status":"official_tourism_seed"},
+{"id":"rajasthan:sawai_madhopur","region":"rajasthan","name":"Sawai Madhopur / Ranthambore","type":"wildlife","best_for":["wildlife","safari","nature","photography"],"recommended_nights_min":2,"recommended_nights_max":3,"source_status":"official_tourism_seed"},
+{"id":"rajasthan:bikaner","region":"rajasthan","name":"Bikaner","type":"city","best_for":["heritage","culture","desert","food"],"recommended_nights_min":1,"recommended_nights_max":2,"source_status":"official_tourism_seed"},
+{"id":"rajasthan:mount_abu","region":"rajasthan","name":"Mount Abu","type":"resort","best_for":["hill_station","nature","family","leisure"],"recommended_nights_min":1,"recommended_nights_max":2,"source_status":"official_tourism_seed"}
+]

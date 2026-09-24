@@ -1,0 +1,10 @@
+{
+  "region":"rajasthan",
+  "rules":[
+    {"id":"destination_namespace","severity":"error","rule":"Every referenced location, attraction, activity, hotel and movement must start with rajasthan:."},
+    {"id":"movement_block","severity":"error","rule":"Intercity movements must occupy explicit itinerary time; never hide them inside sightseeing prose."},
+    {"id":"wildlife_booking","severity":"error","rule":"Ranthambore safari must remain supplier/booking dependent until live availability is confirmed."},
+    {"id":"pricing","severity":"error","rule":"Do not invent activity, transfer or hotel prices from seed data."},
+    {"id":"timings","severity":"warning","rule":"Attraction opening hours are not authoritative in the seed; verify before confirmation."}
+  ]
+}

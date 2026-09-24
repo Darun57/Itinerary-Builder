@@ -1,0 +1,101 @@
+[
+  {
+    "id": "kerala:kochi",
+    "region": "kerala",
+    "name": "Kochi (Cochin)",
+    "type": "city",
+    "best_for": [
+      "heritage",
+      "culture",
+      "culinary"
+    ],
+    "recommended_nights_min": 1,
+    "recommended_nights_max": 2,
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "kerala:munnar",
+    "region": "kerala",
+    "name": "Munnar",
+    "type": "resort",
+    "best_for": [
+      "tea_gardens",
+      "nature",
+      "hills",
+      "honeymoon"
+    ],
+    "recommended_nights_min": 2,
+    "recommended_nights_max": 3,
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "kerala:thekkady",
+    "region": "kerala",
+    "name": "Thekkady (Periyar)",
+    "type": "wildlife",
+    "best_for": [
+      "wildlife",
+      "spices",
+      "boating"
+    ],
+    "recommended_nights_min": 1,
+    "recommended_nights_max": 2,
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "kerala:alleppey",
+    "region": "kerala",
+    "name": "Alleppey (Alappuzha)",
+    "type": "town",
+    "best_for": [
+      "backwaters",
+      "houseboat",
+      "villages"
+    ],
+    "recommended_nights_min": 1,
+    "recommended_nights_max": 2,
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "kerala:kumarakom",
+    "region": "kerala",
+    "name": "Kumarakom",
+    "type": "resort",
+    "best_for": [
+      "luxury",
+      "backwaters",
+      "bird_watching"
+    ],
+    "recommended_nights_min": 1,
+    "recommended_nights_max": 2,
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "kerala:kovalam",
+    "region": "kerala",
+    "name": "Kovalam",
+    "type": "resort",
+    "best_for": [
+      "beach",
+      "ayurveda",
+      "leisure"
+    ],
+    "recommended_nights_min": 2,
+    "recommended_nights_max": 3,
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "kerala:wayanad",
+    "region": "kerala",
+    "name": "Wayanad",
+    "type": "resort",
+    "best_for": [
+      "nature",
+      "waterfalls",
+      "trekking"
+    ],
+    "recommended_nights_min": 2,
+    "recommended_nights_max": 3,
+    "source_status": "official_tourism_seed"
+  }
+]

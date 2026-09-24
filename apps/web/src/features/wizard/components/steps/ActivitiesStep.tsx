@@ -109,36 +109,52 @@ export default function ActivitiesStep() {
   const [selectedCategory, setSelectedCategory] = useState("All Categories");
   const [showOnlyIncluded, setShowOnlyIncluded] = useState(false);
 
+  const destinationStr = (currentRequestData.destination || "").toLowerCase();
+  const isAndaman = !destinationStr || destinationStr.includes("andaman");
+  const regionParam = isAndaman
+    ? undefined
+    : destinationStr.includes("rajasthan")
+    ? "rajasthan"
+    : destinationStr.includes("kashmir")
+    ? "jammu-and-kashmir"
+    : destinationStr.includes("goa")
+    ? "goa"
+    : destinationStr.replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+
   // Ensure daily_island_plan has entries for all days and accurate primary_island
   useEffect(() => {
     const current = getValues("daily_island_plan") || [];
     let changed = false;
     const updated = [...current];
 
-    for (let i = updated.length; i < numberOfDays; i++) {
-      changed = true;
-      updated.push({
-        day_number: i + 1,
-        primary_island: resolvePrimaryIsland({}, i),
-        attractions: [],
-        activities: [],
-        hotel: "",
-        transfer_type: "Private",
-      });
-    }
-
-    for (let i = 0; i < Math.min(updated.length, numberOfDays); i++) {
-      const resolved = resolvePrimaryIsland(updated[i], i);
-      if (updated[i].primary_island !== resolved) {
-        updated[i] = { ...updated[i], primary_island: resolved };
+    if (isAndaman) {
+      for (let i = updated.length; i < numberOfDays; i++) {
         changed = true;
+        updated.push({
+          day_number: i + 1,
+          primary_island: resolvePrimaryIsland({}, i),
+          attractions: [],
+          activities: [],
+          hotel: "",
+          transfer_type: "Private",
+          ferry: "None",
+          ferry_timing: "",
+        });
+      }
+
+      for (let i = 0; i < Math.min(updated.length, numberOfDays); i++) {
+        const resolved = resolvePrimaryIsland(updated[i], i);
+        if (updated[i].primary_island !== resolved) {
+          updated[i] = { ...updated[i], primary_island: resolved };
+          changed = true;
+        }
       }
     }
 
     if (changed) {
       setValue("daily_island_plan", updated, { shouldDirty: false });
     }
-  }, [numberOfDays, setValue, getValues, dailyPlan]);
+  }, [numberOfDays, setValue, getValues, dailyPlan, isAndaman]);
 
   // Fetch all activities
   const {
@@ -146,10 +162,24 @@ export default function ActivitiesStep() {
     isLoading: isLoadingAll,
     isError: isErrorAll,
   } = useQuery<ActivityItem[]>({
-    queryKey: ["all_activities"],
-    queryFn: fetchAllActivities,
+    queryKey: ["all_activities", regionParam],
+    queryFn: () => fetchAllActivities(regionParam),
     staleTime: 1000 * 60 * 10,
   });
+
+  const dynamicLocationTabs = useMemo(() => {
+    if (isAndaman) return ISLAND_TABS;
+    const locations = Array.from(new Set(allActivities.map((a) => a.location).filter(Boolean)));
+    return [
+      { id: "all", label: `All ${currentRequestData.destination || "Regional"} Hubs` },
+      ...locations.map((loc) => ({
+        id: loc.toLowerCase().replace(/[^a-z0-9]+/g, "_"),
+        label: loc,
+        match: loc,
+      })),
+    ];
+  }, [isAndaman, allActivities, currentRequestData.destination]);
+
 
   // Fetch recommended activities for badge
   const { data: recommendedActivities = [] } = useQuery<ActivityItem[]>({
@@ -215,6 +245,8 @@ export default function ActivitiesStep() {
         activities: [],
         hotel: "",
         transfer_type: "Private",
+        ferry: "None",
+        ferry_timing: "",
       });
     }
 
@@ -287,9 +319,9 @@ export default function ActivitiesStep() {
         if (qty === 0 && !isPref) return false;
       }
 
-      // Island filter
+      // Island / Regional Location filter
       if (selectedIsland !== "all") {
-        const tab = ISLAND_TABS.find((t) => t.id === selectedIsland);
+        const tab = dynamicLocationTabs.find((t) => t.id === selectedIsland);
         if (tab?.match) {
           if (Array.isArray(tab.match)) {
             const matchesAny = tab.match.some((m) =>
@@ -562,7 +594,7 @@ export default function ActivitiesStep() {
           <div className="flex items-center gap-2">
             <h3 className="text-sm font-semibold text-foreground flex items-center gap-1.5">
               <Compass className="h-4 w-4 text-primary" />
-              Andaman Activities Catalog
+              {isAndaman ? "Andaman Activities Catalog" : `${currentRequestData.destination || "Destination"} Activities Catalog`}
             </h3>
             {activeDayIndex !== null && (
               <span className="text-xs bg-primary/10 text-primary font-medium px-2.5 py-0.5 rounded-full border border-primary/20">
@@ -589,7 +621,7 @@ export default function ActivitiesStep() {
             <Input
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search by activity, island, or keyword..."
+              placeholder="Search by activity, location, or keyword..."
               className="pl-9 h-10 bg-background/80"
             />
             {searchQuery && (
@@ -625,10 +657,10 @@ export default function ActivitiesStep() {
           </div>
         </div>
 
-        {/* Island Tabs */}
+        {/* Island / Location Tabs */}
         <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-thin">
           <MapPin className="h-4 w-4 text-muted-foreground shrink-0 mr-1" />
-          {ISLAND_TABS.map((tab) => {
+          {dynamicLocationTabs.map((tab) => {
             const isActive = selectedIsland === tab.id;
             return (
               <button

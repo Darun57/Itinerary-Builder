@@ -10,11 +10,80 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { StepHeader } from "../StepHeader";
 import { DailyPlanSection } from "./DailyPlanSection";
 
+import { useQuery } from "@tanstack/react-query";
+import { fetchAvailableDestinations } from "@/lib/api";
+import { useWizardStore } from "../../store";
+import { getDestinationDayDefaults } from "../../destinationDefaults";
+
 export default function TripDetailsStep() {
-  const { control, setValue } = useFormContext<TripRequestType>();
+  const { control, setValue, getValues } = useFormContext<TripRequestType>();
+  const updateFormData = useWizardStore((s) => s.updateFormData);
 
   const arrivalDate = useWatch({ control, name: "arrival_date" });
   const departureDate = useWatch({ control, name: "departure_date" });
+
+  const { data: availableDestinations } = useQuery({
+    queryKey: ["available_destinations"],
+    queryFn: () => fetchAvailableDestinations(),
+  });
+
+  const destinationOptions = React.useMemo(() => {
+    if (availableDestinations && Array.isArray(availableDestinations) && availableDestinations.length > 0) {
+      return availableDestinations.map((d: any) => ({
+        label: d.name,
+        value: d.name,
+      }));
+    }
+    return [
+      { label: "Andaman Islands", value: "Andaman Islands" },
+      { label: "Goa", value: "Goa" },
+      { label: "Rajasthan", value: "Rajasthan" },
+      { label: "Jammu & Kashmir", value: "Jammu & Kashmir" },
+    ];
+  }, [availableDestinations]);
+
+  const handleDestinationChange = (newDest: string) => {
+    const currentDest = getValues("destination");
+    if (newDest === currentDest) return;
+
+    const numDays = Math.max(1, Number(getValues("number_of_days")) || 5);
+    const defaults = getDestinationDayDefaults(newDest);
+    const newPlan = Array.from({ length: numDays }, (_, i) => {
+      const def = defaults[i % defaults.length];
+      return {
+        day_number: i + 1,
+        primary_island: def.region,
+        attractions: [...def.attractions],
+        activities: [] as string[],
+        hotel: "",
+        transfer_type: "Private Cab",
+        ferry: "None",
+        ferry_timing: "",
+      };
+    });
+
+    // Reset RHF form values
+    setValue("destination", newDest, { shouldDirty: true });
+    setValue("selected_destinations", [], { shouldDirty: true });
+    setValue("selected_hotels", [], { shouldDirty: true });
+    setValue("preferred_activities", [], { shouldDirty: true });
+    setValue("included_activities", [], { shouldDirty: true });
+    setValue("hotel_selection_islands", [], { shouldDirty: true });
+    setValue("preferred_ferries", [], { shouldDirty: true });
+    setValue("daily_island_plan", newPlan, { shouldDirty: true });
+
+    // Sync reset to Zustand store
+    updateFormData({
+      destination: newDest,
+      selected_destinations: [],
+      selected_hotels: [],
+      preferred_activities: [],
+      included_activities: [],
+      hotel_selection_islands: [],
+      preferred_ferries: [],
+      daily_island_plan: newPlan,
+    });
+  };
 
   useEffect(() => {
     if (arrivalDate && departureDate) {
@@ -44,23 +113,31 @@ export default function TripDetailsStep() {
           render={({ field }) => (
             <FormItem>
               <FormLabel>Primary Destination *</FormLabel>
-              <Select onValueChange={field.onChange} value={field.value || "Andaman Islands"}>
+              <Select
+                onValueChange={(val: any) => {
+                  field.onChange(val);
+                  handleDestinationChange(String(val || ""));
+                }}
+                value={field.value || "Andaman Islands"}
+              >
                 <FormControl>
                   <SelectTrigger className="bg-background/50">
                     <SelectValue placeholder="Select destination" />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  <SelectItem value="Andaman Islands">Andaman Islands</SelectItem>
-                  <SelectItem value="Goa">Goa</SelectItem>
-                  <SelectItem value="Lakshadweep">Lakshadweep</SelectItem>
-                  <SelectItem value="Maldives">Maldives</SelectItem>
+                  {destinationOptions.map((opt) => (
+                    <SelectItem key={opt.value} value={opt.value}>
+                      {opt.label}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
               <FormMessage />
             </FormItem>
           )}
         />
+
 
         <FormField
           control={control}

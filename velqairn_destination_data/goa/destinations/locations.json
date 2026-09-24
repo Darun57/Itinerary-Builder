@@ -1,0 +1,700 @@
+[
+  {
+    "id": "goa:panaji",
+    "region": "goa",
+    "name": "Panaji",
+    "type": "city",
+    "best_for": [
+      "arrival",
+      "heritage",
+      "riverfront",
+      "city stays"
+    ],
+    "recommended_nights_min": 1,
+    "recommended_nights_max": 3,
+    "source_status": "official_tourism_seed",
+    "description": "Goa's capital and a practical base for Fontainhas, the Mandovi waterfront, museums, and access to North and South Goa."
+  },
+  {
+    "id": "goa:fontainhas",
+    "region": "goa",
+    "name": "Fontainhas",
+    "type": "coastal_beach",
+    "best_for": [
+      "heritage",
+      "photography",
+      "culture",
+      "short stays"
+    ],
+    "recommended_nights_min": 0,
+    "recommended_nights_max": 1,
+    "source_status": "official_tourism_seed",
+    "description": "The Latin Quarter of Panaji, known for colourful Indo-Portuguese homes, narrow lanes, galleries, and heritage walks."
+  },
+  {
+    "id": "goa:old_goa",
+    "region": "goa",
+    "name": "Old Goa",
+    "type": "coastal_beach",
+    "best_for": [
+      "heritage",
+      "churches",
+      "history"
+    ],
+    "recommended_nights_min": 0,
+    "recommended_nights_max": 1,
+    "source_status": "official_tourism_seed",
+    "description": "UNESCO-recognised heritage precinct with the Basilica of Bom Jesus, Se Cathedral, and other historic monuments."
+  },
+  {
+    "id": "goa:dona_paula",
+    "region": "goa",
+    "name": "Dona Paula",
+    "type": "coastal_beach",
+    "best_for": [
+      "sunset",
+      "views",
+      "romance"
+    ],
+    "recommended_nights_min": 0,
+    "recommended_nights_max": 1,
+    "source_status": "official_tourism_seed",
+    "description": "Panoramic waterfront viewpoint overlooking the meeting of Goa's rivers with the Arabian Sea."
+  },
+  {
+    "id": "goa:divar_island",
+    "region": "goa",
+    "name": "Divar Island",
+    "type": "coastal_beach",
+    "best_for": [
+      "culture",
+      "slow travel",
+      "villages",
+      "nature"
+    ],
+    "recommended_nights_min": 1,
+    "recommended_nights_max": 2,
+    "source_status": "official_tourism_seed",
+    "description": "A quiet river island experience combining village lanes, fields, heritage chapels, mangroves, and traditional Goan life."
+  },
+  {
+    "id": "goa:candolim",
+    "region": "goa",
+    "name": "Candolim",
+    "type": "coastal_beach",
+    "best_for": [
+      "premium stays",
+      "beaches",
+      "families"
+    ],
+    "recommended_nights_min": 2,
+    "recommended_nights_max": 4,
+    "source_status": "official_tourism_seed",
+    "description": "A convenient North Goa base near Candolim and Sinquerim beaches, Fort Aguada, dining, and resort areas."
+  },
+  {
+    "id": "goa:calangute",
+    "region": "goa",
+    "name": "Calangute",
+    "type": "coastal_beach",
+    "best_for": [
+      "beach",
+      "families",
+      "water activities"
+    ],
+    "recommended_nights_min": 1,
+    "recommended_nights_max": 3,
+    "source_status": "official_tourism_seed",
+    "description": "A lively North Goa beach destination with a broad accommodation base, restaurants, shopping, and water activities."
+  },
+  {
+    "id": "goa:baga",
+    "region": "goa",
+    "name": "Baga",
+    "type": "coastal_beach",
+    "best_for": [
+      "nightlife",
+      "beach",
+      "water activities"
+    ],
+    "recommended_nights_min": 1,
+    "recommended_nights_max": 3,
+    "source_status": "official_tourism_seed",
+    "description": "A popular North Goa coastal base for beach time, watersports, dining, and a lively evening scene."
+  },
+  {
+    "id": "goa:anjuna",
+    "region": "goa",
+    "name": "Anjuna",
+    "type": "coastal_beach",
+    "best_for": [
+      "bohemian",
+      "markets",
+      "beach",
+      "nightlife"
+    ],
+    "recommended_nights_min": 1,
+    "recommended_nights_max": 3,
+    "source_status": "official_tourism_seed",
+    "description": "A North Goa village known for its beach, flea-market culture, cafes, nightlife, and coastal viewpoints."
+  },
+  {
+    "id": "goa:vagator",
+    "region": "goa",
+    "name": "Vagator",
+    "type": "coastal_beach",
+    "best_for": [
+      "sunset",
+      "premium stays",
+      "beach"
+    ],
+    "recommended_nights_min": 1,
+    "recommended_nights_max": 3,
+    "source_status": "official_tourism_seed",
+    "description": "A dramatic North Goa coastline near Chapora Fort, known for red-cliff views, beach sunsets, and upscale stays."
+  },
+  {
+    "id": "goa:chapora",
+    "region": "goa",
+    "name": "Chapora",
+    "type": "coastal_beach",
+    "best_for": [
+      "forts",
+      "photography",
+      "sunset"
+    ],
+    "recommended_nights_min": 0,
+    "recommended_nights_max": 1,
+    "source_status": "official_tourism_seed",
+    "description": "Home to Chapora Fort and a scenic stretch of North Goa coastline around Vagator and Chapora."
+  },
+  {
+    "id": "goa:morjim",
+    "region": "goa",
+    "name": "Morjim",
+    "type": "coastal_beach",
+    "best_for": [
+      "relaxation",
+      "beach",
+      "couples"
+    ],
+    "recommended_nights_min": 2,
+    "recommended_nights_max": 4,
+    "source_status": "official_tourism_seed",
+    "description": "A quieter North Goa beach area suited to relaxed stays, boutique resorts, and long beach walks."
+  },
+  {
+    "id": "goa:ashwem",
+    "region": "goa",
+    "name": "Ashwem",
+    "type": "coastal_beach",
+    "best_for": [
+      "wellness",
+      "beach",
+      "slow travel"
+    ],
+    "recommended_nights_min": 1,
+    "recommended_nights_max": 3,
+    "source_status": "official_tourism_seed",
+    "description": "An elegant North Goa beach stretch with a calmer atmosphere and boutique hospitality."
+  },
+  {
+    "id": "goa:mandrem",
+    "region": "goa",
+    "name": "Mandrem",
+    "type": "coastal_beach",
+    "best_for": [
+      "wellness",
+      "beach",
+      "families"
+    ],
+    "recommended_nights_min": 1,
+    "recommended_nights_max": 3,
+    "source_status": "official_tourism_seed",
+    "description": "A laid-back coastal village suited to yoga, wellness, beach time, and relaxed stays."
+  },
+  {
+    "id": "goa:arambol",
+    "region": "goa",
+    "name": "Arambol",
+    "type": "coastal_beach",
+    "best_for": [
+      "bohemian",
+      "beach",
+      "sunset"
+    ],
+    "recommended_nights_min": 1,
+    "recommended_nights_max": 3,
+    "source_status": "official_tourism_seed",
+    "description": "A northern beach destination with a relaxed traveller atmosphere, freshwater lagoon, and sunset-oriented experiences."
+  },
+  {
+    "id": "goa:aguada",
+    "region": "goa",
+    "name": "Aguada",
+    "type": "coastal_beach",
+    "best_for": [
+      "heritage",
+      "beach",
+      "views"
+    ],
+    "recommended_nights_min": 0,
+    "recommended_nights_max": 1,
+    "source_status": "official_tourism_seed",
+    "description": "Historic Fort Aguada and its coastal surroundings form one of North Goa's signature sightseeing areas."
+  },
+  {
+    "id": "goa:panaji_waterfront",
+    "region": "goa",
+    "name": "Panaji Waterfront",
+    "type": "coastal_beach",
+    "best_for": [
+      "cruise",
+      "sunset",
+      "city"
+    ],
+    "recommended_nights_min": 0,
+    "recommended_nights_max": 1,
+    "source_status": "official_tourism_seed",
+    "description": "Mandovi riverfront experiences including sunset cruises, waterfront walks, and evening city views."
+  },
+  {
+    "id": "goa:grand_island",
+    "region": "goa",
+    "name": "Grand Island",
+    "type": "coastal_beach",
+    "best_for": [
+      "scuba",
+      "snorkelling",
+      "adventure"
+    ],
+    "recommended_nights_min": 0,
+    "recommended_nights_max": 1,
+    "source_status": "official_tourism_seed",
+    "description": "A marine-excursion destination used for scuba and snorkelling experiences from the Goa coast, subject to sea and operator conditions."
+  },
+  {
+    "id": "goa:bogmalo",
+    "region": "goa",
+    "name": "Bogmalo",
+    "type": "coastal_beach",
+    "best_for": [
+      "beach",
+      "diving",
+      "airport access"
+    ],
+    "recommended_nights_min": 1,
+    "recommended_nights_max": 2,
+    "source_status": "official_tourism_seed",
+    "description": "A South Goa coastal village near the airport, useful for beach stays and access to marine activities."
+  },
+  {
+    "id": "goa:majorda",
+    "region": "goa",
+    "name": "Majorda",
+    "type": "coastal_beach",
+    "best_for": [
+      "premium stays",
+      "beach",
+      "wellness"
+    ],
+    "recommended_nights_min": 2,
+    "recommended_nights_max": 4,
+    "source_status": "official_tourism_seed",
+    "description": "A South Goa base around long sandy beaches and luxury resorts, convenient for relaxed resort holidays."
+  },
+  {
+    "id": "goa:colva",
+    "region": "goa",
+    "name": "Colva",
+    "type": "coastal_beach",
+    "best_for": [
+      "beach",
+      "families",
+      "easy access"
+    ],
+    "recommended_nights_min": 1,
+    "recommended_nights_max": 3,
+    "source_status": "official_tourism_seed",
+    "description": "A major South Goa beach base with broad accommodation options and convenient access to nearby coastal villages."
+  },
+  {
+    "id": "goa:benaulim",
+    "region": "goa",
+    "name": "Benaulim",
+    "type": "coastal_beach",
+    "best_for": [
+      "relaxation",
+      "families",
+      "beach"
+    ],
+    "recommended_nights_min": 2,
+    "recommended_nights_max": 4,
+    "source_status": "official_tourism_seed",
+    "description": "A quieter South Goa beach area suited to relaxed beach holidays, family stays, and slower-paced itineraries."
+  },
+  {
+    "id": "goa:varca",
+    "region": "goa",
+    "name": "Varca",
+    "type": "coastal_beach",
+    "best_for": [
+      "premium stays",
+      "beach",
+      "relaxation"
+    ],
+    "recommended_nights_min": 2,
+    "recommended_nights_max": 4,
+    "source_status": "official_tourism_seed",
+    "description": "A spacious South Goa beach belt with resort compounds and a calmer ambience than the busiest North Goa areas."
+  },
+  {
+    "id": "goa:cavelossim",
+    "region": "goa",
+    "name": "Cavelossim",
+    "type": "coastal_beach",
+    "best_for": [
+      "luxury",
+      "beach",
+      "honeymoon"
+    ],
+    "recommended_nights_min": 2,
+    "recommended_nights_max": 4,
+    "source_status": "official_tourism_seed",
+    "description": "A polished South Goa resort destination near the Sal River, known for upscale beachfront properties and relaxed evenings."
+  },
+  {
+    "id": "goa:mobor",
+    "region": "goa",
+    "name": "Mobor",
+    "type": "coastal_beach",
+    "best_for": [
+      "luxury",
+      "beach",
+      "water activities"
+    ],
+    "recommended_nights_min": 2,
+    "recommended_nights_max": 4,
+    "source_status": "official_tourism_seed",
+    "description": "A quieter luxury beach area at the southern end of the Cavelossim coastline, suitable for resort-led holidays."
+  },
+  {
+    "id": "goa:agonda",
+    "region": "goa",
+    "name": "Agonda",
+    "type": "coastal_beach",
+    "best_for": [
+      "honeymoon",
+      "relaxation",
+      "beach"
+    ],
+    "recommended_nights_min": 2,
+    "recommended_nights_max": 4,
+    "source_status": "official_tourism_seed",
+    "description": "A scenic South Goa beach known for a laid-back atmosphere, long sandy shoreline, and intimate stays."
+  },
+  {
+    "id": "goa:palolem",
+    "region": "goa",
+    "name": "Palolem",
+    "type": "coastal_beach",
+    "best_for": [
+      "honeymoon",
+      "beach",
+      "sunset"
+    ],
+    "recommended_nights_min": 2,
+    "recommended_nights_max": 4,
+    "source_status": "official_tourism_seed",
+    "description": "A popular Canacona beach destination with a curved sandy bay, boat excursions, and a strong leisure focus."
+  },
+  {
+    "id": "goa:patnem",
+    "region": "goa",
+    "name": "Patnem",
+    "type": "coastal_beach",
+    "best_for": [
+      "wellness",
+      "quiet beach",
+      "couples"
+    ],
+    "recommended_nights_min": 1,
+    "recommended_nights_max": 3,
+    "source_status": "official_tourism_seed",
+    "description": "A quieter beach near Palolem with boutique stays, yoga, and a slower coastal atmosphere."
+  },
+  {
+    "id": "goa:cabo_de_rama",
+    "region": "goa",
+    "name": "Cabo de Rama",
+    "type": "coastal_beach",
+    "best_for": [
+      "forts",
+      "views",
+      "road trip"
+    ],
+    "recommended_nights_min": 0,
+    "recommended_nights_max": 1,
+    "source_status": "official_tourism_seed",
+    "description": "A dramatic South Goa coastal fort and viewpoint combining history with wide Arabian Sea panoramas."
+  },
+  {
+    "id": "goa:netravali",
+    "region": "goa",
+    "name": "Netravali",
+    "type": "coastal_beach",
+    "best_for": [
+      "wildlife",
+      "waterfalls",
+      "offbeat"
+    ],
+    "recommended_nights_min": 1,
+    "recommended_nights_max": 2,
+    "source_status": "official_tourism_seed",
+    "description": "A forested South Goa hinterland destination offering wildlife, springs, waterfalls, and village experiences."
+  },
+  {
+    "id": "goa:dudhsagar",
+    "region": "goa",
+    "name": "Dudhsagar",
+    "type": "coastal_beach",
+    "best_for": [
+      "waterfall",
+      "adventure",
+      "nature"
+    ],
+    "recommended_nights_min": 0,
+    "recommended_nights_max": 1,
+    "source_status": "official_tourism_seed",
+    "description": "A major inland Goa excursion to the Dudhsagar waterfall area, typically combined with transport and trekking or regulated access options."
+  },
+  {
+    "id": "goa:collem",
+    "region": "goa",
+    "name": "Collem",
+    "type": "coastal_beach",
+    "best_for": [
+      "adventure",
+      "wildlife",
+      "waterfall"
+    ],
+    "recommended_nights_min": 0,
+    "recommended_nights_max": 1,
+    "source_status": "official_tourism_seed",
+    "description": "Gateway area for excursions toward Dudhsagar and Bhagwan Mahavir Wildlife Sanctuary."
+  },
+  {
+    "id": "goa:ponda",
+    "region": "goa",
+    "name": "Ponda",
+    "type": "coastal_beach",
+    "best_for": [
+      "temples",
+      "spice plantations",
+      "culture"
+    ],
+    "recommended_nights_min": 1,
+    "recommended_nights_max": 2,
+    "source_status": "official_tourism_seed",
+    "description": "Goa's hinterland base for Hindu temples, spice plantations, and cultural excursions."
+  },
+  {
+    "id": "goa:spice_plantation_belt",
+    "region": "goa",
+    "name": "Spice Plantation Belt",
+    "type": "coastal_beach",
+    "best_for": [
+      "culture",
+      "food",
+      "nature"
+    ],
+    "recommended_nights_min": 0,
+    "recommended_nights_max": 1,
+    "source_status": "official_tourism_seed",
+    "description": "Rural Goa experiences around plantation estates, traditional meals, and guided walks through tropical crops."
+  },
+  {
+    "id": "goa:saligao",
+    "region": "goa",
+    "name": "Saligao",
+    "type": "coastal_beach",
+    "best_for": [
+      "heritage",
+      "food",
+      "slow travel"
+    ],
+    "recommended_nights_min": 0,
+    "recommended_nights_max": 1,
+    "source_status": "official_tourism_seed",
+    "description": "A North Goa village with heritage character and access to boutique hospitality and local food experiences."
+  },
+  {
+    "id": "goa:assagao",
+    "region": "goa",
+    "name": "Assagao",
+    "type": "coastal_beach",
+    "best_for": [
+      "boutique",
+      "food",
+      "heritage"
+    ],
+    "recommended_nights_min": 1,
+    "recommended_nights_max": 2,
+    "source_status": "official_tourism_seed",
+    "description": "A village known for Portuguese-era homes, design-led stays, restaurants, and a quieter North Goa character."
+  },
+  {
+    "id": "goa:siolim",
+    "region": "goa",
+    "name": "Siolim",
+    "type": "coastal_beach",
+    "best_for": [
+      "slow travel",
+      "local culture"
+    ],
+    "recommended_nights_min": 1,
+    "recommended_nights_max": 2,
+    "source_status": "official_tourism_seed",
+    "description": "A riverine North Goa village useful as a base for exploring Morjim, Ashwem, Mandrem, and local cultural sites."
+  },
+  {
+    "id": "goa:tiracol",
+    "region": "goa",
+    "name": "Tiracol",
+    "type": "coastal_beach",
+    "best_for": [
+      "fort",
+      "views",
+      "offbeat"
+    ],
+    "recommended_nights_min": 0,
+    "recommended_nights_max": 1,
+    "source_status": "official_tourism_seed",
+    "description": "A northern coastal area associated with Fort Tiracol and wide views across the Arabian Sea and Terekhol estuary."
+  },
+  {
+    "id": "goa:miramar",
+    "region": "goa",
+    "name": "Miramar",
+    "type": "coastal_beach",
+    "best_for": [
+      "sunset",
+      "city",
+      "beach"
+    ],
+    "recommended_nights_min": 0,
+    "recommended_nights_max": 1,
+    "source_status": "official_tourism_seed",
+    "description": "A Panaji-side beach suited to sunset walks and short coastal visits close to the capital."
+  },
+  {
+    "id": "goa:arpora",
+    "region": "goa",
+    "name": "Arpora",
+    "type": "town",
+    "best_for": [],
+    "recommended_nights_min": 0,
+    "recommended_nights_max": 0,
+    "description": "",
+    "source_status": "needs_verification"
+  },
+  {
+    "id": "goa:bambolim",
+    "region": "goa",
+    "name": "Bambolim",
+    "type": "coastal",
+    "best_for": [],
+    "recommended_nights_min": 0,
+    "recommended_nights_max": 0,
+    "description": "",
+    "source_status": "needs_verification"
+  },
+  {
+    "id": "goa:mapusa",
+    "region": "goa",
+    "name": "Mapusa",
+    "type": "town",
+    "best_for": [],
+    "recommended_nights_min": 0,
+    "recommended_nights_max": 0,
+    "description": "",
+    "source_status": "needs_verification"
+  },
+  {
+    "id": "goa:arossim",
+    "region": "goa",
+    "name": "Arossim",
+    "type": "coastal_beach",
+    "best_for": [],
+    "recommended_nights_min": 0,
+    "recommended_nights_max": 0,
+    "description": "",
+    "source_status": "needs_verification"
+  },
+  {
+    "id": "goa:canacona",
+    "region": "goa",
+    "name": "Canacona",
+    "type": "town",
+    "best_for": [],
+    "recommended_nights_min": 0,
+    "recommended_nights_max": 0,
+    "description": "",
+    "source_status": "needs_verification"
+  },
+  {
+    "id": "goa:utorda",
+    "region": "goa",
+    "name": "Utorda",
+    "type": "coastal_beach",
+    "best_for": [],
+    "recommended_nights_min": 0,
+    "recommended_nights_max": 0,
+    "description": "",
+    "source_status": "needs_verification"
+  },
+  {
+    "id": "goa:betalbatim",
+    "region": "goa",
+    "name": "Betalbatim",
+    "type": "coastal_beach",
+    "best_for": [],
+    "recommended_nights_min": 0,
+    "recommended_nights_max": 0,
+    "description": "",
+    "source_status": "needs_verification"
+  },
+  {
+    "id": "goa:margao",
+    "region": "goa",
+    "name": "Margao",
+    "type": "city",
+    "best_for": [],
+    "recommended_nights_min": 0,
+    "recommended_nights_max": 0,
+    "description": "",
+    "source_status": "needs_verification"
+  },
+  {
+    "id": "goa:vasco_da_gama",
+    "region": "goa",
+    "name": "Vasco da Gama",
+    "type": "city",
+    "best_for": [],
+    "recommended_nights_min": 0,
+    "recommended_nights_max": 0,
+    "description": "",
+    "source_status": "needs_verification"
+  },
+  {
+    "id": "goa:bicholim",
+    "region": "goa",
+    "name": "Bicholim",
+    "type": "town",
+    "best_for": [],
+    "recommended_nights_min": 0,
+    "recommended_nights_max": 0,
+    "description": "",
+    "source_status": "needs_verification"
+  }
+]

@@ -12,6 +12,11 @@ from typing import Any, Dict, List, Optional
 import re
 
 from app.schemas.trip import TripRequest, DayPlan
+from app.services.destination_registry import (
+    is_andaman_destination,
+    get_destination_display_name,
+    get_destination_base_location,
+)
 
 
 def _clean_str(val: Any) -> str:
@@ -66,6 +71,11 @@ class LuxuryNarrativeFormatter(BaseDayWiseFormatter):
     ) -> Dict[str, Any]:
         day_dict["day_wise_style"] = "luxury_narrative"
 
+        dest = (getattr(request, "destination", "") or "").strip()
+        is_andaman = is_andaman_destination(dest)
+        dest_name = get_destination_display_name(dest) if not is_andaman else "Andaman Islands"
+        base_loc = get_destination_base_location(dest) if not is_andaman else "Andaman Islands"
+
         if is_departure:
             day_dict["is_departure_day"] = True
             day_dict["title"] = "Departure"
@@ -83,20 +93,34 @@ class LuxuryNarrativeFormatter(BaseDayWiseFormatter):
 
             dep_narrative = _clean_str(day_dict.get("departure_narrative"))
             if len(dep_narrative) < 30:
-                dep_narrative = (
-                    f"Enjoy a peaceful morning check-out at {checkout_hotel} with full luggage assistance. "
-                    f"Your private chauffeur will pick you up for a smooth transfer to "
-                    f"Port Blair airport for your flight home."
-                )
+                if is_andaman:
+                    dep_narrative = (
+                        f"Enjoy a peaceful morning check-out at {checkout_hotel} with full luggage assistance. "
+                        f"Your private chauffeur will pick you up for a smooth transfer to "
+                        f"Port Blair airport for your flight home."
+                    )
+                else:
+                    dep_narrative = (
+                        f"Enjoy a peaceful morning check-out at {checkout_hotel} with full luggage assistance. "
+                        f"Your private chauffeur will pick you up for a smooth departure transfer to the "
+                        f"airport for your flight home."
+                    )
             day_dict["departure_narrative"] = dep_narrative
 
             farewell_narrative = _clean_str(day_dict.get("farewell_narrative"))
             if len(farewell_narrative) < 30:
-                farewell_narrative = (
-                    f"Darun Tourism extends its heartfelt gratitude to {customer_name} and family "
-                    f"for choosing us. It was our genuine pleasure crafting your Andaman Islands trip memories, "
-                    f"and we look forward to welcoming you back in the future."
-                )
+                if is_andaman:
+                    farewell_narrative = (
+                        f"Darun Tourism extends its heartfelt gratitude to {customer_name} and family "
+                        f"for choosing us. It was our genuine pleasure crafting your Andaman Islands trip memories, "
+                        f"and we look forward to welcoming you back in the future."
+                    )
+                else:
+                    farewell_narrative = (
+                        f"Darun Tourism extends its heartfelt gratitude to {customer_name} and family "
+                        f"for choosing us. It was our genuine pleasure crafting your {dest_name} trip memories, "
+                        f"and we look forward to welcoming you back in the future."
+                    )
             day_dict["farewell_narrative"] = farewell_narrative
             return day_dict
 
@@ -106,11 +130,11 @@ class LuxuryNarrativeFormatter(BaseDayWiseFormatter):
         day_dict["farewell_narrative"] = ""
 
         # Title / Subtitle
-        island = dp.primary_island if dp else day_dict.get("primary_island") or "Andaman Islands"
+        island = dp.primary_island if dp else day_dict.get("primary_island") or base_loc
         if not day_dict.get("title") or day_dict.get("title") == "Departure":
             day_dict["title"] = f"Exploring {island}"
         if not day_dict.get("subtitle"):
-            day_dict["subtitle"] = "Coastal Highlights & Heritage Discovery"
+            day_dict["subtitle"] = "Coastal Highlights & Heritage Discovery" if is_andaman else f"Highlights & Heritage of {island}"
 
         # Today's Journey
         journey = _clean_str(day_dict.get("todays_journey"))
@@ -118,9 +142,10 @@ class LuxuryNarrativeFormatter(BaseDayWiseFormatter):
             if journey:
                 day_dict["todays_journey"] = f"For the places highlighted above, {journey[0].lower() + journey[1:] if len(journey) > 1 else journey}"
             else:
+                region_label = "the Andaman Islands" if is_andaman else dest_name
                 day_dict["todays_journey"] = (
                     "For the places highlighted above, private chauffeur transfers ensure "
-                    "comfortable transportation and effortless sightseeing across the Andaman Islands throughout the day."
+                    f"comfortable transportation and effortless sightseeing across {region_label} throughout the day."
                 )
 
         # Hotel Experience
@@ -140,17 +165,26 @@ class LuxuryNarrativeFormatter(BaseDayWiseFormatter):
 
         # Visiting Places & Destination Story
         if not day_dict.get("visiting_places"):
-            attractions = ", ".join(dp.attractions) if dp and dp.attractions else "scenic coastal landmarks"
+            attractions = ", ".join(dp.attractions) if dp and dp.attractions else ("scenic coastal landmarks" if is_andaman else "scenic regional landmarks")
             day_dict["visiting_places"] = (
                 f"Begin the day with curated visits to {attractions}. "
                 f"Enjoy serene beachside walks, immersive sightseeing, and memorable coastal discovery."
+                if is_andaman else
+                f"Begin the day with curated visits to {attractions}. "
+                f"Enjoy immersive sightseeing, regional culture, and memorable exploration."
             )
         if not day_dict.get("destination_story"):
-            island_label = dp.primary_island if dp else "Andaman Islands"
-            day_dict["destination_story"] = (
-                f"{island_label} showcases the stunning beauty of the Andaman Islands, famous for their "
-                f"golden shorelines, tropical greenery, and rich coastal culture."
-            )
+            island_label = dp.primary_island if dp else base_loc
+            if is_andaman:
+                day_dict["destination_story"] = (
+                    f"{island_label} showcases the stunning beauty of the Andaman Islands, famous for their "
+                    f"golden shorelines, tropical greenery, and rich coastal culture."
+                )
+            else:
+                day_dict["destination_story"] = (
+                    f"{island_label} showcases the authentic charm and distinctive character of {dest_name}, "
+                    f"celebrated for rich heritage, scenic landscapes, and vibrant local experiences."
+                )
 
         return day_dict
 
@@ -176,39 +210,49 @@ class SimpleItineraryFormatter(BaseDayWiseFormatter):
         island: str,
         attractions: List[str],
         is_departure: bool,
+        destination: str = "",
     ) -> str:
         if is_departure:
             return "Departure"
 
         attractions_clean = [a for a in attractions if a.lower() != "departure"]
+        is_andaman = is_andaman_destination(destination)
 
         if day_idx == 0:
-            if any("corbyn" in a.lower() or "cellular" in a.lower() for a in attractions_clean):
-                return "Arrival & Port Blair Sightseeing"
-            return "Arrival at Port Blair"
+            if is_andaman:
+                if any("corbyn" in a.lower() or "cellular" in a.lower() for a in attractions_clean):
+                    return "Arrival & Port Blair Sightseeing"
+                return "Arrival at Port Blair"
 
-        if "havelock" in island.lower() or "swaraj" in island.lower():
-            if any("radhanagar" in a.lower() for a in attractions_clean) and any("elephant" in a.lower() for a in attractions_clean):
-                return "Havelock Island Beaches"
-            if any("radhanagar" in a.lower() for a in attractions_clean):
-                return "Radhanagar Beach & Sunset"
-            if any("elephant" in a.lower() for a in attractions_clean):
-                return "Elephant Beach Coral Tour"
-            return "Havelock Island Exploration"
+            # Destination-aware generic arrival title
+            dest_name = get_destination_display_name(destination)
+            if island and island.lower() != dest_name.lower():
+                return f"Arrival & {island} Sightseeing"
+            return f"Arrival in {dest_name}"
 
-        if "neil" in island.lower() or "shaheed" in island.lower():
-            if any("natural bridge" in a.lower() for a in attractions_clean):
-                return "Neil Island & Natural Rock Arch"
-            return "Neil Island Beach Tour"
+        if is_andaman:
+            if "havelock" in island.lower() or "swaraj" in island.lower():
+                if any("radhanagar" in a.lower() for a in attractions_clean) and any("elephant" in a.lower() for a in attractions_clean):
+                    return "Havelock Island Beaches"
+                if any("radhanagar" in a.lower() for a in attractions_clean):
+                    return "Radhanagar Beach & Sunset"
+                if any("elephant" in a.lower() for a in attractions_clean):
+                    return "Elephant Beach Coral Tour"
+                return "Havelock Island Exploration"
 
-        if "baratang" in island.lower():
-            return "Baratang Limestone Cave Excursion"
+            if "neil" in island.lower() or "shaheed" in island.lower():
+                if any("natural bridge" in a.lower() for a in attractions_clean):
+                    return "Neil Island & Natural Rock Arch"
+                return "Neil Island Beach Tour"
 
-        if "diglipur" in island.lower():
-            return "Diglipur & Ross-Smith Twin Islands"
+            if "baratang" in island.lower():
+                return "Baratang Limestone Cave Excursion"
 
-        if any("ross" in a.lower() for a in attractions_clean) and any("north bay" in a.lower() for a in attractions_clean):
-            return "Ross & North Bay Island Tour"
+            if "diglipur" in island.lower():
+                return "Diglipur & Ross-Smith Twin Islands"
+
+            if any("ross" in a.lower() for a in attractions_clean) and any("north bay" in a.lower() for a in attractions_clean):
+                return "Ross & North Bay Island Tour"
 
         if attractions_clean:
             top_spot = attractions_clean[0]
@@ -228,7 +272,12 @@ class SimpleItineraryFormatter(BaseDayWiseFormatter):
     ) -> Dict[str, Any]:
         day_dict["day_wise_style"] = "simple_itinerary"
 
-        island = dp.primary_island if dp else _clean_str(day_dict.get("primary_island")) or "Port Blair"
+        dest = (getattr(request, "destination", "") or "").strip()
+        is_andaman = is_andaman_destination(dest)
+        dest_name = get_destination_display_name(dest)
+        base_loc = get_destination_base_location(dest) if not is_andaman else "Port Blair"
+
+        island = dp.primary_island if dp else _clean_str(day_dict.get("primary_island")) or base_loc
         attractions = dp.attractions if dp and dp.attractions else (day_dict.get("attractions") or [])
         
         # SSOT: Only include activities if explicitly chosen for this specific day
@@ -260,7 +309,10 @@ class SimpleItineraryFormatter(BaseDayWiseFormatter):
         if is_departure:
             day_dict["is_departure_day"] = True
             day_dict["title"] = "Departure"
-            day_dict["subtitle"] = "Flight Departure from Port Blair"
+            if is_andaman:
+                day_dict["subtitle"] = "Flight Departure from Port Blair"
+            else:
+                day_dict["subtitle"] = f"Departure from {dest_name}"
             day_dict["hotel"] = ""
 
             bullets.append("Breakfast at hotel")
@@ -268,17 +320,26 @@ class SimpleItineraryFormatter(BaseDayWiseFormatter):
                 bullets.append(f"Check-out from {last_night_hotel} with luggage assistance")
             else:
                 bullets.append("Hotel check-out and luggage assistance")
-            bullets.append(f"Private transfer to Veer Savarkar International Airport, Port Blair")
-            bullets.append("Board scheduled return flight with memorable experiences of Andaman Darun Tours and Travels")
+
+            if is_andaman:
+                bullets.append("Private transfer to Veer Savarkar International Airport, Port Blair")
+                bullets.append("Board scheduled return flight with memorable experiences of Andaman Darun Tours and Travels")
+            else:
+                bullets.append("Departure transfer to airport")
+                bullets.append("Board scheduled return flight with memorable travel experiences")
 
             day_dict["operational_bullets"] = bullets
             day_dict["summary_intro"] = "Morning check-out followed by assisted airport transfer for your return flight home."
-            day_dict["todays_journey"] = f"Private transfer from hotel to Port Blair airport."
+            if is_andaman:
+                day_dict["todays_journey"] = "Private transfer from hotel to Port Blair airport."
+                day_dict["farewell_narrative"] = "Thank you for traveling with Andaman Darun Tours and Travels."
+            else:
+                day_dict["todays_journey"] = "Departure transfer from hotel to airport."
+                day_dict["farewell_narrative"] = "Thank you for traveling with Darun Tourism."
             day_dict["hotel_experience"] = "Departure day — no overnight stay."
             day_dict["visiting_places"] = ""
             day_dict["destination_story"] = ""
             day_dict["departure_narrative"] = "\n".join([f"• {b}" for b in bullets])
-            day_dict["farewell_narrative"] = "Thank you for traveling with Andaman Darun Tours and Travels."
             return day_dict
 
         # Normal Day
@@ -287,13 +348,16 @@ class SimpleItineraryFormatter(BaseDayWiseFormatter):
         day_dict["farewell_narrative"] = ""
 
         # Short day title
-        short_title = self._generate_short_title(day_idx, island, attractions, is_departure=False)
+        short_title = self._generate_short_title(day_idx, island, attractions, is_departure=False, destination=dest)
         day_dict["title"] = short_title
         day_dict["subtitle"] = f"{island} Daily Schedule"
 
         # 1. Morning / Pickup / Movement
         if day_idx == 0:
-            bullets.append("Pickup from Port Blair Airport and private transfer to hotel")
+            if is_andaman:
+                bullets.append("Pickup from Port Blair Airport and private transfer to hotel")
+            else:
+                bullets.append("Arrival transfer to hotel")
             if assigned_hotel:
                 bullets.append(f"Check-in at {assigned_hotel}")
             else:
@@ -341,7 +405,10 @@ class SimpleItineraryFormatter(BaseDayWiseFormatter):
 
         # 1-sentence operational summary
         if day_idx == 0:
-            summary = f"Arrival at Port Blair, hotel check-in, and local sightseeing including {', '.join(clean_spots[:2]) if clean_spots else 'local landmarks'}."
+            if is_andaman:
+                summary = f"Arrival at Port Blair, hotel check-in, and local sightseeing including {', '.join(clean_spots[:2]) if clean_spots else 'local landmarks'}."
+            else:
+                summary = f"Arrival in {dest_name}, hotel check-in, and local sightseeing including {', '.join(clean_spots[:2]) if clean_spots else 'local landmarks'}."
         elif ferry_name and ferry_name.lower() != "none":
             summary = f"Travel by ferry to {island}, check in to resort, and explore {', '.join(clean_spots[:2]) if clean_spots else 'island sights'}."
         else:

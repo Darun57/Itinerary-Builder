@@ -1,0 +1,10 @@
+{
+  "region": "himachal-pradesh",
+  "rules": [
+    {
+      "id": "namespace_isolation",
+      "severity": "error",
+      "rule": "All Himachal entities must start with himachal-pradesh:."
+    }
+  ]
+}

@@ -1,0 +1,61 @@
+[
+  {
+    "id": "uttarakhand:rishikesh_and_corbett:4n5d",
+    "region": "uttarakhand",
+    "day_count": 5,
+    "nights": 4,
+    "suitability": [
+      "adventure",
+      "wildlife",
+      "family"
+    ],
+    "constraints": [
+      "Corbett permits must be booked 45 days in advance."
+    ],
+    "sequence": [
+      {
+        "day": 1,
+        "location": "uttarakhand:rishikesh",
+        "theme": "Arrival & Triveni Ghat Aarti",
+        "anchors": [
+          "uttarakhand:rishikesh:triveni_ghat"
+        ],
+        "activity_slots": []
+      },
+      {
+        "day": 2,
+        "location": "uttarakhand:rishikesh",
+        "theme": "White Water Rafting & Cliff Jumping",
+        "anchors": [],
+        "activity_slots": [
+          "uttarakhand:rishikesh:river_rafting_16km"
+        ]
+      },
+      {
+        "day": 3,
+        "location": "uttarakhand:jim_corbett",
+        "theme": "Transit to Corbett Foothills Resort",
+        "anchors": [],
+        "activity_slots": []
+      },
+      {
+        "day": 4,
+        "location": "uttarakhand:jim_corbett",
+        "theme": "Early Morning Forest Gypsy Safari",
+        "anchors": [
+          "uttarakhand:jim_corbett:dhikala_zone"
+        ],
+        "activity_slots": [
+          "uttarakhand:jim_corbett:jeep_safari"
+        ]
+      },
+      {
+        "day": 5,
+        "location": "uttarakhand:jim_corbett",
+        "theme": "Riverside Breakfast & Delhi / Dehradun Departure",
+        "anchors": [],
+        "activity_slots": []
+      }
+    ]
+  }
+]

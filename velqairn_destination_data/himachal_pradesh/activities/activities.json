@@ -1,0 +1,38 @@
+[
+  {
+    "id": "himachal-pradesh:manali:paragliding",
+    "destination_id": "himachal-pradesh:manali",
+    "name": "Solang Valley Tandem Paragliding",
+    "category": "Adventure",
+    "duration_minutes_min": 30,
+    "duration_minutes_max": 60,
+    "best_for": [
+      "paragliding",
+      "aerial"
+    ],
+    "seasonality": [
+      "oct_to_jun"
+    ],
+    "booking_required": true,
+    "price_status": "fixed",
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "himachal-pradesh:manali:snow_activity",
+    "destination_id": "himachal-pradesh:manali",
+    "name": "Sissu Snow Point Excursion via Atal Tunnel",
+    "category": "Snow",
+    "duration_minutes_min": 180,
+    "duration_minutes_max": 300,
+    "best_for": [
+      "snow",
+      "scenery"
+    ],
+    "seasonality": [
+      "nov_to_may"
+    ],
+    "booking_required": false,
+    "price_status": "fixed",
+    "source_status": "official_tourism_seed"
+  }
+]

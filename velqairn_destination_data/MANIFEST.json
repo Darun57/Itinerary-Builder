@@ -1,0 +1,18 @@
+{
+  "version": "0.3.0",
+  "architecture_tier": "three_tier_capability_driven",
+  "protected_reference": "Darun Tourism / Andaman Islands (Level 1 - Protected Running Reference)",
+  "active_production_modules": [
+    "rajasthan",
+    "jammu-and-kashmir",
+    "goa",
+    "kerala",
+    "himachal-pradesh",
+    "uttarakhand",
+    "ladakh"
+  ],
+  "scaffolded_destinations_status": "Level 3 empty scaffolds without placeholder/fake records",
+  "capability_contracts_enforced": true,
+  "universal_hotel_model": true,
+  "dynamic_discovery_enabled": true
+}

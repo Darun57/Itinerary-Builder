@@ -56,60 +56,133 @@ def _consolidate_hotel_stays(request: TripRequest) -> list[dict]:
 
 from reportlab.lib import colors
 
-def _lookup_hotel_metadata(hotel_name: str, all_hotels_df) -> dict:
+def _lookup_hotel_metadata(hotel_name: str, all_hotels_df, destination: str = None) -> dict:
     """
-    Look up hotel metadata (location, category, description) from the hotels CSV.
-    Uses multi-strategy fuzzy matching and provides authentic Andaman fallbacks
-    so no hotel card ever has missing fields.
+    Look up hotel metadata destination-scoped.
+
+    For Andaman (or when destination is None/empty):
+      - Queries the Andaman hotels CSV exactly as before.
+      - Keeps all existing Andaman fuzzy matching and location fallbacks.
+      - Andaman behaviour is 100% unchanged.
+
+    For additive destinations:
+      - Queries destination_registry.load_hotels(destination) ONLY.
+      - Derives location from location_id (e.g. goa:candolim -> Candolim).
+      - If not found: uses the destination display name as location.
+      - NEVER falls back to Port Blair, Havelock, or any Andaman location.
+      - Logs WARN if hotel name would have matched an Andaman-only keyword.
     """
+    from app.services.destination_registry import is_andaman_destination, get_destination_context, load_hotels as reg_load_hotels
+
     meta = {"location": "", "category": "", "room_type": "", "description": ""}
     name_clean = hotel_name.strip()
     name_lower = name_clean.lower()
 
-    if all_hotels_df is not None and not all_hotels_df.empty:
-        # 1. Exact match
-        matches = all_hotels_df[all_hotels_df["hotel_name"].str.lower().str.strip() == name_lower]
-        # 2. Substring match (CSV name in input or input in CSV name)
-        if matches.empty:
-            matches = all_hotels_df[all_hotels_df["hotel_name"].apply(
-                lambda x: str(x).lower().strip() in name_lower or name_lower in str(x).lower().strip()
-            )]
-        # 3. Token match
-        if matches.empty:
-            tokens = [t for t in name_lower.split() if len(t) > 3 and t not in ["hotel", "resort", "spa", "beach", "view", "island"]]
-            if tokens:
+    # ── ANDAMAN PATH (100% unchanged from original) ───────────────────────────
+    if is_andaman_destination(destination):
+        if all_hotels_df is not None and not all_hotels_df.empty:
+            matches = all_hotels_df[all_hotels_df["hotel_name"].str.lower().str.strip() == name_lower]
+            if matches.empty:
                 matches = all_hotels_df[all_hotels_df["hotel_name"].apply(
-                    lambda x: any(t in str(x).lower() for t in tokens)
+                    lambda x: str(x).lower().strip() in name_lower or name_lower in str(x).lower().strip()
                 )]
-        if not matches.empty:
-            row = matches.iloc[0]
-            meta["location"] = str(row.get("location") or "").strip()
-            meta["category"] = str(row.get("category") or "").strip()
-            meta["room_type"] = str(row.get("room_type") or "").strip()
-            meta["description"] = str(row.get("description") or "").strip()
+            if matches.empty:
+                tokens = [t for t in name_lower.split() if len(t) > 3 and t not in ["hotel", "resort", "spa", "beach", "view", "island"]]
+                if tokens:
+                    matches = all_hotels_df[all_hotels_df["hotel_name"].apply(
+                        lambda x: any(t in str(x).lower() for t in tokens)
+                    )]
+            if not matches.empty:
+                row = matches.iloc[0]
+                meta["location"] = str(row.get("location") or "").strip()
+                meta["category"] = str(row.get("category") or "").strip()
+                meta["room_type"] = str(row.get("room_type") or "").strip()
+                meta["description"] = str(row.get("description") or "").strip()
 
-    # Smart fallbacks so no card ever has missing fields:
-    if not meta["location"]:
-        if any(k in name_lower for k in ["neil", "shaheed", "samssara", "tango"]):
-            meta["location"] = "Shaheed Dweep (Neil)"
-        elif any(k in name_lower for k in ["havelock", "swaraj", "barefoot", "exotica", "symphony palms", "silver sand"]):
-            meta["location"] = "Swaraj Dweep (Havelock)"
-        elif any(k in name_lower for k in ["baratang", "limestone"]):
-            meta["location"] = "Baratang Island"
-        else:
-            meta["location"] = "Port Blair"
-    elif "(" not in meta["location"]:
-        loc_l = meta["location"].lower()
-        if "shaheed" in loc_l or "neil" in loc_l:
-            meta["location"] = "Shaheed Dweep (Neil)"
-        elif "swaraj" in loc_l or "havelock" in loc_l:
-            meta["location"] = "Swaraj Dweep (Havelock)"
+        # Andaman smart fallbacks (unchanged)
+        if not meta["location"]:
+            if any(k in name_lower for k in ["neil", "shaheed", "samssara", "tango"]):
+                meta["location"] = "Shaheed Dweep (Neil)"
+            elif any(k in name_lower for k in ["havelock", "swaraj", "barefoot", "exotica", "symphony palms", "silver sand"]):
+                meta["location"] = "Swaraj Dweep (Havelock)"
+            elif any(k in name_lower for k in ["baratang", "limestone"]):
+                meta["location"] = "Baratang Island"
+            else:
+                meta["location"] = "Port Blair"
+        elif "(" not in meta["location"]:
+            loc_l = meta["location"].lower()
+            if "shaheed" in loc_l or "neil" in loc_l:
+                meta["location"] = "Shaheed Dweep (Neil)"
+            elif "swaraj" in loc_l or "havelock" in loc_l:
+                meta["location"] = "Swaraj Dweep (Havelock)"
+        if not meta["category"]:
+            meta["category"] = "5 Star Luxury" if any(k in name_lower for k in ["taj", "seashell", "welcomhotel", "sinclairs", "samssara"]) else "4 Star Premium"
+        if not meta["description"]:
+            meta["description"] = f"Curated luxury retreat in {meta['location']} offering premium comforts, sea-breeze relaxation, and attentive hospitality."
+        return meta
 
+    # ── ADDITIVE DESTINATION PATH (strictly scoped) ───────────────────────────
+    ctx = get_destination_context(destination)
+    dest_display = ctx.display_name
+
+    # Warn if Andaman-only keywords would have produced a false match
+    _andaman_signals = ["neil", "shaheed", "samssara", "havelock", "swaraj", "barefoot", "exotica", "symphony palms", "silver sand", "baratang"]
+    if any(k in name_lower for k in _andaman_signals):
+        LOGGER.warning(
+            "Hotel '%s' for destination '%s' contains Andaman-only keyword — "
+            "additive resolver will NOT use Andaman fallbacks.",
+            hotel_name, destination,
+        )
+
+    # Load destination-scoped hotel catalog
+    try:
+        dest_hotels = reg_load_hotels(destination)
+    except Exception as exc:
+        LOGGER.warning("Could not load hotel catalog for '%s': %s", destination, exc)
+        dest_hotels = []
+
+    # Match: exact name, substring, or token intersection
+    matched_record: dict = {}
+    for rec in dest_hotels:
+        rec_name = str(rec.get("name") or rec.get("hotel_name") or "").strip()
+        rec_name_lower = rec_name.lower()
+        if rec_name_lower == name_lower or rec_name_lower in name_lower or name_lower in rec_name_lower:
+            matched_record = rec
+            break
+    if not matched_record:
+        tokens = [t for t in name_lower.split() if len(t) > 3 and t not in ["hotel", "resort", "spa", "beach", "view"]]
+        for rec in dest_hotels:
+            rec_name_lower = str(rec.get("name") or rec.get("hotel_name") or "").lower()
+            if tokens and any(t in rec_name_lower for t in tokens):
+                matched_record = rec
+                break
+
+    if matched_record:
+        # Derive location from location_id (e.g. "goa:candolim" -> "Candolim")
+        raw_loc = str(matched_record.get("location") or "").strip()
+        if not raw_loc:
+            loc_id = str(matched_record.get("location_id") or "").strip()
+            if ":" in loc_id:
+                raw_loc = loc_id.split(":")[-1].replace("_", " ").replace("-", " ").title()
+            else:
+                raw_loc = dest_display
+        meta["location"] = raw_loc
+        meta["category"] = str(matched_record.get("category") or "").strip()
+        meta["room_type"] = str(matched_record.get("room_type") or "").strip()
+        meta["description"] = str(matched_record.get("description") or "").strip()
+    else:
+        # Fail-closed: use destination display name. NEVER Port Blair or Havelock.
+        LOGGER.warning(
+            "Hotel '%s' not found in '%s' catalog — using neutral fallback (NOT Andaman).",
+            hotel_name, destination,
+        )
+        meta["location"] = dest_display
+
+    # Fill blanks with neutral values (still no Andaman content)
     if not meta["category"]:
-        meta["category"] = "5 Star Luxury" if any(k in name_lower for k in ["taj", "seashell", "welcomhotel", "sinclairs", "samssara"]) else "4 Star Premium"
-
+        meta["category"] = "Selected Property"
     if not meta["description"]:
-        meta["description"] = f"Curated luxury retreat in {meta['location']} offering premium comforts, sea-breeze relaxation, and attentive hospitality."
+        meta["description"] = f"Curated property in {meta['location']} selected for this itinerary."
 
     return meta
 
@@ -166,12 +239,16 @@ def render_luxury_stays_page(story: list, styles: dict[str, ParagraphStyle], req
         LOGGER.warning("No day-wise hotel assignments found; hotel section skipped.")
         return
 
-    # Load hotel CSV for metadata lookup
-    try:
-        all_hotels_df = load_hotels()
-    except Exception as exc:
-        LOGGER.warning("Could not load hotels CSV for metadata: %s", exc)
-        all_hotels_df = None
+    # Load Andaman hotel CSV (used only for Andaman trips)
+    from app.services.destination_registry import is_andaman_destination
+    all_hotels_df = None
+    if is_andaman_destination(request.destination):
+        try:
+            all_hotels_df = load_hotels()
+        except Exception as exc:
+            LOGGER.warning("Could not load hotels CSV: %s", exc)
+
+    destination = str(request.destination or "").strip() or None
 
     story.append(Paragraph("YOUR LUXURY STAYS", styles["highlights_title"]))
     story.append(Paragraph("Elegant stays selected from Darun Tourism inventory.", styles["highlights_subtitle"]))
@@ -186,7 +263,7 @@ def render_luxury_stays_page(story: list, styles: dict[str, ParagraphStyle], req
     card_flowables_list = []
     measured_heights = []
     for entry in consolidated:
-        meta = _lookup_hotel_metadata(entry["hotel_name"], all_hotels_df)
+        meta = _lookup_hotel_metadata(entry["hotel_name"], all_hotels_df, destination)
         if not meta.get("room_type") and getattr(request, "room_type_preference", None):
             meta["room_type"] = request.room_type_preference
         flowables = _build_hotel_card_flowables(entry["hotel_name"], entry["nights"], meta)

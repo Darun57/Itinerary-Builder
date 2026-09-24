@@ -10,6 +10,7 @@ from reportlab.platypus import HRFlowable, Image, PageBreak, Paragraph, Spacer
 
 from app.core.config import BRAND_NAME
 from app.schemas.trip import TripRequest
+from app.services.destination_registry import get_destination_context
 from app.services.image_loader import get_cover_image_path, get_fallback_image_path
 from app.services.pdf.constants import COLORS, PAGE_WIDTH, PAGE_HEIGHT
 from app.services.pdf.image_resolver import build_cover_image
@@ -34,9 +35,24 @@ def render_header(canvas, doc, request: TripRequest) -> None:
 
 def render_footer(canvas, doc, request: TripRequest = None) -> None:
     canvas.saveState()
+    ctx = get_destination_context(request.destination if request else None)
+
     if canvas.getPageNumber() == 1:
-        # Full bleed cover image — starts from very top of page, ends at same bottom as before
-        cover_image = get_cover_image_path() or get_fallback_image_path()
+        # ── Cover image ──────────────────────────────────────────────────────
+        # For non-Andaman: try destination-namespaced image first
+        cover_image = None
+        if not ctx.is_andaman:
+            from app.services.destination_registry import DESTINATION_ROOT
+            dest_slug = ctx.destination_id
+            dest_img_dir = DESTINATION_ROOT / dest_slug / "images"
+            for ext in ("jpg", "jpeg", "png", "webp"):
+                candidate = dest_img_dir / f"cover.{ext}"
+                if candidate.exists():
+                    cover_image = candidate
+                    break
+        if cover_image is None and ctx.is_andaman:
+            cover_image = get_cover_image_path() or get_fallback_image_path()
+
         img_height = 325
         img_y = PAGE_HEIGHT - img_height
         try:
@@ -49,25 +65,34 @@ def render_footer(canvas, doc, request: TripRequest = None) -> None:
         except Exception as e:
             LOGGER.error(f"Error drawing cover image: {e}")
 
-        # Brand text overlaid on image (top-left, white + gold)
+        # ── Brand text overlay (top-left) — destination-aware ─────────────────
         canvas.setFont("Helvetica-Bold", 10)
         canvas.setFillColor(COLORS["gold"])
-        canvas.drawString(doc.leftMargin, PAGE_HEIGHT - 28, "ANDAMAN DARUN")
-        canvas.setFont("Helvetica", 7.5)
-        canvas.setFillColor(COLORS["white"])
-        canvas.drawString(doc.leftMargin, PAGE_HEIGHT - 40, "TOURS & TRAVELS")
+        if ctx.is_andaman:
+            canvas.drawString(doc.leftMargin, PAGE_HEIGHT - 28, "ANDAMAN DARUN")
+            canvas.setFont("Helvetica", 7.5)
+            canvas.setFillColor(COLORS["white"])
+            canvas.drawString(doc.leftMargin, PAGE_HEIGHT - 40, "TOURS & TRAVELS")
+        else:
+            canvas.drawString(doc.leftMargin, PAGE_HEIGHT - 28, "DARUN TOURISM")
+            canvas.setFont("Helvetica", 7.5)
+            canvas.setFillColor(COLORS["white"])
+            canvas.drawString(doc.leftMargin, PAGE_HEIGHT - 40, "LUXURY TRAVEL")
 
         canvas.setFont("Helvetica", 8)
         canvas.setFillColor(COLORS["white"])
         canvas.drawRightString(PAGE_WIDTH - doc.rightMargin, PAGE_HEIGHT - 32, "Page 1")
 
-        # Bottom brand line on white background (no coloured bar)
+        # ── Bottom brand bar — destination-aware ──────────────────────────────
         canvas.setStrokeColor(COLORS["line"])
         canvas.setLineWidth(0.5)
         canvas.line(doc.leftMargin, 34, PAGE_WIDTH - doc.rightMargin, 34)
         canvas.setFont("Helvetica-Bold", 8.5)
         canvas.setFillColor(COLORS["dark"])
-        canvas.drawString(doc.leftMargin, 18, "Darun Tourism | Andaman Specialist")
+        if ctx.is_andaman:
+            canvas.drawString(doc.leftMargin, 18, "Darun Tourism | Andaman Specialist")
+        else:
+            canvas.drawString(doc.leftMargin, 18, f"Darun Tourism | {ctx.display_name} Specialist")
         canvas.setFont("Helvetica", 8.5)
         canvas.drawString(doc.leftMargin + 155, 18, "|   Luxury Travel Specialists")
         canvas.setFillColor(COLORS["gold"])
@@ -101,22 +126,24 @@ def render_cover_page(story: list, styles: dict[str, ParagraphStyle], request: T
         spaceAfter=8,
     )
     story.append(Paragraph(escape_text(request.destination), style_title))
-    
-    # Subtitle
+
+    # Subtitle — destination-aware proposal label
     style_sub = ParagraphStyle(
         "cover_sub_title",
         parent=styles["cover_subtitle"],
         fontSize=10,
         leading=14,
-        textColor=COLORS["soft_grey"], # Teal in user screenshot, we'll use a custom teal
+        textColor=COLORS["soft_grey"],
         fontName="Helvetica-Bold",
         alignment=1,
         spaceAfter=15,
     )
     from reportlab.lib import colors
-    teal_color = colors.HexColor("#3b82f6") # Adjusted to match roughly
+    teal_color = colors.HexColor("#3b82f6")
     style_sub.textColor = teal_color
-    story.append(Paragraph("LUXURY ANDAMAN TRAVEL PROPOSAL", style_sub))
+    _ctx = get_destination_context(request.destination)
+    proposal_subtitle = f"LUXURY {_ctx.display_name.upper()} TRAVEL PROPOSAL"
+    story.append(Paragraph(proposal_subtitle, style_sub))
     
     # Gold line
     story.append(HRFlowable(width="10%", thickness=1.5, color=COLORS["gold"], hAlign="CENTER", spaceAfter=40))

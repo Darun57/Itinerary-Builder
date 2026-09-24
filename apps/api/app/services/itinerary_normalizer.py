@@ -16,6 +16,11 @@ from typing import Any
 
 from app.schemas.trip import TripRequest
 from app.services.andaman_geography import normalize_andaman_island
+from app.services.destination_registry import (
+    is_andaman_destination,
+    get_destination_display_name,
+    get_destination_base_location,
+)
 
 LOGGER = logging.getLogger(__name__)
 
@@ -47,6 +52,9 @@ def resolve_canonical_movement(
     - Excursion day-trip returning to base -> 'Origin → Destination Return'
     - Exploration on same island -> 'Current Island'
     """
+    dest = (getattr(request, "destination", "") or "").strip()
+    is_andaman = is_andaman_destination(dest)
+
     is_departure = (day_idx == total_days - 1) or bool(day_dict.get("is_departure_day"))
     if is_departure:
         return "Departure"
@@ -62,18 +70,28 @@ def resolve_canonical_movement(
     # Detect if raw_tm has clean "A → B" or "A → B Return"
     arrow_match = re.search(r"([A-Za-z\s]+?)\s*→\s*([A-Za-z\s]+?)(?:\s+(Return))?$", clean_raw, re.IGNORECASE)
     if arrow_match:
-        origin = _normalize_island_name(arrow_match.group(1).strip())
-        dest = _normalize_island_name(arrow_match.group(2).strip())
+        if is_andaman:
+            origin = _normalize_island_name(arrow_match.group(1).strip())
+            dest_target = _normalize_island_name(arrow_match.group(2).strip())
+        else:
+            origin = arrow_match.group(1).strip()
+            dest_target = arrow_match.group(2).strip()
         is_return = bool(arrow_match.group(3)) or "return" in raw_tm.lower()
-        if origin != dest:
-            return f"{origin} → {dest} Return" if is_return else f"{origin} → {dest}"
+        if origin != dest_target:
+            return f"{origin} → {dest_target} Return" if is_return else f"{origin} → {dest_target}"
 
     # Derive from daily plan
-    curr_island = _normalize_island_name(curr_dp.primary_island if curr_dp else str(day_dict.get("primary_island") or ""))
-    prev_island = _normalize_island_name(prev_dp.primary_island if prev_dp else "")
+    if is_andaman:
+        curr_island = _normalize_island_name(curr_dp.primary_island if curr_dp else str(day_dict.get("primary_island") or ""))
+        prev_island = _normalize_island_name(prev_dp.primary_island if prev_dp else "")
+        fallback_base = "Port Blair"
+    else:
+        curr_island = str(curr_dp.primary_island if curr_dp else day_dict.get("primary_island") or "").strip()
+        prev_island = str(prev_dp.primary_island if prev_dp else "").strip()
+        fallback_base = get_destination_base_location(dest)
 
     if day_idx == 0:
-        return curr_island or "Port Blair"
+        return curr_island or fallback_base
 
     # Check if excursion day trip returns to the previous hotel/base.
     if curr_dp and prev_dp:
@@ -85,16 +103,23 @@ def resolve_canonical_movement(
         if curr_island != prev_island:
             return f"{prev_island} → {curr_island}"
 
-    return curr_island or "Port Blair"
+    return curr_island or fallback_base
 
 
-def standardize_todays_journey(journey_text: str) -> str:
+def standardize_todays_journey(journey_text: str, destination: str = "") -> str:
     """Ensures todays_journey opens with the mandatory standard lead-in."""
     text = (journey_text or "").strip()
+    is_andaman = is_andaman_destination(destination)
     if not text:
+        if is_andaman:
+            return (
+                "For the places highlighted above, private chauffeur transfers ensure "
+                "comfortable transportation and effortless sightseeing across the Andaman Islands throughout the day."
+            )
+        dest_name = get_destination_display_name(destination)
         return (
-            "For the places highlighted above, private chauffeur transfers ensure "
-            "comfortable transportation and effortless sightseeing across the Andaman Islands throughout the day."
+            f"For the places highlighted above, private chauffeur transfers ensure "
+            f"comfortable transportation and effortless sightseeing across {dest_name} throughout the day."
         )
 
     # Check if already starts with standard phrase
@@ -157,25 +182,42 @@ def sanitize_departure_day(
 
     checkout_hotel = last_night_hotel or "your resort"
     customer_name = request.customer_name or "our valued guests"
+    dest = (getattr(request, "destination", "") or "").strip()
+    is_andaman = is_andaman_destination(dest)
+    dest_name = get_destination_display_name(dest) if not is_andaman else "Andaman Islands"
 
     existing_dep = str(day_dict.get("departure_narrative") or "").strip()
     if len(existing_dep) < 30 or "enjoy" not in existing_dep.lower():
-        day_dict["departure_narrative"] = (
-            f"Enjoy a peaceful morning check-out at {checkout_hotel} with full luggage assistance. "
-            f"Your private chauffeur will pick you up for a smooth transfer to "
-            f"Port Blair airport for your flight home."
-        )
+        if is_andaman:
+            day_dict["departure_narrative"] = (
+                f"Enjoy a peaceful morning check-out at {checkout_hotel} with full luggage assistance. "
+                f"Your private chauffeur will pick you up for a smooth transfer to "
+                f"Port Blair airport for your flight home."
+            )
+        else:
+            day_dict["departure_narrative"] = (
+                f"Enjoy a peaceful morning check-out at {checkout_hotel} with full luggage assistance. "
+                f"Your private chauffeur will pick you up for a smooth departure transfer to the "
+                f"airport for your flight home."
+            )
     else:
         # Ensure it mentions checkout and airport
         day_dict["departure_narrative"] = existing_dep
 
     existing_farewell = str(day_dict.get("farewell_narrative") or "").strip()
     if len(existing_farewell) < 30 or "darun tourism" not in existing_farewell.lower():
-        day_dict["farewell_narrative"] = (
-            f"Darun Tourism extends its heartfelt gratitude to {customer_name} and family "
-            f"for choosing us. It was our genuine pleasure crafting your Andaman Islands trip memories, "
-            f"and we look forward to welcoming you back in the future."
-        )
+        if is_andaman:
+            day_dict["farewell_narrative"] = (
+                f"Darun Tourism extends its heartfelt gratitude to {customer_name} and family "
+                f"for choosing us. It was our genuine pleasure crafting your Andaman Islands trip memories, "
+                f"and we look forward to welcoming you back in the future."
+            )
+        else:
+            day_dict["farewell_narrative"] = (
+                f"Darun Tourism extends its heartfelt gratitude to {customer_name} and family "
+                f"for choosing us. It was our genuine pleasure crafting your {dest_name} trip memories, "
+                f"and we look forward to welcoming you back in the future."
+            )
     else:
         day_dict["farewell_narrative"] = existing_farewell
 

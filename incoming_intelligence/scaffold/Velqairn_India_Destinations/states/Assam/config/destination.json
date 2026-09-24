@@ -1,0 +1,8 @@
+{
+  "name": "Assam",
+  "slug": "assam",
+  "scope": "state",
+  "status": "scaffold",
+  "protected_reference": false,
+  "namespace": "velqairn:assam"
+}

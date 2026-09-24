@@ -1,0 +1,28 @@
+[
+  {
+    "id": "uttarakhand:haridwar-to-rishikesh",
+    "region": "uttarakhand",
+    "from_destination_id": "uttarakhand:haridwar",
+    "to_destination_id": "uttarakhand:rishikesh",
+    "mode": "road",
+    "estimated_duration_minutes_min": 40,
+    "estimated_duration_minutes_max": 65,
+    "planning_status": "planning_estimate",
+    "notes": [
+      "Short highway drive alongside Ganga canal."
+    ]
+  },
+  {
+    "id": "uttarakhand:rishikesh-to-jim_corbett",
+    "region": "uttarakhand",
+    "from_destination_id": "uttarakhand:rishikesh",
+    "to_destination_id": "uttarakhand:jim_corbett",
+    "mode": "road",
+    "estimated_duration_minutes_min": 160,
+    "estimated_duration_minutes_max": 220,
+    "planning_status": "planning_estimate",
+    "notes": [
+      "Foothills drive connecting spiritual corridor to forest reserve."
+    ]
+  }
+]

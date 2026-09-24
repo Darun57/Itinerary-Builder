@@ -1,0 +1,33 @@
+activity_id,activity_name,location,price,duration,category,description
+ACT-GOA-001,Fontainhas Heritage Walk,Fontainhas,900,2 hours,Heritage,"Guided walk through Panaji's Latin Quarter focusing on Indo-Portuguese architecture, lanes, colours, and local stories."
+ACT-GOA-002,Old Goa Heritage Circuit,Old Goa,1200,3 hours,Heritage,"Curated visit to the Basilica of Bom Jesus, Se Cathedral, and surrounding heritage monuments."
+ACT-GOA-003,Mandovi Sunset River Cruise,Panaji Waterfront,1200,2 hours,Cruise,"Evening cruise on the Mandovi River with city lights, music, and sunset views; operator-dependent."
+ACT-GOA-004,Fort Aguada Exploration,Aguada,300,1.5 hours,Heritage,Coastal fort visit with panoramic sea views and time for photography.
+ACT-GOA-005,Chapora Fort Sunset,Chapora,250,1.5 hours,Heritage,Clifftop heritage visit around Chapora Fort timed for late-afternoon coastal light.
+ACT-GOA-006,Baga Water Sports Session,Baga,2500,2 hours,Water Activity,Operator-led coastal water activities subject to sea conditions and local operating rules.
+ACT-GOA-007,Grand Island Scuba Experience,Grand Island,5500,4 hours,Adventure,"Introductory or certified diving excursion with boat transfers, subject to certification and sea conditions."
+ACT-GOA-008,Grand Island Snorkelling,Grand Island,2200,3 hours,Water Activity,"Boat-based snorkelling around coastal reefs, subject to visibility and sea conditions."
+ACT-GOA-009,Anjuna Market & Coast Experience,Anjuna,700,3 hours,Culture,"Leisure circuit combining Anjuna's coastal views, local shopping, and market-style browsing."
+ACT-GOA-010,Vagator Sunset Experience,Vagator,500,2 hours,Beach,Relaxed sunset visit around Vagator's coastal viewpoints and beach area.
+ACT-GOA-011,Morjim Beach Escape,Morjim,0,2.5 hours,Beach,Slow beach time on the quieter Morjim coastline with optional cafe and sunset stops.
+ACT-GOA-012,Divar Island Village Trail,Divar Island,1800,5 hours,Nature,"Guided island exploration with village lanes, fields, heritage sites, and seasonal nature experiences."
+ACT-GOA-013,Dudhsagar Jeep Excursion,Dudhsagar,3000,8 hours,Adventure,Full-day waterfall excursion combining regulated transfers with a short walk and nature time.
+ACT-GOA-014,Netravali Nature Trail,Netravali,1800,5 hours,Nature,Guided forest and village experience with waterfall or spring stops subject to conditions.
+ACT-GOA-015,Goa Spice Plantation Visit,Spice Plantation Belt,1600,3 hours,Culture,Guided plantation walk with traditional Goan lunch and farm-based storytelling.
+ACT-GOA-016,Palolem Kayaking,Palolem,1800,2 hours,Water Activity,"Guided kayaking session in calm coastal waters, weather and tide permitting."
+ACT-GOA-017,Palolem Boat & Island Cruise,Palolem,1800,2 hours,Boat Excursion,Coastal boat trip to nearby scenic points and seasonal dolphin-viewing areas.
+ACT-GOA-018,Agonda Sunset Retreat,Agonda,0,2 hours,Beach,Relaxed sunset beach experience with time for photography and slow coastal walks.
+ACT-GOA-019,Cabo de Rama Fort & Coast,Cabo de Rama,700,3 hours,Heritage,Road-trip excursion to Cabo de Rama Fort and surrounding coastal viewpoints.
+ACT-GOA-020,Ponda Temple Circuit,Ponda,1200,4 hours,Culture,Curated visit to selected temples and heritage locations in Goa's hinterland.
+ACT-GOA-021,Panaji Food & Market Walk,Panaji,1400,3 hours,Food,"Small-group exploration of local Goan flavours, markets, and heritage streets."
+ACT-GOA-022,Assagao Boutique & Food Trail,Assagao,1500,3 hours,Food,"Leisure route through village architecture, cafes, design spaces, and local cuisine."
+ACT-GOA-023,Tiracol Fort Viewpoint,Tiracol,600,2.5 hours,Heritage,Scenic northern Goa drive with a fort visit and estuary viewpoints.
+ACT-GOA-024,Miramar Sunset Walk,Miramar,0,1 hour,Beach,Easy sunset walk on the Panaji-side beachfront.
+ACT-GOA-025,Benaulim Beach Relaxation,Benaulim,0,2 hours,Beach,"Unhurried beach time suited to families, couples, and slower itineraries."
+ACT-GOA-026,Colva Beach Family Day,Colva,900,3 hours,Beach,Family-oriented coastal leisure with optional activities and local dining.
+ACT-GOA-027,Cavelossim River & Beach Cruise,Cavelossim,2200,2.5 hours,Boat Excursion,Scenic Sal River and coastal outing operated according to tide and weather conditions.
+ACT-GOA-028,South Goa Cycling Experience,Majorda,1600,3 hours,Adventure,"Guided cycling route through villages, fields, and coastal roads, subject to weather."
+ACT-GOA-029,Goan Cooking Experience,Panaji,2400,3 hours,Food,Hands-on introduction to selected Goan dishes and culinary traditions.
+ACT-GOA-030,Wellness & Yoga Session,Mandrem,1500,1.5 hours,Wellness,Private or small-group yoga and relaxation session at a wellness-focused venue.
+ACT-GOA-031,Casino-Free Evening River Leisure,Panaji Waterfront,0,2 hours,Leisure,"A relaxed Mandovi waterfront evening focused on dining, music, and river views rather than gaming."
+ACT-GOA-032,Butterfly Beach Boat Visit,Palolem,2200,3 hours,Boat Excursion,"Seasonal coastal excursion to Butterfly Beach area, subject to sea conditions and local boat operations."

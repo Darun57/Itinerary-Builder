@@ -1,0 +1,610 @@
+[
+  {
+    "id": "goa:act:fontainhas_heritage_walk",
+    "destination_id": "goa:fontainhas",
+    "name": "Fontainhas Heritage Walk",
+    "category": "heritage",
+    "duration_minutes_min": 90,
+    "duration_minutes_max": 120,
+    "best_for": [
+      "heritage",
+      "beach",
+      "leisure"
+    ],
+    "seasonality": [
+      "all_year"
+    ],
+    "booking_required": false,
+    "price_status": "fixed",
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "goa:act:old_goa_heritage_circuit",
+    "destination_id": "goa:old_goa",
+    "name": "Old Goa Heritage Circuit",
+    "category": "heritage",
+    "duration_minutes_min": 150,
+    "duration_minutes_max": 180,
+    "best_for": [
+      "heritage",
+      "beach",
+      "leisure"
+    ],
+    "seasonality": [
+      "all_year"
+    ],
+    "booking_required": false,
+    "price_status": "fixed",
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "goa:act:mandovi_sunset_river_cruise",
+    "destination_id": "goa:panaji_waterfront",
+    "name": "Mandovi Sunset River Cruise",
+    "category": "cruise",
+    "duration_minutes_min": 90,
+    "duration_minutes_max": 120,
+    "best_for": [
+      "cruise",
+      "beach",
+      "leisure"
+    ],
+    "seasonality": [
+      "all_year"
+    ],
+    "booking_required": true,
+    "price_status": "fixed",
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "goa:act:fort_aguada_exploration",
+    "destination_id": "goa:aguada",
+    "name": "Fort Aguada Exploration",
+    "category": "heritage",
+    "duration_minutes_min": 30,
+    "duration_minutes_max": 60,
+    "best_for": [
+      "heritage",
+      "beach",
+      "leisure"
+    ],
+    "seasonality": [
+      "all_year"
+    ],
+    "booking_required": false,
+    "price_status": "fixed",
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "goa:act:chapora_fort_sunset",
+    "destination_id": "goa:chapora",
+    "name": "Chapora Fort Sunset",
+    "category": "heritage",
+    "duration_minutes_min": 30,
+    "duration_minutes_max": 60,
+    "best_for": [
+      "heritage",
+      "beach",
+      "leisure"
+    ],
+    "seasonality": [
+      "all_year"
+    ],
+    "booking_required": false,
+    "price_status": "fixed",
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "goa:act:baga_water_sports_session",
+    "destination_id": "goa:baga",
+    "name": "Baga Water Sports Session",
+    "category": "water activity",
+    "duration_minutes_min": 90,
+    "duration_minutes_max": 120,
+    "best_for": [
+      "water activity",
+      "beach",
+      "leisure"
+    ],
+    "seasonality": [
+      "oct_to_may"
+    ],
+    "booking_required": false,
+    "price_status": "fixed",
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "goa:act:grand_island_scuba_experience",
+    "destination_id": "goa:grand_island",
+    "name": "Grand Island Scuba Experience",
+    "category": "adventure",
+    "duration_minutes_min": 210,
+    "duration_minutes_max": 240,
+    "best_for": [
+      "adventure",
+      "beach",
+      "leisure"
+    ],
+    "seasonality": [
+      "all_year"
+    ],
+    "booking_required": false,
+    "price_status": "fixed",
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "goa:act:grand_island_snorkelling",
+    "destination_id": "goa:grand_island",
+    "name": "Grand Island Snorkelling",
+    "category": "water activity",
+    "duration_minutes_min": 150,
+    "duration_minutes_max": 180,
+    "best_for": [
+      "water activity",
+      "beach",
+      "leisure"
+    ],
+    "seasonality": [
+      "oct_to_may"
+    ],
+    "booking_required": false,
+    "price_status": "fixed",
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "goa:act:anjuna_market_coast_experience",
+    "destination_id": "goa:anjuna",
+    "name": "Anjuna Market & Coast Experience",
+    "category": "culture",
+    "duration_minutes_min": 150,
+    "duration_minutes_max": 180,
+    "best_for": [
+      "culture",
+      "beach",
+      "leisure"
+    ],
+    "seasonality": [
+      "all_year"
+    ],
+    "booking_required": false,
+    "price_status": "fixed",
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "goa:act:vagator_sunset_experience",
+    "destination_id": "goa:vagator",
+    "name": "Vagator Sunset Experience",
+    "category": "beach",
+    "duration_minutes_min": 90,
+    "duration_minutes_max": 120,
+    "best_for": [
+      "beach",
+      "beach",
+      "leisure"
+    ],
+    "seasonality": [
+      "all_year"
+    ],
+    "booking_required": false,
+    "price_status": "fixed",
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "goa:act:morjim_beach_escape",
+    "destination_id": "goa:morjim",
+    "name": "Morjim Beach Escape",
+    "category": "beach",
+    "duration_minutes_min": 90,
+    "duration_minutes_max": 120,
+    "best_for": [
+      "beach",
+      "beach",
+      "leisure"
+    ],
+    "seasonality": [
+      "all_year"
+    ],
+    "booking_required": false,
+    "price_status": "fixed",
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "goa:act:divar_island_village_trail",
+    "destination_id": "goa:divar_island",
+    "name": "Divar Island Village Trail",
+    "category": "nature",
+    "duration_minutes_min": 270,
+    "duration_minutes_max": 300,
+    "best_for": [
+      "nature",
+      "beach",
+      "leisure"
+    ],
+    "seasonality": [
+      "all_year"
+    ],
+    "booking_required": false,
+    "price_status": "fixed",
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "goa:act:dudhsagar_jeep_excursion",
+    "destination_id": "goa:dudhsagar",
+    "name": "Dudhsagar Jeep Excursion",
+    "category": "adventure",
+    "duration_minutes_min": 450,
+    "duration_minutes_max": 480,
+    "best_for": [
+      "adventure",
+      "beach",
+      "leisure"
+    ],
+    "seasonality": [
+      "all_year"
+    ],
+    "booking_required": false,
+    "price_status": "fixed",
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "goa:act:netravali_nature_trail",
+    "destination_id": "goa:netravali",
+    "name": "Netravali Nature Trail",
+    "category": "nature",
+    "duration_minutes_min": 270,
+    "duration_minutes_max": 300,
+    "best_for": [
+      "nature",
+      "beach",
+      "leisure"
+    ],
+    "seasonality": [
+      "all_year"
+    ],
+    "booking_required": false,
+    "price_status": "fixed",
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "goa:act:goa_spice_plantation_visit",
+    "destination_id": "goa:spice_plantation_belt",
+    "name": "Goa Spice Plantation Visit",
+    "category": "culture",
+    "duration_minutes_min": 150,
+    "duration_minutes_max": 180,
+    "best_for": [
+      "culture",
+      "beach",
+      "leisure"
+    ],
+    "seasonality": [
+      "all_year"
+    ],
+    "booking_required": false,
+    "price_status": "fixed",
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "goa:act:palolem_kayaking",
+    "destination_id": "goa:palolem",
+    "name": "Palolem Kayaking",
+    "category": "water activity",
+    "duration_minutes_min": 90,
+    "duration_minutes_max": 120,
+    "best_for": [
+      "water activity",
+      "beach",
+      "leisure"
+    ],
+    "seasonality": [
+      "oct_to_may"
+    ],
+    "booking_required": false,
+    "price_status": "fixed",
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "goa:act:palolem_boat_island_cruise",
+    "destination_id": "goa:palolem",
+    "name": "Palolem Boat & Island Cruise",
+    "category": "boat excursion",
+    "duration_minutes_min": 90,
+    "duration_minutes_max": 120,
+    "best_for": [
+      "boat excursion",
+      "beach",
+      "leisure"
+    ],
+    "seasonality": [
+      "all_year"
+    ],
+    "booking_required": false,
+    "price_status": "fixed",
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "goa:act:agonda_sunset_retreat",
+    "destination_id": "goa:agonda",
+    "name": "Agonda Sunset Retreat",
+    "category": "beach",
+    "duration_minutes_min": 90,
+    "duration_minutes_max": 120,
+    "best_for": [
+      "beach",
+      "beach",
+      "leisure"
+    ],
+    "seasonality": [
+      "all_year"
+    ],
+    "booking_required": false,
+    "price_status": "fixed",
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "goa:act:cabo_de_rama_fort_coast",
+    "destination_id": "goa:cabo_de_rama",
+    "name": "Cabo de Rama Fort & Coast",
+    "category": "heritage",
+    "duration_minutes_min": 150,
+    "duration_minutes_max": 180,
+    "best_for": [
+      "heritage",
+      "beach",
+      "leisure"
+    ],
+    "seasonality": [
+      "all_year"
+    ],
+    "booking_required": false,
+    "price_status": "fixed",
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "goa:act:ponda_temple_circuit",
+    "destination_id": "goa:ponda",
+    "name": "Ponda Temple Circuit",
+    "category": "culture",
+    "duration_minutes_min": 210,
+    "duration_minutes_max": 240,
+    "best_for": [
+      "culture",
+      "beach",
+      "leisure"
+    ],
+    "seasonality": [
+      "all_year"
+    ],
+    "booking_required": false,
+    "price_status": "fixed",
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "goa:act:panaji_food_market_walk",
+    "destination_id": "goa:panaji",
+    "name": "Panaji Food & Market Walk",
+    "category": "food",
+    "duration_minutes_min": 150,
+    "duration_minutes_max": 180,
+    "best_for": [
+      "food",
+      "beach",
+      "leisure"
+    ],
+    "seasonality": [
+      "all_year"
+    ],
+    "booking_required": false,
+    "price_status": "fixed",
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "goa:act:assagao_boutique_food_trail",
+    "destination_id": "goa:assagao",
+    "name": "Assagao Boutique & Food Trail",
+    "category": "food",
+    "duration_minutes_min": 150,
+    "duration_minutes_max": 180,
+    "best_for": [
+      "food",
+      "beach",
+      "leisure"
+    ],
+    "seasonality": [
+      "all_year"
+    ],
+    "booking_required": false,
+    "price_status": "fixed",
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "goa:act:tiracol_fort_viewpoint",
+    "destination_id": "goa:tiracol",
+    "name": "Tiracol Fort Viewpoint",
+    "category": "heritage",
+    "duration_minutes_min": 90,
+    "duration_minutes_max": 120,
+    "best_for": [
+      "heritage",
+      "beach",
+      "leisure"
+    ],
+    "seasonality": [
+      "all_year"
+    ],
+    "booking_required": false,
+    "price_status": "fixed",
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "goa:act:miramar_sunset_walk",
+    "destination_id": "goa:miramar",
+    "name": "Miramar Sunset Walk",
+    "category": "beach",
+    "duration_minutes_min": 30,
+    "duration_minutes_max": 60,
+    "best_for": [
+      "beach",
+      "beach",
+      "leisure"
+    ],
+    "seasonality": [
+      "all_year"
+    ],
+    "booking_required": false,
+    "price_status": "fixed",
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "goa:act:benaulim_beach_relaxation",
+    "destination_id": "goa:benaulim",
+    "name": "Benaulim Beach Relaxation",
+    "category": "beach",
+    "duration_minutes_min": 90,
+    "duration_minutes_max": 120,
+    "best_for": [
+      "beach",
+      "beach",
+      "leisure"
+    ],
+    "seasonality": [
+      "all_year"
+    ],
+    "booking_required": false,
+    "price_status": "fixed",
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "goa:act:colva_beach_family_day",
+    "destination_id": "goa:colva",
+    "name": "Colva Beach Family Day",
+    "category": "beach",
+    "duration_minutes_min": 150,
+    "duration_minutes_max": 180,
+    "best_for": [
+      "beach",
+      "beach",
+      "leisure"
+    ],
+    "seasonality": [
+      "all_year"
+    ],
+    "booking_required": false,
+    "price_status": "fixed",
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "goa:act:cavelossim_river_beach_cruise",
+    "destination_id": "goa:cavelossim",
+    "name": "Cavelossim River & Beach Cruise",
+    "category": "boat excursion",
+    "duration_minutes_min": 90,
+    "duration_minutes_max": 120,
+    "best_for": [
+      "boat excursion",
+      "beach",
+      "leisure"
+    ],
+    "seasonality": [
+      "all_year"
+    ],
+    "booking_required": false,
+    "price_status": "fixed",
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "goa:act:south_goa_cycling_experience",
+    "destination_id": "goa:majorda",
+    "name": "South Goa Cycling Experience",
+    "category": "adventure",
+    "duration_minutes_min": 150,
+    "duration_minutes_max": 180,
+    "best_for": [
+      "adventure",
+      "beach",
+      "leisure"
+    ],
+    "seasonality": [
+      "all_year"
+    ],
+    "booking_required": false,
+    "price_status": "fixed",
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "goa:act:goan_cooking_experience",
+    "destination_id": "goa:panaji",
+    "name": "Goan Cooking Experience",
+    "category": "food",
+    "duration_minutes_min": 150,
+    "duration_minutes_max": 180,
+    "best_for": [
+      "food",
+      "beach",
+      "leisure"
+    ],
+    "seasonality": [
+      "all_year"
+    ],
+    "booking_required": false,
+    "price_status": "fixed",
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "goa:act:wellness_yoga_session",
+    "destination_id": "goa:mandrem",
+    "name": "Wellness & Yoga Session",
+    "category": "wellness",
+    "duration_minutes_min": 30,
+    "duration_minutes_max": 60,
+    "best_for": [
+      "wellness",
+      "beach",
+      "leisure"
+    ],
+    "seasonality": [
+      "all_year"
+    ],
+    "booking_required": false,
+    "price_status": "fixed",
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "goa:act:casino_free_evening_river_leisure",
+    "destination_id": "goa:panaji_waterfront",
+    "name": "Casino-Free Evening River Leisure",
+    "category": "leisure",
+    "duration_minutes_min": 90,
+    "duration_minutes_max": 120,
+    "best_for": [
+      "leisure",
+      "beach",
+      "leisure"
+    ],
+    "seasonality": [
+      "all_year"
+    ],
+    "booking_required": false,
+    "price_status": "fixed",
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "goa:act:butterfly_beach_boat_visit",
+    "destination_id": "goa:palolem",
+    "name": "Butterfly Beach Boat Visit",
+    "category": "boat excursion",
+    "duration_minutes_min": 150,
+    "duration_minutes_max": 180,
+    "best_for": [
+      "boat excursion",
+      "beach",
+      "leisure"
+    ],
+    "seasonality": [
+      "all_year"
+    ],
+    "booking_required": false,
+    "price_status": "fixed",
+    "source_status": "official_tourism_seed"
+  }
+]

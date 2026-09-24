@@ -1,0 +1,8 @@
+{
+  "name": "Telangana",
+  "slug": "telangana",
+  "scope": "state",
+  "status": "scaffold",
+  "protected_reference": false,
+  "namespace": "velqairn:telangana"
+}

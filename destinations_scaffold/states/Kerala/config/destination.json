@@ -1,0 +1,8 @@
+{
+  "name": "Kerala",
+  "slug": "kerala",
+  "scope": "state",
+  "status": "scaffold",
+  "protected_reference": false,
+  "namespace": "velqairn:kerala"
+}

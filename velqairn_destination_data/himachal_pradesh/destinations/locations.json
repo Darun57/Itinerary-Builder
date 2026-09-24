@@ -1,0 +1,72 @@
+[
+  {
+    "id": "himachal-pradesh:shimla",
+    "region": "himachal-pradesh",
+    "name": "Shimla",
+    "type": "city",
+    "best_for": [
+      "heritage",
+      "colonial",
+      "hills"
+    ],
+    "recommended_nights_min": 2,
+    "recommended_nights_max": 3,
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "himachal-pradesh:manali",
+    "region": "himachal-pradesh",
+    "name": "Manali",
+    "type": "resort",
+    "best_for": [
+      "snow",
+      "adventure",
+      "honeymoon"
+    ],
+    "recommended_nights_min": 2,
+    "recommended_nights_max": 4,
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "himachal-pradesh:dharamshala",
+    "region": "himachal-pradesh",
+    "name": "Dharamshala / McLeodganj",
+    "type": "town",
+    "best_for": [
+      "tibetan_culture",
+      "monasteries",
+      "mountains"
+    ],
+    "recommended_nights_min": 2,
+    "recommended_nights_max": 3,
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "himachal-pradesh:dalhousie",
+    "region": "himachal-pradesh",
+    "name": "Dalhousie",
+    "type": "town",
+    "best_for": [
+      "nature",
+      "colonial",
+      "quiet"
+    ],
+    "recommended_nights_min": 2,
+    "recommended_nights_max": 3,
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "himachal-pradesh:spiti",
+    "region": "himachal-pradesh",
+    "name": "Spiti Valley",
+    "type": "circuit_stop",
+    "best_for": [
+      "high_altitude",
+      "monasteries",
+      "adventure"
+    ],
+    "recommended_nights_min": 3,
+    "recommended_nights_max": 6,
+    "source_status": "official_tourism_seed"
+  }
+]

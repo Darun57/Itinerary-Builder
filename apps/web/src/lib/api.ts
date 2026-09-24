@@ -19,8 +19,8 @@ async function safeFetch(path: string, options?: RequestInit): Promise<Response>
     const fallbackBase = baseUrl.includes("localhost")
       ? baseUrl.replace("localhost", "127.0.0.1")
       : baseUrl.includes("127.0.0.1")
-      ? baseUrl.replace("127.0.0.1", "localhost")
-      : baseUrl;
+        ? baseUrl.replace("127.0.0.1", "localhost")
+        : baseUrl;
     const fallbackUrl = `${fallbackBase}${path}`;
     if (fallbackUrl !== primaryUrl) {
       try {
@@ -118,14 +118,40 @@ export async function fetchDestinationRecommendations(data: Partial<TripRequestT
   return response.json();
 }
 
-export async function fetchAllDestinations() {
-  const response = await safeFetch("/data/destinations");
+export async function fetchAvailableDestinations() {
+  const response = await safeFetch("/destinations?status=active");
+  if (!response.ok) throw new Error("Failed to fetch available destinations");
+  return response.json();
+}
+
+export async function fetchDestinationCapabilities(region: string) {
+  const response = await safeFetch(`/destinations/${encodeURIComponent(region)}/capabilities`);
+  if (!response.ok) throw new Error(`Failed to fetch capabilities for ${region}`);
+  return response.json();
+}
+
+export async function fetchAllDestinations(region?: string) {
+  const url = region ? `/data/destinations?region=${encodeURIComponent(region)}` : "/data/destinations";
+  const response = await safeFetch(url);
   if (!response.ok) throw new Error("Failed to fetch all destinations");
   return response.json();
 }
 
-export async function fetchAllActivities() {
-  const response = await safeFetch("/data/activities");
+export async function fetchDestinationContext(region: string) {
+  const response = await safeFetch(`/destinations/${encodeURIComponent(region)}/context`);
+  if (!response.ok) throw new Error(`Failed to fetch destination context for ${region}`);
+  return response.json();
+}
+
+export async function fetchDestinationMovements(region: string) {
+  const response = await safeFetch(`/destinations/${encodeURIComponent(region)}/movements`);
+  if (!response.ok) throw new Error(`Failed to fetch movements for ${region}`);
+  return response.json();
+}
+
+export async function fetchAllActivities(region?: string) {
+  const url = region ? `/data/activities?region=${encodeURIComponent(region)}` : "/data/activities";
+  const response = await safeFetch(url);
   if (!response.ok) throw new Error("Failed to fetch all activities");
   return response.json();
 }
@@ -151,7 +177,7 @@ export async function generateAIItinerary(data: TripRequestType, apiKey: string)
   if (apiKey) {
     headers["X-API-Key"] = apiKey;
   }
-  
+
   const response = await safeFetch("/ai/generate", {
     method: "POST",
     headers,
@@ -173,8 +199,9 @@ export interface NewHotelPayload {
   availability_status?: string;
 }
 
-export async function fetchAllHotels() {
-  const response = await safeFetch("/hotels", { method: "GET" });
+export async function fetchAllHotels(region?: string) {
+  const url = region ? `/hotels?region=${encodeURIComponent(region)}` : "/hotels";
+  const response = await safeFetch(url, { method: "GET" });
   if (!response.ok) return [];
   return response.json();
 }
@@ -198,7 +225,7 @@ export async function generatePDF(payload: { request: TripRequestType; itinerary
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload),
   });
-  
+
   if (!response.ok) {
     const errorData = await response.json().catch(() => null);
     throw new Error(errorData?.detail || "Failed to generate PDF");

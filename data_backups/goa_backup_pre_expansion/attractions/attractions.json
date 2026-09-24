@@ -1,0 +1,98 @@
+[
+  {
+    "id": "goa:attr:fontainhas_heritage_walk",
+    "destination_id": "goa:fontainhas",
+    "name": "Fontainhas Heritage Walk",
+    "category": "heritage",
+    "suggested_duration_minutes": 120,
+    "best_for": [
+      "heritage",
+      "photography",
+      "heritage"
+    ],
+    "operational_notes": [
+      "Verify visiting hours before confirmation."
+    ],
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "goa:attr:old_goa_heritage_circuit",
+    "destination_id": "goa:old_goa",
+    "name": "Old Goa Heritage Circuit",
+    "category": "heritage",
+    "suggested_duration_minutes": 180,
+    "best_for": [
+      "heritage",
+      "photography",
+      "heritage"
+    ],
+    "operational_notes": [
+      "Verify visiting hours before confirmation."
+    ],
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "goa:attr:fort_aguada_exploration",
+    "destination_id": "goa:aguada",
+    "name": "Fort Aguada Exploration",
+    "category": "heritage",
+    "suggested_duration_minutes": 60,
+    "best_for": [
+      "heritage",
+      "photography",
+      "heritage"
+    ],
+    "operational_notes": [
+      "Verify visiting hours before confirmation."
+    ],
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "goa:attr:chapora_fort_sunset",
+    "destination_id": "goa:chapora",
+    "name": "Chapora Fort Sunset",
+    "category": "heritage",
+    "suggested_duration_minutes": 60,
+    "best_for": [
+      "heritage",
+      "photography",
+      "heritage"
+    ],
+    "operational_notes": [
+      "Verify visiting hours before confirmation."
+    ],
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "goa:attr:cabo_de_rama_fort_coast",
+    "destination_id": "goa:cabo_de_rama",
+    "name": "Cabo de Rama Fort & Coast",
+    "category": "heritage",
+    "suggested_duration_minutes": 180,
+    "best_for": [
+      "heritage",
+      "photography",
+      "heritage"
+    ],
+    "operational_notes": [
+      "Verify visiting hours before confirmation."
+    ],
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "goa:attr:tiracol_fort_viewpoint",
+    "destination_id": "goa:tiracol",
+    "name": "Tiracol Fort Viewpoint",
+    "category": "heritage",
+    "suggested_duration_minutes": 120,
+    "best_for": [
+      "heritage",
+      "photography",
+      "heritage"
+    ],
+    "operational_notes": [
+      "Verify visiting hours before confirmation."
+    ],
+    "source_status": "official_tourism_seed"
+  }
+]

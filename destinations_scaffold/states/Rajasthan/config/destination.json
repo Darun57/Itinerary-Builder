@@ -1,0 +1,8 @@
+{
+  "name": "Rajasthan",
+  "slug": "rajasthan",
+  "scope": "state",
+  "status": "scaffold",
+  "protected_reference": false,
+  "namespace": "velqairn:rajasthan"
+}

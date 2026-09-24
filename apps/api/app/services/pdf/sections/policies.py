@@ -12,6 +12,7 @@ from reportlab.lib.units import inch, mm
 from reportlab.platypus import HRFlowable, Image, PageBreak, Paragraph, Spacer, Table, TableStyle
 
 from app.schemas.trip import TripRequest
+from app.services.destination_registry import get_destination_context
 from app.services.pdf.constants import (
     COLORS, PAGE_INNER_WIDTH,
     THINGS_TO_DO_CATEGORIES, PAYMENT_POLICY_CARDS, CANCELLATION_TIMELINE,
@@ -112,7 +113,12 @@ def _icon_list_card(title: str, icon: str, items: list[str], styles: dict[str, P
     return _card_table(content, width, background)
 
 
-def render_things_to_do_page(story: list, styles: dict[str, ParagraphStyle]) -> None:
+def render_things_to_do_page(story: list, styles: dict[str, ParagraphStyle], request: TripRequest = None) -> None:
+    """Render 'Things To Do' page. ONLY rendered for Andaman trips."""
+    ctx = get_destination_context(request.destination if request else None)
+    if not ctx.is_andaman:
+        # This page is Andaman-specific content; skip entirely for other destinations
+        return
     _render_policy_page_title(story, styles, "THINGS TO DO IN ANDAMAN", "Signature Andaman Islands experiences curated for an elevated journey.")
     category_width = (PAGE_INNER_WIDTH - 14) / 2
     category_cards = []
@@ -199,6 +205,7 @@ def render_payment_policy_page(story: list, styles: dict[str, ParagraphStyle], r
     story.append(PageBreak())
     s_title, s_preamble, s_sec_title, s_sec_intro, s_bullet, s_sub_bullet = _agreement_styles(styles)
 
+    ctx = get_destination_context(request.destination if request else None)
     eff_date = _date.today().strftime("%B %d, %Y")
     client_name = escape_text(str(request.customer_name if request else "Valued Client") or "Valued Client")
     client_addr = escape_text(str(request.customer_nationality or request.customer_email if request else "Client Address") or "Client Address")
@@ -208,8 +215,8 @@ def render_payment_policy_page(story: list, styles: dict[str, ParagraphStyle], r
 
     preamble_text = (
         f"This Travel Agency Payment Agreement (\"Agreement\") is made effective as of <b>{eff_date}</b> "
-        f"by and between <b>Andaman Islands Darun Tours and Travels</b>, a duly licensed travel agency with its principal "
-        f"office located at <b>Andaman Islands, India</b> (\"Agency\"), and <b>{client_name}</b>, "
+        f"by and between <b>{ctx.agency_legal_name}</b>, a duly licensed travel agency with its principal "
+        f"office located at <b>{ctx.agency_location}</b> (\"Agency\"), and <b>{client_name}</b>, "
         f"with a mailing address of <b>{client_addr}</b> (\"Client\"). The purpose of this Agreement is to define the "
         f"financial terms and conditions pertaining to the travel services provided by the Agency to the Client."
     )
@@ -238,6 +245,7 @@ def render_cancellation_policy_page(story: list, styles: dict[str, ParagraphStyl
     story.append(PageBreak())
     s_title, s_preamble, s_sec_title, s_sec_intro, s_bullet, s_sub_bullet = _agreement_styles(styles)
 
+    ctx = get_destination_context(request.destination if request else None)
     eff_date = _date.today().strftime("%B %d, %Y")
     client_name = escape_text(str(request.customer_name if request else "Valued Client") or "Valued Client")
     client_addr = escape_text(str(request.customer_nationality or request.customer_email if request else "Client Address") or "Client Address")
@@ -247,8 +255,8 @@ def render_cancellation_policy_page(story: list, styles: dict[str, ParagraphStyl
 
     preamble_text = (
         f"This Travel Agency Cancellation Agreement (\"Agreement\") is made effective as of <b>{eff_date}</b> "
-        f"by and between <b>Andaman Islands Darun Tours and Travels</b>, a duly licensed travel agency with its principal "
-        f"office located at <b>Andaman Islands, India</b> (\"Agency\"), and <b>{client_name}</b>, "
+        f"by and between <b>{ctx.agency_legal_name}</b>, a duly licensed travel agency with its principal "
+        f"office located at <b>{ctx.agency_location}</b> (\"Agency\"), and <b>{client_name}</b>, "
         f"with a mailing address of <b>{client_addr}</b> (\"Client\"). The purpose of this Agreement is to define "
         f"the cancellation timelines, supplier conditions, and refund terms pertaining to the travel services provided by the Agency to the Client."
     )
@@ -266,17 +274,19 @@ def render_cancellation_policy_page(story: list, styles: dict[str, ParagraphStyl
     story.append(Paragraph("Cancellations and amendments are subject to the following contractual conditions:", s_sec_intro))
 
     story.append(Paragraph("• <b>Peak Season Bookings:</b> Reservations falling between December 15 and January 15 (Christmas &amp; New Year), long holiday weekends, and festive dates are 100% non-refundable once confirmed.", s_bullet))
-    story.append(Paragraph("• <b>Carrier &amp; Ferry Policies:</b> Inter-island ferry services (Makruzz, Green Ocean, Nautika, DSS) and flight bookings follow the respective carrier cancellation and refund rules.", s_bullet))
+    # Ferry/carrier clause: only when trip has verified ferry movements
+    if ctx.has_verified_ferry_movement:
+        story.append(Paragraph("• <b>Carrier &amp; Ferry Policies:</b> Inter-island ferry services (Makruzz, Green Ocean, Nautika, DSS) and flight bookings follow the respective carrier cancellation and refund rules.", s_bullet))
     story.append(Paragraph("• <b>Unused Services:</b> No refund or credit is issued for unused room nights, missed sightseeing, untaken meals, or unavailed sea activities.", s_bullet))
-    story.append(Paragraph("• <b>Force Majeure Disruptions:</b> The Agency is not liable for weather-induced ferry cancellations, flight delays, or administrative beach closures. Rescheduling will be arranged subject to availability.", s_bullet))
+    story.append(Paragraph("• <b>Force Majeure Disruptions:</b> The Agency is not liable for weather-induced disruptions, flight delays, or administrative closures. Rescheduling will be arranged subject to availability.", s_bullet))
     story.append(Paragraph("• <b>Refund Settlement Timeline:</b> Eligible and approved refunds are processed within 15 to 30 working days following supplier reconciliation.", s_bullet))
-
 
 def render_terms_conditions_pages(story: list, styles: dict[str, ParagraphStyle], request: TripRequest = None) -> None:
     from datetime import date as _date
     story.append(PageBreak())
     s_title, s_preamble, s_sec_title, s_sec_intro, s_bullet, s_sub_bullet = _agreement_styles(styles)
 
+    ctx = get_destination_context(request.destination if request else None)
     eff_date = _date.today().strftime("%B %d, %Y")
     client_name = escape_text(str(request.customer_name if request else "Valued Client") or "Valued Client")
     client_addr = escape_text(str(request.customer_nationality or request.customer_email if request else "Client Address") or "Client Address")
@@ -286,20 +296,23 @@ def render_terms_conditions_pages(story: list, styles: dict[str, ParagraphStyle]
 
     preamble_text = (
         f"This Travel Agency Terms and Conditions Agreement (\"Agreement\") is made effective as of <b>{eff_date}</b> "
-        f"by and between <b>Andaman Islands Darun Tours and Travels</b>, a duly licensed travel agency with its principal "
-        f"office located at <b>Andaman Islands, India</b> (\"Agency\"), and <b>{client_name}</b>, "
+        f"by and between <b>{ctx.agency_legal_name}</b>, a duly licensed travel agency with its principal "
+        f"office located at <b>{ctx.agency_location}</b> (\"Agency\"), and <b>{client_name}</b>, "
         f"with a mailing address of <b>{client_addr}</b> (\"Client\"). The purpose of this Agreement is to establish the "
         f"contractual terms, operational guidelines, and mutual responsibilities governing the travel services provided by the Agency."
     )
     story.append(Paragraph(preamble_text, s_preamble))
 
     story.append(Paragraph("1. Accommodation &amp; Transportation Guidelines", s_sec_title))
-    story.append(Paragraph("The Client agrees to the following terms governing lodging, vehicles, and maritime transit:", s_sec_intro))
+    story.append(Paragraph("The Client agrees to the following terms governing lodging, vehicles, and transit:", s_sec_intro))
 
     story.append(Paragraph("• <b>Hotel Substitution:</b> If a confirmed hotel becomes unavailable due to overbooking, maintenance, or operational constraints, a property of equal or superior category shall be provided.", s_bullet))
     story.append(Paragraph("• <b>Check-In and Check-Out:</b> Hotel check-in (12:00 PM) and check-out (08:00 AM / 09:00 AM) timings are strictly governed by hotel policies. Early check-in or late check-out is subject to room availability.", s_bullet))
     story.append(Paragraph("• <b>Transportation Protocol:</b> Private air-conditioned vehicle transfers operate point-to-point as per the approved sightseeing plan and are not available for non-itinerary leisure transit.", s_bullet))
-    story.append(Paragraph("• <b>Ferry &amp; Sea Movements:</b> Inter-island ferry and boat transfers remain subject to weather, operating conditions, and Port Management Board directives. Schedules may be altered in the interest of passenger safety.", s_bullet))
+    # Ferry & maritime clause: only render if destination has verified ferry movements
+    if ctx.has_verified_ferry_movement:
+        regulator = "Port Management Board directives" if ctx.is_andaman else "local maritime/administrative directives"
+        story.append(Paragraph(f"• <b>Ferry &amp; Sea Movements:</b> Inter-island ferry and boat transfers remain subject to weather, operating conditions, and {regulator}. Schedules may be altered in the interest of passenger safety.", s_bullet))
 
     story.append(Paragraph("2. Documentation, Liability &amp; Acceptance", s_sec_title))
     story.append(Paragraph("The provision of services is subject to regulatory compliance and liability boundaries:", s_sec_intro))
@@ -345,8 +358,9 @@ def render_inclusions_exclusions_page(story: list, styles: dict[str, ParagraphSt
     story.append(Spacer(1, 0.12 * inch))
 
 
-def render_payment_details_page(story: list, styles: dict[str, ParagraphStyle]) -> None:
+def render_payment_details_page(story: list, styles: dict[str, ParagraphStyle], request: TripRequest = None) -> None:
     story.append(PageBreak())
+    ctx = get_destination_context(request.destination if request else None)
     _render_policy_page_title(story, styles, "PAYMENT DETAILS", "Secure payment information for your confirmed booking.")
     left_width = (PAGE_INNER_WIDTH - 14) * 0.58
     right_width = PAGE_INNER_WIDTH - left_width - 14
@@ -356,7 +370,7 @@ def render_payment_details_page(story: list, styles: dict[str, ParagraphStyle]) 
         HRFlowable(width="100%", thickness=0.45, color=COLORS["gold"]),
         Spacer(1, 0.06 * inch),
         Paragraph(escape_text("Account Name"), styles["label"]),
-        Paragraph(escape_text("ANDAMAN DARUN TOURS AND TRAVELS"), styles["body"]),
+        Paragraph(escape_text("ANDAMAN DARUN TOURS AND TRAVELS" if ctx.is_andaman else "DARUN TOURISM"), styles["body"]),
         Spacer(1, 0.06 * inch),
         Paragraph(escape_text("Bank"), styles["label"]),
         Paragraph(escape_text("HDFC BANK"), styles["body"]),
@@ -399,7 +413,7 @@ def render_payment_details_page(story: list, styles: dict[str, ParagraphStyle]) 
         ("BEST REGARDS", "policy_card_title"),
         ("Hemawathi", "day_title"),
         ("Proprietor", "label"),
-        ("Andaman Islands Darun Tour and Travels", "body"),
+        (ctx.agency_legal_name, "body"),
         ("Phone", "label"),
         ("+91 9474238991", "body"),
         ("+91 9933242718", "body"),
@@ -418,6 +432,7 @@ def render_invoice_page(story: list, styles: dict[str, ParagraphStyle], request:
     - Currency: 'Rs.' to prevent missing glyphs
     """
     from datetime import date as _date
+    ctx = get_destination_context(request.destination if request else None)
 
     # ── Neutral Minimalist Palette ─────────────────────────────
     C_DARK     = colors.HexColor("#1F2937")  # primary text / dark charcoal
@@ -461,7 +476,8 @@ def render_invoice_page(story: list, styles: dict[str, ParagraphStyle], request:
     # ─────────────────────────────────────────────────────────────────
 
     # Derived display values (formatting only — no logic change)
-    invoice_no   = f"ADT-{lead_id[:6].upper()}" if lead_id else f"ADT-{_date.today().strftime('%y%m%d')}"
+    inv_prefix   = "ADT" if ctx.is_andaman else "DT"
+    invoice_no   = f"{inv_prefix}-{lead_id[:6].upper()}" if lead_id else f"{inv_prefix}-{_date.today().strftime('%y%m%d')}"
     invoice_date = _date.today().strftime("%d %b %Y")
     duration_txt = f"{arrival}  →  {departure}" if arrival != "—" else "As Per Booking"
     pricing_tiers = getattr(request, "pricing_tiers", None) or []
@@ -555,12 +571,12 @@ def render_invoice_page(story: list, styles: dict[str, ParagraphStyle], request:
         Paragraph("INVOICE", s_sub),
     ]
     right_header = [
-        Paragraph("ANDAMAN DARUN TOURS AND TRAVELS", s_co_name),
+        Paragraph(escape_text(ctx.agency_legal_name.upper()), s_co_name),
         Spacer(1, 4),
-        Paragraph("Andaman Islands, India", s_co_info),
-        Paragraph("andamandaruntourandtravels@gmail.com", s_co_info),
+        Paragraph(escape_text(ctx.agency_location), s_co_info),
+        Paragraph(escape_text(ctx.agency_email), s_co_info),
         Paragraph("+91 94742 38991  |  +91 99332 42718", s_co_info),
-        Paragraph("www.andamandaruntourism.in", s_co_info),
+        Paragraph(escape_text(ctx.agency_website), s_co_info),
     ]
     header_table = Table(
         [[left_header, right_header]],
@@ -834,8 +850,8 @@ def render_invoice_page(story: list, styles: dict[str, ParagraphStyle], request:
     story.append(Spacer(1, 0.22 * inch))
     story.append(HRFlowable(width="100%", thickness=0.6, color=C_LINE))
     story.append(Spacer(1, 0.08 * inch))
-    footer_left  = Paragraph("www.andamandaruntourism.in", s_footer)
-    footer_right = Paragraph("andamandaruntourandtravels@gmail.com", ParagraphStyle(
+    footer_left  = Paragraph(escape_text(ctx.agency_website), s_footer)
+    footer_right = Paragraph(escape_text(ctx.agency_email), ParagraphStyle(
         "inv_footer_r", parent=s_footer, alignment=2
     ))
     footer_table = Table([[footer_left, footer_right]], colWidths=[W * 0.5, W * 0.5])
@@ -852,7 +868,7 @@ def render_invoice_page(story: list, styles: dict[str, ParagraphStyle], request:
 def render_terms_pages(story: list, styles: dict[str, ParagraphStyle], request: TripRequest) -> None:
     story.append(PageBreak())
     render_invoice_page(story, styles, request)
-    render_payment_details_page(story, styles)
+    render_payment_details_page(story, styles, request)
     render_inclusions_exclusions_page(story, styles, request)
     render_cancellation_policy_page(story, styles, request)
     render_payment_policy_page(story, styles, request)

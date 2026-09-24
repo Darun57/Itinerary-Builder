@@ -1,0 +1,28 @@
+[
+  {
+    "id": "himachal-pradesh:shimla-to-manali",
+    "region": "himachal-pradesh",
+    "from_destination_id": "himachal-pradesh:shimla",
+    "to_destination_id": "himachal-pradesh:manali",
+    "mode": "road",
+    "estimated_duration_minutes_min": 360,
+    "estimated_duration_minutes_max": 450,
+    "planning_status": "planning_estimate",
+    "notes": [
+      "National Highway crossing Kullu valley along Beas river."
+    ]
+  },
+  {
+    "id": "himachal-pradesh:manali-to-dharamshala",
+    "region": "himachal-pradesh",
+    "from_destination_id": "himachal-pradesh:manali",
+    "to_destination_id": "himachal-pradesh:dharamshala",
+    "mode": "road",
+    "estimated_duration_minutes_min": 300,
+    "estimated_duration_minutes_max": 390,
+    "planning_status": "planning_estimate",
+    "notes": [
+      "Scenic mountain highway across Mandi and Palampur tea estates."
+    ]
+  }
+]

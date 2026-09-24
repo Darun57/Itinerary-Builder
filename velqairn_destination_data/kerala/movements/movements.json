@@ -1,0 +1,54 @@
+[
+  {
+    "id": "kerala:kochi-to-munnar",
+    "region": "kerala",
+    "from_destination_id": "kerala:kochi",
+    "to_destination_id": "kerala:munnar",
+    "mode": "road",
+    "estimated_duration_minutes_min": 180,
+    "estimated_duration_minutes_max": 240,
+    "planning_status": "planning_estimate",
+    "notes": [
+      "Ascending Western Ghats scenic mountain road via Cheeyappara falls."
+    ]
+  },
+  {
+    "id": "kerala:munnar-to-thekkady",
+    "region": "kerala",
+    "from_destination_id": "kerala:munnar",
+    "to_destination_id": "kerala:thekkady",
+    "mode": "road",
+    "estimated_duration_minutes_min": 100,
+    "estimated_duration_minutes_max": 140,
+    "planning_status": "planning_estimate",
+    "notes": [
+      "Cardamom hills route passing plantations."
+    ]
+  },
+  {
+    "id": "kerala:thekkady-to-alleppey",
+    "region": "kerala",
+    "from_destination_id": "kerala:thekkady",
+    "to_destination_id": "kerala:alleppey",
+    "mode": "road",
+    "estimated_duration_minutes_min": 150,
+    "estimated_duration_minutes_max": 200,
+    "planning_status": "planning_estimate",
+    "notes": [
+      "Descent from hills down to Vembanad backwater basin."
+    ]
+  },
+  {
+    "id": "kerala:alleppey-to-kochi",
+    "region": "kerala",
+    "from_destination_id": "kerala:alleppey",
+    "to_destination_id": "kerala:kochi",
+    "mode": "road",
+    "estimated_duration_minutes_min": 60,
+    "estimated_duration_minutes_max": 90,
+    "planning_status": "planning_estimate",
+    "notes": [
+      "Coastal highway back to Cochin airport / railway hub."
+    ]
+  }
+]

@@ -1,0 +1,8 @@
+[
+{"id":"jammu-and-kashmir:srinagar","region":"jammu-and-kashmir","name":"Srinagar","type":"city","best_for":["culture","lakes","gardens","honeymoon","luxury"],"recommended_nights_min":2,"recommended_nights_max":3,"source_status":"official_tourism_seed"},
+{"id":"jammu-and-kashmir:gulmarg","region":"jammu-and-kashmir","name":"Gulmarg","type":"resort","best_for":["snow","skiing","adventure","luxury","nature"],"recommended_nights_min":1,"recommended_nights_max":2,"source_status":"official_tourism_seed"},
+{"id":"jammu-and-kashmir:pahalgam","region":"jammu-and-kashmir","name":"Pahalgam","type":"resort","best_for":["nature","family","honeymoon","mountains","leisure"],"recommended_nights_min":1,"recommended_nights_max":2,"source_status":"official_tourism_seed"},
+{"id":"jammu-and-kashmir:sonamarg","region":"jammu-and-kashmir","name":"Sonamarg","type":"resort","best_for":["mountains","nature","snow","day_trips"],"recommended_nights_min":0,"recommended_nights_max":1,"source_status":"official_tourism_seed"},
+{"id":"jammu-and-kashmir:doodhpathri","region":"jammu-and-kashmir","name":"Doodhpathri","type":"resort","best_for":["nature","meadows","slow_travel","photography"],"recommended_nights_min":0,"recommended_nights_max":1,"source_status":"official_tourism_seed"},
+{"id":"jammu-and-kashmir:yusmarg","region":"jammu-and-kashmir","name":"Yusmarg","type":"resort","best_for":["nature","slow_travel","meadows","photography"],"recommended_nights_min":0,"recommended_nights_max":1,"source_status":"official_tourism_seed"}
+]

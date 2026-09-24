@@ -1,0 +1,87 @@
+[
+  {
+    "id": "uttarakhand:rishikesh",
+    "region": "uttarakhand",
+    "name": "Rishikesh",
+    "type": "town",
+    "best_for": [
+      "rafting",
+      "yoga",
+      "spiritual",
+      "cafe_culture"
+    ],
+    "recommended_nights_min": 2,
+    "recommended_nights_max": 3,
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "uttarakhand:haridwar",
+    "region": "uttarakhand",
+    "name": "Haridwar",
+    "type": "city",
+    "best_for": [
+      "spiritual",
+      "culture",
+      "ganga_aarti"
+    ],
+    "recommended_nights_min": 1,
+    "recommended_nights_max": 2,
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "uttarakhand:mussoorie",
+    "region": "uttarakhand",
+    "name": "Mussoorie",
+    "type": "resort",
+    "best_for": [
+      "hills",
+      "views",
+      "family"
+    ],
+    "recommended_nights_min": 2,
+    "recommended_nights_max": 3,
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "uttarakhand:jim_corbett",
+    "region": "uttarakhand",
+    "name": "Jim Corbett National Park",
+    "type": "wildlife",
+    "best_for": [
+      "tiger_safari",
+      "wildlife",
+      "resorts"
+    ],
+    "recommended_nights_min": 2,
+    "recommended_nights_max": 3,
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "uttarakhand:nainital",
+    "region": "uttarakhand",
+    "name": "Nainital",
+    "type": "resort",
+    "best_for": [
+      "lakes",
+      "boating",
+      "hills"
+    ],
+    "recommended_nights_min": 2,
+    "recommended_nights_max": 3,
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "uttarakhand:auli",
+    "region": "uttarakhand",
+    "name": "Auli",
+    "type": "resort",
+    "best_for": [
+      "skiing",
+      "himalayan_peaks",
+      "cable_car"
+    ],
+    "recommended_nights_min": 2,
+    "recommended_nights_max": 4,
+    "source_status": "official_tourism_seed"
+  }
+]

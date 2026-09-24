@@ -1,0 +1,67 @@
+[
+  {
+    "id": "kerala:classic_hills_and_backwaters:4n5d",
+    "region": "kerala",
+    "day_count": 5,
+    "nights": 4,
+    "suitability": [
+      "leisure",
+      "honeymoon",
+      "family"
+    ],
+    "constraints": [
+      "Day 4 must be Alleppey houseboat check-in by 12:00 PM."
+    ],
+    "sequence": [
+      {
+        "day": 1,
+        "location": "kerala:kochi",
+        "theme": "Arrival & Fort Kochi Heritage",
+        "anchors": [
+          "kerala:kochi:fort_kochi"
+        ],
+        "activity_slots": []
+      },
+      {
+        "day": 2,
+        "location": "kerala:munnar",
+        "theme": "Scenic Ghat Transit to Munnar Tea Country",
+        "anchors": [
+          "kerala:munnar:tea_museum"
+        ],
+        "activity_slots": [
+          "kerala:munnar:tea_gardens_trail"
+        ]
+      },
+      {
+        "day": 3,
+        "location": "kerala:thekkady",
+        "theme": "Periyar Wildlife Sanctuary & Spice Walk",
+        "anchors": [
+          "kerala:thekkady:periyar_lake"
+        ],
+        "activity_slots": [
+          "kerala:thekkady:spice_plantation"
+        ]
+      },
+      {
+        "day": 4,
+        "location": "kerala:alleppey",
+        "theme": "Alleppey Backwaters Houseboat Cruise",
+        "anchors": [
+          "kerala:alleppey:backwaters"
+        ],
+        "activity_slots": [
+          "kerala:alleppey:houseboat_overnight"
+        ]
+      },
+      {
+        "day": 5,
+        "location": "kerala:kochi",
+        "theme": "Morning Disembarkation & Cochin Departure",
+        "anchors": [],
+        "activity_slots": []
+      }
+    ]
+  }
+]

@@ -52,10 +52,69 @@ def _image_hash(path: Path) -> str:
         return str(path.resolve())
 
 
+def is_andaman_destination(destination: str) -> bool:
+    clean = str(destination or "").strip().lower()
+    return clean in ["", "andaman", "andaman islands", "andaman & nicobar", "andaman and nicobar islands"]
+
+
+def resolve_namespace_image(region: str, search_label: str) -> Path | None:
+    """
+    Strictly resolve image within a destination namespace folder.
+    Guarantees no cross-destination leakage.
+    """
+    if not region or not search_label:
+        return None
+    from app.services.destination_registry import DESTINATION_ROOT, normalize_region
+    try:
+        norm = normalize_region(region)
+    except Exception:
+        return None
+
+    dest_img_dir = DESTINATION_ROOT / norm / "images"
+    if not dest_img_dir.exists():
+        return None
+
+    clean_term = search_label.strip().lower().replace(" ", "_")
+    # Look for matching image in destination's images folder
+    for p in dest_img_dir.rglob("*"):
+        if p.is_file() and p.suffix.lower() in SUPPORTED_EXTENSIONS:
+            if clean_term in p.stem.lower() or clean_term in p.parent.name.lower():
+                return p
+    return None
+
+
 def resolve_day_image(request: TripRequest, day_number: int, used_images: set | None = None, is_final_day: bool = False) -> Path | None:
     if used_images is None:
         used_images = set()
 
+    destination = getattr(request, "destination", "") or ""
+
+    # ISOLATION: If non-Andaman destination, resolve strictly within destination namespace
+    if not is_andaman_destination(destination):
+        trip_context = build_trip_context(request)
+        day_plan = get_day(trip_context, day_number)
+        primary_loc = get_primary_island(trip_context, day_number) if day_plan else ""
+        attractions = get_day_attractions(trip_context, day_number) if day_plan else []
+
+        search_labels = []
+        if is_final_day:
+            search_labels.append("departure")
+        if attractions:
+            search_labels.extend(attractions)
+        if primary_loc:
+            search_labels.append(primary_loc)
+        search_labels.append(destination)
+
+        for label in search_labels:
+            matched = resolve_namespace_image(destination, label)
+            if matched and matched not in used_images:
+                used_images.add(matched)
+                return matched
+
+        # NO CROSS-NAMESPACE RESOLUTION: Never fall back to Andaman assets
+        return None
+
+    # PROTECTED ANDAMAN PATH — 100% UNCHANGED
     # Seed used_images with cover image so cover photo is never repeated inside days
     cover_path = get_cover_image_path()
     if cover_path and cover_path.exists():

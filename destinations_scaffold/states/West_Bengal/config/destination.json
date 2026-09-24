@@ -1,0 +1,8 @@
+{
+  "name": "West Bengal",
+  "slug": "west-bengal",
+  "scope": "state",
+  "status": "scaffold",
+  "protected_reference": false,
+  "namespace": "velqairn:west-bengal"
+}

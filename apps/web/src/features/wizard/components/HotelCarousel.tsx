@@ -185,12 +185,16 @@ export function HotelCarousel({ hotels, location }: HotelCarouselProps) {
             willChange: "transform",
           }}
         >
-          {hotels.map((hotel) => (
-            <div
-              key={hotel.hotel_id || hotel.hotel_name}
-              style={{ minWidth: `${cardWidthPct}%`, maxWidth: `${cardWidthPct}%` }}
-              className="px-2 box-border"
-            >
+          {hotels.map((hotel, idx) => {
+            const cardKey = hotel.hotel_id
+              ? `${hotel.hotel_id}-${idx}`
+              : `${location}-${hotel.hotel_name || "hotel"}-${hotel.room_type || ""}-${idx}`;
+            return (
+              <div
+                key={cardKey}
+                style={{ minWidth: `${cardWidthPct}%`, maxWidth: `${cardWidthPct}%` }}
+                className="px-2 box-border"
+              >
               <FormField
                 control={control}
                 name="selected_hotels"
@@ -241,8 +245,9 @@ export function HotelCarousel({ hotels, location }: HotelCarouselProps) {
                 }}
               />
             </div>
-          ))}
-        </div>
+          );
+        })}
+      </div>
       </div>
 
       {/* Dot indicators */}
@@ -250,7 +255,7 @@ export function HotelCarousel({ hotels, location }: HotelCarouselProps) {
         <div className="flex justify-center gap-1.5 pt-1">
           {Array.from({ length: maxIndex + 1 }).map((_, i) => (
             <button
-              key={i}
+              key={`dot-${location}-${i}`}
               type="button"
               onClick={() => slideTo(i)}
               aria-label={`Go to position ${i + 1}`}

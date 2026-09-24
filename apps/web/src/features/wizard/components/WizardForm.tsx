@@ -8,6 +8,7 @@ import { useWizardStore } from "../store";
 import { useMutation } from "@tanstack/react-query";
 import { generateAIItinerary } from "@/lib/api";
 import { resolvePrimaryIsland } from "../utils";
+import { getDestinationDayDefaults } from "../destinationDefaults";
 import { Loader2 } from "lucide-react";
 
 import CustomerStep from "./steps/CustomerStep";
@@ -99,22 +100,25 @@ export default function WizardForm() {
     }
     if (data.daily_island_plan && data.number_of_days) {
       const plan = data.daily_island_plan.slice(0, data.number_of_days);
-      
+      const defaults = getDestinationDayDefaults(data.destination);
+
       data.daily_island_plan = plan.map((day: any, idx: number) => {
         const cleanAttractions = day.attractions || [];
-        const primaryIsland = resolvePrimaryIsland(day, idx);
+        const primaryIsland = resolvePrimaryIsland(day, idx, data.destination);
         const transferType = day.transfer_type || data.transfer_type || "Private Cab";
         const isLastDay = idx === plan.length - 1;
         const isDeparture = isLastDay && (
           primaryIsland.toLowerCase().trim() === "departure" ||
           cleanAttractions.some((a: string) => String(a).toLowerCase().trim() === "departure")
         );
+        const def = defaults[idx % defaults.length];
+        const fallbackAttractions = def?.attractions || [];
 
         return {
           ...day,
           day_number: idx + 1,
           primary_island: primaryIsland,
-          attractions: cleanAttractions.length > 0 ? cleanAttractions : (idx === 0 ? ["Cellular Jail", "Corbyn's Cove Beach"] : ["Radhanagar Beach", "Elephant Beach"]),
+          attractions: cleanAttractions.length > 0 ? cleanAttractions : fallbackAttractions,
           transfer_type: transferType,
           ferry: day.ferry || "None",
           hotel: isDeparture ? "" : (day.hotel || ""),
@@ -153,8 +157,8 @@ export default function WizardForm() {
         <ItineraryPreview />
       ) : (
         <FormProvider {...methods}>
-          <form 
-            onSubmit={handleSubmit(onSubmit)} 
+          <form
+            onSubmit={handleSubmit(onSubmit)}
             onKeyDown={(e) => {
               if (e.key === "Enter" && (e.target as HTMLElement).tagName === "INPUT") {
                 e.preventDefault();

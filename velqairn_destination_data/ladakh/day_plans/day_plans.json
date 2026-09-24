@@ -1,0 +1,72 @@
+[
+  {
+    "id": "ladakh:classic_circuit:5n6d",
+    "region": "ladakh",
+    "day_count": 6,
+    "nights": 5,
+    "suitability": [
+      "adventure",
+      "photography",
+      "high_altitude"
+    ],
+    "constraints": [
+      "Day 1 must be strict rest at Leh (3,500m) to acclimatize. No mountain pass on Day 1."
+    ],
+    "sequence": [
+      {
+        "day": 1,
+        "location": "ladakh:leh",
+        "theme": "Arrival Leh Airport & Mandatory Acclimatization Rest",
+        "anchors": [],
+        "activity_slots": [
+          "ladakh:leh:acclimatization_walk"
+        ]
+      },
+      {
+        "day": 2,
+        "location": "ladakh:leh",
+        "theme": "Sham Valley Monasteries & Hall of Fame",
+        "anchors": [
+          "ladakh:leh:shanti_stupa"
+        ],
+        "activity_slots": []
+      },
+      {
+        "day": 3,
+        "location": "ladakh:nubra",
+        "theme": "Leh to Nubra Valley via Khardung La Pass",
+        "anchors": [
+          "ladakh:leh:khardung_la"
+        ],
+        "activity_slots": [
+          "ladakh:nubra:bactrian_camel_safari"
+        ]
+      },
+      {
+        "day": 4,
+        "location": "ladakh:pangong",
+        "theme": "Nubra to Pangong Tso via Shyok River Road",
+        "anchors": [
+          "ladakh:nubra:diskit_monastery"
+        ],
+        "activity_slots": []
+      },
+      {
+        "day": 5,
+        "location": "ladakh:leh",
+        "theme": "Pangong Lake Sunrise & Return to Leh via Chang La",
+        "anchors": [
+          "ladakh:pangong:pangong_lake"
+        ],
+        "activity_slots": []
+      },
+      {
+        "day": 6,
+        "location": "ladakh:leh",
+        "theme": "Early Morning Leh Departure",
+        "anchors": [],
+        "activity_slots": []
+      }
+    ]
+  }
+]

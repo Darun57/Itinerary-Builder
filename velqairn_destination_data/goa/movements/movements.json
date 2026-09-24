@@ -1,0 +1,184 @@
+[
+  {
+    "id": "goa:panaji-to-candolim",
+    "region": "goa",
+    "from_destination_id": "goa:panaji",
+    "to_destination_id": "goa:candolim",
+    "mode": "road",
+    "estimated_duration_minutes_min": 25,
+    "estimated_duration_minutes_max": 45,
+    "planning_status": "planning_estimate",
+    "notes": [
+      "North Goa coastal transfer."
+    ]
+  },
+  {
+    "id": "goa:candolim-to-calangute",
+    "region": "goa",
+    "from_destination_id": "goa:candolim",
+    "to_destination_id": "goa:calangute",
+    "mode": "road",
+    "estimated_duration_minutes_min": 10,
+    "estimated_duration_minutes_max": 20,
+    "planning_status": "planning_estimate",
+    "notes": [
+      "Short local drive."
+    ]
+  },
+  {
+    "id": "goa:calangute-to-baga",
+    "region": "goa",
+    "from_destination_id": "goa:calangute",
+    "to_destination_id": "goa:baga",
+    "mode": "road",
+    "estimated_duration_minutes_min": 10,
+    "estimated_duration_minutes_max": 20,
+    "planning_status": "planning_estimate",
+    "notes": [
+      "Coastal leisure corridor."
+    ]
+  },
+  {
+    "id": "goa:baga-to-anjuna",
+    "region": "goa",
+    "from_destination_id": "goa:baga",
+    "to_destination_id": "goa:anjuna",
+    "mode": "road",
+    "estimated_duration_minutes_min": 15,
+    "estimated_duration_minutes_max": 30,
+    "planning_status": "planning_estimate",
+    "notes": [
+      "North Goa scenic drive."
+    ]
+  },
+  {
+    "id": "goa:anjuna-to-vagator",
+    "region": "goa",
+    "from_destination_id": "goa:anjuna",
+    "to_destination_id": "goa:vagator",
+    "mode": "road",
+    "estimated_duration_minutes_min": 10,
+    "estimated_duration_minutes_max": 20,
+    "planning_status": "planning_estimate",
+    "notes": [
+      "Cliff and sunset route."
+    ]
+  },
+  {
+    "id": "goa:panaji-to-old_goa",
+    "region": "goa",
+    "from_destination_id": "goa:panaji",
+    "to_destination_id": "goa:old_goa",
+    "mode": "road",
+    "estimated_duration_minutes_min": 20,
+    "estimated_duration_minutes_max": 35,
+    "planning_status": "planning_estimate",
+    "notes": [
+      "Heritage drive along Mandovi causeway."
+    ]
+  },
+  {
+    "id": "goa:candolim-to-colva",
+    "region": "goa",
+    "from_destination_id": "goa:candolim",
+    "to_destination_id": "goa:colva",
+    "mode": "road",
+    "estimated_duration_minutes_min": 60,
+    "estimated_duration_minutes_max": 90,
+    "planning_status": "planning_estimate",
+    "notes": [
+      "North to South Goa highway crossing."
+    ]
+  },
+  {
+    "id": "goa:colva-to-palolem",
+    "region": "goa",
+    "from_destination_id": "goa:colva",
+    "to_destination_id": "goa:palolem",
+    "mode": "road",
+    "estimated_duration_minutes_min": 50,
+    "estimated_duration_minutes_max": 75,
+    "planning_status": "planning_estimate",
+    "notes": [
+      "South Goa coastal drive."
+    ]
+  },
+  {
+    "id": "goa:panaji-to-palolem",
+    "region": "goa",
+    "from_destination_id": "goa:panaji",
+    "to_destination_id": "goa:palolem",
+    "mode": "road",
+    "estimated_duration_minutes_min": 85,
+    "estimated_duration_minutes_max": 120,
+    "planning_status": "planning_estimate",
+    "notes": [
+      "Scenic South Goa transit."
+    ]
+  },
+  {
+    "id": "goa:panaji-to-margao",
+    "region": "goa",
+    "from_destination_id": "goa:panaji",
+    "to_destination_id": "goa:margao",
+    "mode": "road",
+    "estimated_duration_minutes_min": 45,
+    "estimated_duration_minutes_max": 65,
+    "planning_status": "planning_estimate",
+    "notes": [
+      "Planning estimate based on NH66 highway distance (~33 km). Source: GTDC regional transport guide / NH66 corridor. Live verification required for peak traffic."
+    ]
+  },
+  {
+    "id": "goa:margao-to-colva",
+    "region": "goa",
+    "from_destination_id": "goa:margao",
+    "to_destination_id": "goa:colva",
+    "mode": "road",
+    "estimated_duration_minutes_min": 15,
+    "estimated_duration_minutes_max": 25,
+    "planning_status": "planning_estimate",
+    "notes": [
+      "Planning estimate based on MDR43 distance (~8 km). Source: GTDC South Goa circuit guide. Live verification required."
+    ]
+  },
+  {
+    "id": "goa:colva-to-cavelossim",
+    "region": "goa",
+    "from_destination_id": "goa:colva",
+    "to_destination_id": "goa:cavelossim",
+    "mode": "road",
+    "estimated_duration_minutes_min": 25,
+    "estimated_duration_minutes_max": 40,
+    "planning_status": "planning_estimate",
+    "notes": [
+      "Planning estimate based on coastal road distance (~15 km). Source: GTDC South Goa coastal route guide. Live verification required."
+    ]
+  },
+  {
+    "id": "goa:candolim-to-dudhsagar",
+    "region": "goa",
+    "from_destination_id": "goa:candolim",
+    "to_destination_id": "goa:dudhsagar",
+    "mode": "road",
+    "estimated_duration_minutes_min": 90,
+    "estimated_duration_minutes_max": 130,
+    "planning_status": "planning_estimate",
+    "notes": [
+      "Planning estimate via Ponda/Mollem (~75 km to Collem jeep junction). Source: GTDC Dudhsagar tour excursion timing. Live verification required."
+    ]
+  },
+  {
+    "id": "goa:old_goa-to-ponda",
+    "region": "goa",
+    "from_destination_id": "goa:old_goa",
+    "to_destination_id": "goa:ponda",
+    "mode": "road",
+    "estimated_duration_minutes_min": 25,
+    "estimated_duration_minutes_max": 40,
+    "planning_status": "planning_estimate",
+    "notes": [
+      "Planning estimate based on NH748 distance (~18 km). Source: GTDC Heritage & Temple Circuit guide. Live verification required."
+    ]
+  }
+]

@@ -1,0 +1,15 @@
+{
+  "region": "kerala",
+  "rules": [
+    {
+      "id": "namespace_isolation",
+      "severity": "error",
+      "rule": "All Kerala locations, attractions and movements must begin with kerala:."
+    },
+    {
+      "id": "houseboat_confinement",
+      "severity": "error",
+      "rule": "Houseboat stays are strictly permitted in Alleppey or Kumarakom."
+    }
+  ]
+}

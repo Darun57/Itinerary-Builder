@@ -1,0 +1,91 @@
+hotel_id,hotel_name,location,category,room_type,description,availability_status
+HTL-GOA-001,W Goa,Vagator,5 Star,Wonderful Garden View Room,Luxury beachfront resort near Vagator with premium rooms and villas suited to high-end leisure travel.,Available
+HTL-GOA-002,JW Marriott Goa,Vagator,5 Star,Deluxe Room,"Luxury resort in Vagator with upscale rooms, wellness facilities, dining, and family-oriented recreation.",Available
+HTL-GOA-003,The Westin Goa,Anjuna,5 Star,Deluxe Guest Room,"Luxury North Goa resort positioned for beach, dining, and wellness-led stays.",Available
+HTL-GOA-004,Renaissance Goa Baga-Arpora Hotel,Arpora,5 Star,Deluxe Room,Upscale resort-style stay close to North Goa's beach and entertainment corridor.,Available
+HTL-GOA-005,Radisson Resort Goa Baga,Baga,5 Star,Superior Room,Resort accommodation in the Baga area suited to beach-focused and leisure itineraries.,Available
+HTL-GOA-006,Radisson Hotel Goa Candolim,Candolim,4 Star,Superior Room,"Central Candolim hotel suited to beach access, family stays, and North Goa sightseeing.",Available
+HTL-GOA-007,Park Inn by Radisson Goa Candolim,Candolim,4 Star,Deluxe Room,Comfort-focused Candolim stay with practical access to the North Goa coast.,Available
+HTL-GOA-008,Hyatt Centric Candolim Goa,Candolim,5 Star,1 King Bed With Balcony,"Modern full-service hotel on Candolim Road, positioned for exploring North Goa beaches and attractions.",Available
+HTL-GOA-009,Novotel Goa Candolim,Candolim,5 Star,Superior Room,Family-friendly Candolim hotel with multiple pools and access to nearby beaches.,Available
+HTL-GOA-010,Novotel Goa Resort & Spa,Candolim,5 Star,Deluxe Room,Resort-style Candolim property near beaches with family and wellness facilities.,Available
+HTL-GOA-011,"Le Méridien Goa, Calangute",Calangute,5 Star,Deluxe Room,Contemporary resort in Calangute suited to beach holidays and family trips.,Available
+HTL-GOA-012,Fairfield by Marriott Goa Calangute,Calangute,4 Star,Deluxe Room,Modern Calangute hotel with easy access to the main beach and local dining.,Available
+HTL-GOA-013,Fairfield by Marriott Goa Anjuna,Anjuna,4 Star,Deluxe Room,"North Goa stay close to Anjuna beach, cafes, and the area's evening scene.",Available
+HTL-GOA-014,"Taj Fort Aguada Resort & Spa, Goa",Candolim,5 Star,Superior Room,Heritage-style luxury resort in the Fort Aguada area overlooking the coast.,Available
+HTL-GOA-015,"Taj Holiday Village Resort & Spa, Goa",Candolim,5 Star,Cottage Room,Large beachfront resort with cottage-style accommodation and premium leisure positioning.,Available
+HTL-GOA-016,Hard Rock Hotel Goa,Calangute,5 Star,Deluxe Room,"Music-themed resort in North Goa suited to leisure, families, and event-oriented stays.",Available
+HTL-GOA-017,Fortune Select Candolim,Candolim,4 Star,Deluxe Room,Upscale Candolim stay suited to practical premium holidays and business-leisure combinations.,Available
+HTL-GOA-018,Golden Tulip Goa,Candolim,4 Star,Deluxe Room,Resort-style accommodation in Candolim for families and leisure travellers.,Available
+HTL-GOA-019,Whispering Palms Beach Resort,Candolim,4 Star,Deluxe Room,Beach-oriented Candolim resort with a relaxed leisure profile.,Available
+HTL-GOA-020,"Lemon Tree Amarante Beach Resort, Goa",Candolim,4 Star,Deluxe Room,Comfortable North Goa resort suited to families and short premium stays.,Available
+HTL-GOA-021,Santana Beach Resort,Candolim,4 Star,Deluxe Room,Established beach resort in Candolim with garden-style leisure accommodation.,Available
+HTL-GOA-022,De Alturas Resort,Candolim,4 Star,Deluxe Room,Candolim resort suited to beach holidays and family travel.,Available
+HTL-GOA-023,Resort Rio,Arpora,5 Star,Deluxe Room,"Large resort property in Arpora suitable for families, groups, and leisure packages.",Available
+HTL-GOA-024,Neelam The Grand,Calangute,4 Star,Deluxe Room,Central Calangute hotel suited to practical beach holidays and group packages.,Available
+HTL-GOA-025,The Acacia Hotel & Spa Goa,Candolim,4 Star,Deluxe Room,Modern Candolim property with spa-oriented leisure positioning.,Available
+HTL-GOA-026,"Storii By ITC Hotels Shanti Morada, Goa",Saligao,5 Star,Luxury Room,Boutique luxury property in a restored heritage setting near North Goa beaches.,Available
+HTL-GOA-027,ibis Styles Goa Calangute,Calangute,4 Star,Standard Room,Modern value-upscale Calangute stay suited to family and short-stay itineraries.,Available
+HTL-GOA-028,BloomSuites | Calangute,Calangute,3 Star,Deluxe Room,Contemporary mid-range Calangute hotel positioned for beach access and short leisure breaks.,Available
+HTL-GOA-029,Bloom Hotel - Anjuna,Anjuna,3 Star,Deluxe Room,"Modern hotel base for Anjuna beach, cafes, and market experiences.",Available
+HTL-GOA-030,La Calypso Hotel,Baga,4 Star,Deluxe Room,Baga-area hotel suited to lively beach holidays and convenient sightseeing.,Available
+HTL-GOA-031,The Park Baga River Goa,Baga,4 Star,Deluxe Room,Boutique-style stay near the Baga river and beach area.,Available
+HTL-GOA-032,Hotel Fidalgo,Panaji,4 Star,Executive Room,"Established Panaji city hotel suited to business, heritage, and short city stays.",Available
+HTL-GOA-033,Ginger Goa - Panjim,Panaji,3 Star,Superior Room,Modern city hotel for practical stays in Panaji.,Available
+HTL-GOA-034,The Crown Goa,Panaji,5 Star,Deluxe Room,Luxury city hotel overlooking the Mandovi River and suited to premium Panaji stays.,Available
+HTL-GOA-035,"Vivanta Goa, Panaji",Panaji,5 Star,Deluxe Room,Contemporary premium hotel in Panaji with city and riverfront access.,Available
+HTL-GOA-036,Goa Marriott Resort & Spa,Miramar,5 Star,Deluxe Sea View Room,Beachfront luxury resort on the Mandovi side with premium rooms and spa facilities.,Available
+HTL-GOA-037,Grand Hyatt Goa,Bambolim,5 Star,Grand Room,"Large luxury resort overlooking Bambolim Bay with gardens, pools, and premium rooms and suites.",Available
+HTL-GOA-038,"Taj Cidade de Goa Horizon, Goa",Dona Paula,5 Star,Superior Room,Modern luxury property around Dona Paula with bay views and easy Panaji access.,Available
+HTL-GOA-039,Cidade de Goa - IHCL SeleQtions,Dona Paula,5 Star,Deluxe Room,Established coastal resort in Dona Paula suited to premium family and leisure stays.,Available
+HTL-GOA-040,DoubleTree by Hilton Goa - Panaji,Panaji,5 Star,Guest Room,Contemporary hotel suited to premium city and leisure stays around Panaji.,Available
+HTL-GOA-041,The Fern Kadamba Hotel and Spa Goa,Panaji,4 Star,Winter Green Room,Comfortable city-side hotel with spa facilities and access to Panaji and Old Goa.,Available
+HTL-GOA-042,Varanda Do Mar,Miramar,4 Star,Deluxe Room,Seaside boutique-style hotel near Miramar and Panaji.,Available
+HTL-GOA-043,Panjim Inn,Fontainhas,Boutique,Heritage Room,"Heritage guesthouse-style stay in the Fontainhas quarter, suited to culture-focused travellers.",Available
+HTL-GOA-044,Panjim Residency,Panaji,3 Star,Standard Room,GTDC city accommodation in Panaji suitable for practical central stays.,Available
+HTL-GOA-045,Miramar Residency,Miramar,3 Star,Standard Room,GTDC beach-side accommodation near Miramar and Panaji.,Available
+HTL-GOA-046,Mapusa Residency,Mapusa,3 Star,Standard Room,GTDC city accommodation providing a practical base for North Goa touring.,Available
+HTL-GOA-047,Calangute Residency,Calangute,3 Star,Standard Room,GTDC beach-area accommodation near Calangute for budget-conscious packages.,Available
+HTL-GOA-048,ITC Grand Goa Resort & Spa,Arossim,5 Star,Garden View Premium Room,"Luxury beachfront resort in South Goa with Portuguese-inspired architecture, gardens, lagoons, spa, and beach access.",Available
+HTL-GOA-049,Alila Diwa Goa,Majorda,5 Star,Guest Room,Luxury resort in Majorda with a tranquil South Goa setting and premium rooms and suites.,Available
+HTL-GOA-050,The St. Regis Goa Resort,Mobor,5 Star,Deluxe Garden View Room,"Luxury resort near Mobor with extensive grounds, spa, dining, and beach-oriented experiences.",Available
+HTL-GOA-051,"Taj Exotica Resort & Spa, Goa",Benaulim,5 Star,Garden Villa,Luxury South Goa resort set amid landscaped grounds near Benaulim beach.,Available
+HTL-GOA-052,The Leela Goa,Cavelossim,5 Star,Deluxe Garden View Room,"Luxury resort in South Goa with extensive gardens, lagoons, and beach access.",Available
+HTL-GOA-053,The LaLiT Golf & Spa Resort Goa,Canacona,5 Star,Garden View Suite,"Large luxury resort near Talpona and the southern coast, suited to premium retreats.",Available
+HTL-GOA-054,Radisson Blu Resort Goa Cavelossim Beach,Cavelossim,5 Star,Superior Room,"Upscale beachfront resort in Cavelossim with rooms, suites, spa, pool, and beach access.",Available
+HTL-GOA-055,Caravela Beach Resort Goa,Varca,5 Star,Garden View Room,Beach resort in Varca suited to family and premium leisure packages.,Available
+HTL-GOA-056,Holiday Inn Resort Goa,Cavelossim,5 Star,Garden View Room,"Beachfront South Goa resort suited to family holidays, couples, and group stays.",Available
+HTL-GOA-057,"Zuri White Sands, Goa Resort & Casino",Varca,5 Star,Deluxe Room,Large Varca beachfront resort suited to premium leisure and family stays.,Available
+HTL-GOA-058,Planet Hollywood Beach Resort Goa,Utorda,5 Star,Deluxe Room,"Upscale beachfront resort near Utorda and Majorda, suited to leisure-focused packages.",Available
+HTL-GOA-059,Kenilworth Resort & Spa Goa,Utorda,5 Star,Deluxe Room,Established beachfront resort in South Goa with a strong leisure and family profile.,Available
+HTL-GOA-060,Heritage Village Resort & Spa Goa,Arossim,5 Star,Superior Room,"Resort-style property near Arossim focused on beach holidays, wellness, and family leisure.",Available
+HTL-GOA-061,Royal Orchid Beach Resort & Spa Goa,Utorda,5 Star,Club Room,Beach resort in Utorda suited to family and couples' holidays.,Available
+HTL-GOA-062,Beleza By The Beach,Betalbatim,4 Star,Deluxe Room,Relaxed South Goa boutique resort near Betalbatim beach.,Available
+HTL-GOA-063,Nanu Beach Resort & Spa,Betalbatim,4 Star,Deluxe Room,South Goa resort suited to families and relaxed beach itineraries.,Available
+HTL-GOA-064,Azaya Beach Resort Goa,Benaulim,5 Star,Premium Room,Modern beachfront resort around Benaulim with an upscale leisure profile.,Available
+HTL-GOA-065,Novotel Goa Dona Sylvia Resort,Cavelossim,5 Star,Deluxe Room,Large resort-style property near Cavelossim suited to family and beach holidays.,Available
+HTL-GOA-066,Regenta Resort Varca,Varca,4 Star,Deluxe Room,Comfortable resort near Varca beach for mid-range premium packages.,Available
+HTL-GOA-067,Sterling Goa Varca,Varca,4 Star,Deluxe Room,Family-oriented resort base near the South Goa beach belt.,Available
+HTL-GOA-068,The Golden Crown Hotel & Spa,Colva,4 Star,Deluxe Room,Colva-area hotel suited to practical premium stays and beach holidays.,Available
+HTL-GOA-069,Soul Vacation Resort & Spa,Colva,4 Star,Wellness Room,Wellness-oriented boutique resort in Colva suited to couples and relaxation-focused packages.,Available
+HTL-GOA-070,Colva Kinara,Colva,3 Star,Deluxe Room,Convenient Colva base for beach-focused itineraries.,Available
+HTL-GOA-071,Colva Residency,Colva,3 Star,Standard Room,GTDC beach-area accommodation for practical South Goa stays.,Available
+HTL-GOA-072,Margao Residency,Margao,3 Star,Standard Room,GTDC city accommodation near Margao for South Goa touring.,Available
+HTL-GOA-073,Vasco Residency,Vasco da Gama,3 Star,Standard Room,GTDC city accommodation near Vasco and useful for airport-area stopovers.,Available
+HTL-GOA-074,Mayem Lake View,Bicholim,2 Star,Standard Room,GTDC economy-style stay suited to inland Goa nature trips.,Available
+HTL-GOA-075,Old Goa Residency,Old Goa,3 Star,Standard Room,GTDC accommodation near Old Goa heritage monuments.,Available
+HTL-GOA-076,Farmagudi Residency,Ponda,3 Star,Standard Room,GTDC inland accommodation useful for temple and spice-plantation circuits.,Available
+HTL-GOA-077,The Byke Old Anchor Beach Resort,Cavelossim,4 Star,Deluxe Room,Large resort-style property near Cavelossim suited to family and leisure packages.,Available
+HTL-GOA-078,Club Mahindra Varca Beach Resort,Varca,4 Star,Superior Room,Family-oriented resort near Varca beach with leisure facilities.,Available
+HTL-GOA-079,Ramada by Wyndham Goa Cavelossim,Cavelossim,4 Star,Deluxe Room,Comfortable resort base in the Cavelossim beach corridor.,Available
+HTL-GOA-080,The Fern Kadamba Hotel & Spa Goa,Old Goa,4 Star,Winter Green Room,City-and-heritage oriented hotel useful for Old Goa and Panaji touring.,Available
+HTL-GOA-081,Hotel Nanutel Margao,Margao,3 Star,Executive Room,Established Margao hotel suited to business and practical South Goa stays.,Available
+HTL-GOA-082,Hotel Surya Palace Goa,Vasco da Gama,3 Star,Deluxe Room,City hotel suitable for airport-area stopovers and short stays.,Available
+HTL-GOA-083,Nirmala Resort Goa,Palolem,3 Star,Deluxe Room,Leisure accommodation near the Palolem coastal area.,Available
+HTL-GOA-084,Palolem Beach Resort,Palolem,3 Star,Deluxe Room,Beach-area accommodation suited to relaxed Canacona itineraries.,Available
+HTL-GOA-085,Neelchand,Patnem,3 Star,Deluxe Room,Quiet coastal stay near Patnem suited to couples and wellness trips.,Available
+HTL-GOA-086,The Tubki Resort,Palolem,4 Star,Deluxe Room,Resort-style stay in the Palolem/Patnem area for leisure travellers.,Available
+HTL-GOA-087,Sobit Sarovar Portico Goa,Palolem,4 Star,Deluxe Room,Modern resort accommodation in the southern beach belt.,Available
+HTL-GOA-088,The Lalit Golf & Spa Resort Goa - Villa,Canacona,5 Star,Luxury Villa,Villa-style luxury inventory for premium southern Goa itineraries.,Available
+HTL-GOA-089,Goa Woodlands Hotel,Margao,3 Star,Deluxe Room,City hotel for practical South Goa touring and business stays.,Available
+HTL-GOA-090,Hotel Tanishq,Margao,3 Star,Deluxe Room,Budget-conscious city accommodation useful for inland and South Goa itineraries.,Available

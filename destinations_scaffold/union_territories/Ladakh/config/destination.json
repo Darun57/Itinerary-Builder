@@ -1,0 +1,8 @@
+{
+  "name": "Ladakh",
+  "slug": "ladakh",
+  "scope": "union_territory",
+  "status": "scaffold",
+  "protected_reference": false,
+  "namespace": "velqairn:ladakh"
+}

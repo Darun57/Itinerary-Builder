@@ -1,0 +1,768 @@
+[
+  {
+    "id": "goa:attr:candolim_beach",
+    "destination_id": "goa:candolim",
+    "name": "Candolim Beach",
+    "category": "beach",
+    "suggested_duration_minutes": 120,
+    "best_for": [
+      "beach",
+      "watersports",
+      "relaxation",
+      "sunset"
+    ],
+    "operational_notes": [
+      "Public beach with lifeguard stations; water sports seasonal (Oct-May)."
+    ],
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "goa:attr:sinquerim_beach",
+    "destination_id": "goa:candolim",
+    "name": "Sinquerim Beach",
+    "category": "beach",
+    "suggested_duration_minutes": 90,
+    "best_for": [
+      "beach",
+      "watersports",
+      "scenic"
+    ],
+    "operational_notes": [
+      "Adjacent to lower Fort Aguada; active boat trips and jet ski point."
+    ],
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "goa:attr:fort_aguada",
+    "destination_id": "goa:candolim",
+    "name": "Fort Aguada",
+    "category": "heritage",
+    "suggested_duration_minutes": 90,
+    "best_for": [
+      "heritage",
+      "photography",
+      "views",
+      "history"
+    ],
+    "operational_notes": [
+      "Open daily 9:30 AM - 5:30 PM. ASI entry ticket required."
+    ],
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "goa:attr:vagator_beach",
+    "destination_id": "goa:vagator",
+    "name": "Vagator Beach",
+    "category": "beach",
+    "suggested_duration_minutes": 120,
+    "best_for": [
+      "beach",
+      "sunset",
+      "red_cliffs",
+      "leisure"
+    ],
+    "operational_notes": [
+      "Divided into Big Vagator and Little Vagator (Ozran); steep cliff walk."
+    ],
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "goa:attr:chapora_fort",
+    "destination_id": "goa:vagator",
+    "name": "Chapora Fort",
+    "category": "heritage",
+    "suggested_duration_minutes": 60,
+    "best_for": [
+      "heritage",
+      "sunset",
+      "views",
+      "photography"
+    ],
+    "operational_notes": [
+      "Open sunrise to sunset; short uphill walk from parking."
+    ],
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "goa:attr:fontainhas_latin_quarter",
+    "destination_id": "goa:panaji",
+    "name": "Fontainhas (Latin Quarter)",
+    "category": "heritage",
+    "suggested_duration_minutes": 120,
+    "best_for": [
+      "heritage",
+      "architecture",
+      "photography",
+      "culture"
+    ],
+    "operational_notes": [
+      "Historic residential quarter; best explored on foot during morning or late afternoon."
+    ],
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "goa:attr:miramar_beach",
+    "destination_id": "goa:panaji",
+    "name": "Miramar Beach",
+    "category": "beach",
+    "suggested_duration_minutes": 60,
+    "best_for": [
+      "sunset",
+      "beach",
+      "promenade",
+      "city"
+    ],
+    "operational_notes": [
+      "Urban beach along Mandovi river estuary; swimming not recommended due to currents."
+    ],
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "goa:attr:calangute_beach",
+    "destination_id": "goa:calangute",
+    "name": "Calangute Beach",
+    "category": "beach",
+    "suggested_duration_minutes": 120,
+    "best_for": [
+      "beach",
+      "watersports",
+      "shopping",
+      "family"
+    ],
+    "operational_notes": [
+      "Extensive water sports operations; lifeguard-patrolled swim zones."
+    ],
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "goa:attr:baga_beach",
+    "destination_id": "goa:baga",
+    "name": "Baga Beach",
+    "category": "beach",
+    "suggested_duration_minutes": 120,
+    "best_for": [
+      "beach",
+      "watersports",
+      "nightlife",
+      "dining"
+    ],
+    "operational_notes": [
+      "Active beach shacks, dining, and water activities; busy during peak evening hours."
+    ],
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "goa:attr:anjuna_beach",
+    "destination_id": "goa:anjuna",
+    "name": "Anjuna Beach",
+    "category": "beach",
+    "suggested_duration_minutes": 90,
+    "best_for": [
+      "beach",
+      "sunset",
+      "rocky_coast",
+      "cafes"
+    ],
+    "operational_notes": [
+      "Rocky shoreline with sandy pockets; famous for sunset cafes and relaxed vibe."
+    ],
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "goa:attr:anjuna_flea_market",
+    "destination_id": "goa:anjuna",
+    "name": "Anjuna Flea Market",
+    "category": "market",
+    "suggested_duration_minutes": 120,
+    "best_for": [
+      "market",
+      "shopping",
+      "handicrafts",
+      "culture"
+    ],
+    "operational_notes": [
+      "Operates on Wednesdays during tourist season (October to April)."
+    ],
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "goa:attr:morjim_beach",
+    "destination_id": "goa:morjim",
+    "name": "Morjim Beach",
+    "category": "beach",
+    "suggested_duration_minutes": 120,
+    "best_for": [
+      "beach",
+      "nature",
+      "wildlife",
+      "relaxation"
+    ],
+    "operational_notes": [
+      "Designated Olive Ridley turtle nesting zone; water sports restricted in conservation area."
+    ],
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "goa:attr:ashwem_beach",
+    "destination_id": "goa:ashwem",
+    "name": "Ashwem Beach",
+    "category": "beach",
+    "suggested_duration_minutes": 120,
+    "best_for": [
+      "beach",
+      "boutique",
+      "dining",
+      "relaxation"
+    ],
+    "operational_notes": [
+      "Wide, shallow-water beach ideal for calm swimming and boutique coastal dining."
+    ],
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "goa:attr:mandrem_beach",
+    "destination_id": "goa:mandrem",
+    "name": "Mandrem Beach",
+    "category": "beach",
+    "suggested_duration_minutes": 120,
+    "best_for": [
+      "beach",
+      "yoga",
+      "wellness",
+      "slow_travel"
+    ],
+    "operational_notes": [
+      "Quiet beach with scenic bamboo footbridge across creek; ideal for relaxation."
+    ],
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "goa:attr:arambol_beach",
+    "destination_id": "goa:arambol",
+    "name": "Arambol Beach",
+    "category": "beach",
+    "suggested_duration_minutes": 120,
+    "best_for": [
+      "beach",
+      "nature",
+      "sunset",
+      "culture"
+    ],
+    "operational_notes": [
+      "Northern sandy stretch with cliffside paths leading to freshwater lake."
+    ],
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "goa:attr:basilica_of_bom_jesus",
+    "destination_id": "goa:old_goa",
+    "name": "Basilica of Bom Jesus",
+    "category": "heritage",
+    "suggested_duration_minutes": 90,
+    "best_for": [
+      "heritage",
+      "church",
+      "history",
+      "unesco"
+    ],
+    "operational_notes": [
+      "UNESCO World Heritage Site; holds sacred relics of St. Francis Xavier. Modest attire required."
+    ],
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "goa:attr:se_cathedral",
+    "destination_id": "goa:old_goa",
+    "name": "Se Cathedral",
+    "category": "heritage",
+    "suggested_duration_minutes": 60,
+    "best_for": [
+      "heritage",
+      "church",
+      "architecture",
+      "unesco"
+    ],
+    "operational_notes": [
+      "One of largest churches in Asia, famed for Golden Bell and Portuguese-Manueline style."
+    ],
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "goa:attr:church_st_francis_assisi",
+    "destination_id": "goa:old_goa",
+    "name": "Church of St. Francis of Assisi",
+    "category": "heritage",
+    "suggested_duration_minutes": 45,
+    "best_for": [
+      "heritage",
+      "museum",
+      "history"
+    ],
+    "operational_notes": [
+      "Houses the ASI Archaeological Museum displaying colonial portraits and sculpture."
+    ],
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "goa:attr:dona_paula_viewpoint",
+    "destination_id": "goa:dona_paula",
+    "name": "Dona Paula Viewpoint",
+    "category": "viewpoint",
+    "suggested_duration_minutes": 60,
+    "best_for": [
+      "viewpoint",
+      "sunset",
+      "promenade",
+      "views"
+    ],
+    "operational_notes": [
+      "Overlooks Mormugao harbor and the confluence of Zuari and Mandovi rivers."
+    ],
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "goa:attr:colva_beach",
+    "destination_id": "goa:colva",
+    "name": "Colva Beach",
+    "category": "beach",
+    "suggested_duration_minutes": 120,
+    "best_for": [
+      "beach",
+      "family",
+      "watersports",
+      "seafood"
+    ],
+    "operational_notes": [
+      "Broad white sands with lifeguard station, water activities, and beachfront shacks."
+    ],
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "goa:attr:benaulim_beach",
+    "destination_id": "goa:benaulim",
+    "name": "Benaulim Beach",
+    "category": "beach",
+    "suggested_duration_minutes": 120,
+    "best_for": [
+      "beach",
+      "relaxation",
+      "dolphin_spotting",
+      "dining"
+    ],
+    "operational_notes": [
+      "Quiet fishing beach suited to calm walks, boat excursions, and evening seafood shacks."
+    ],
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "goa:attr:cavelossim_beach",
+    "destination_id": "goa:cavelossim",
+    "name": "Cavelossim Beach",
+    "category": "beach",
+    "suggested_duration_minutes": 120,
+    "best_for": [
+      "beach",
+      "luxury",
+      "relaxation",
+      "nature"
+    ],
+    "operational_notes": [
+      "Clean white-sand shoreline between Sal river and sea, near premium luxury resorts."
+    ],
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "goa:attr:varca_beach",
+    "destination_id": "goa:varca",
+    "name": "Varca Beach",
+    "category": "beach",
+    "suggested_duration_minutes": 120,
+    "best_for": [
+      "beach",
+      "luxury_resorts",
+      "relaxation"
+    ],
+    "operational_notes": [
+      "Quiet white-sand beach strip fronted by upscale resort enclaves."
+    ],
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "goa:attr:mobor_beach",
+    "destination_id": "goa:mobor",
+    "name": "Mobor Beach",
+    "category": "beach",
+    "suggested_duration_minutes": 90,
+    "best_for": [
+      "beach",
+      "watersports",
+      "delta",
+      "scenic"
+    ],
+    "operational_notes": [
+      "Located at the southern tip of Cavelossim where Sal River meets Arabian Sea."
+    ],
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "goa:attr:majorda_beach",
+    "destination_id": "goa:majorda",
+    "name": "Majorda Beach",
+    "category": "beach",
+    "suggested_duration_minutes": 120,
+    "best_for": [
+      "beach",
+      "culinary",
+      "relaxation"
+    ],
+    "operational_notes": [
+      "Known for soft sands, Goan bakery heritage, and quiet coastal atmosphere."
+    ],
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "goa:attr:palolem_beach",
+    "destination_id": "goa:palolem",
+    "name": "Palolem Beach",
+    "category": "beach",
+    "suggested_duration_minutes": 180,
+    "best_for": [
+      "beach",
+      "kayaking",
+      "sunset",
+      "scenic"
+    ],
+    "operational_notes": [
+      "Crescent-shaped bay with calm waters protected by headlands; kayak rentals available."
+    ],
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "goa:attr:agonda_beach",
+    "destination_id": "goa:agonda",
+    "name": "Agonda Beach",
+    "category": "beach",
+    "suggested_duration_minutes": 120,
+    "best_for": [
+      "beach",
+      "nature",
+      "peace",
+      "turtle_nesting"
+    ],
+    "operational_notes": [
+      "Uncrowded, wide beach designated for silent tourism and turtle conservation."
+    ],
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "goa:attr:patnem_beach",
+    "destination_id": "goa:patnem",
+    "name": "Patnem Beach",
+    "category": "beach",
+    "suggested_duration_minutes": 90,
+    "best_for": [
+      "beach",
+      "wellness",
+      "relaxation"
+    ],
+    "operational_notes": [
+      "Intimate cove just south of Palolem with relaxed cafes and wellness spots."
+    ],
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "goa:attr:cabo_de_rama_fort",
+    "destination_id": "goa:cabo_de_rama",
+    "name": "Cabo de Rama Fort",
+    "category": "heritage",
+    "suggested_duration_minutes": 90,
+    "best_for": [
+      "heritage",
+      "panoramic_views",
+      "history"
+    ],
+    "operational_notes": [
+      "Cliffside fort with Portuguese ruins and sweeping views of South Goa coast."
+    ],
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "goa:attr:dudhsagar_waterfalls",
+    "destination_id": "goa:dudhsagar",
+    "name": "Dudhsagar Waterfalls",
+    "category": "nature",
+    "suggested_duration_minutes": 240,
+    "best_for": [
+      "nature",
+      "waterfall",
+      "adventure",
+      "forest"
+    ],
+    "operational_notes": [
+      "Four-tiered cascade in Western Ghats; accessed via registered jeep safari from Collem."
+    ],
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "goa:attr:bhagwan_mahavir_sanctuary",
+    "destination_id": "goa:dudhsagar",
+    "name": "Bhagwan Mahavir Wildlife Sanctuary",
+    "category": "nature",
+    "suggested_duration_minutes": 180,
+    "best_for": [
+      "wildlife",
+      "nature",
+      "biodiversity",
+      "trekking"
+    ],
+    "operational_notes": [
+      "Largest wildlife sanctuary in Goa; entry permits issued at Mollem forest checkpost."
+    ],
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "goa:attr:shanta_durga_temple",
+    "destination_id": "goa:ponda",
+    "name": "Shanta Durga Temple",
+    "category": "heritage",
+    "suggested_duration_minutes": 60,
+    "best_for": [
+      "heritage",
+      "temple",
+      "culture"
+    ],
+    "operational_notes": [
+      "Famous temple dedicated to Goddess Shantadurga at Kavlem, Ponda. Dress code observed."
+    ],
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "goa:attr:mangueshi_temple",
+    "destination_id": "goa:ponda",
+    "name": "Mangueshi Temple",
+    "category": "heritage",
+    "suggested_duration_minutes": 60,
+    "best_for": [
+      "heritage",
+      "temple",
+      "architecture"
+    ],
+    "operational_notes": [
+      "Famous 400-year-old Shiva temple at Priol featuring 7-storey Deepstambha lamp tower."
+    ],
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "goa:attr:sahakari_spice_farm",
+    "destination_id": "goa:ponda",
+    "name": "Sahakari Spice Farm",
+    "category": "nature",
+    "suggested_duration_minutes": 120,
+    "best_for": [
+      "nature",
+      "spice_tour",
+      "culture",
+      "culinary"
+    ],
+    "operational_notes": [
+      "Guided plantation walking tour with botanical explanation and traditional Goan lunch."
+    ],
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "goa:attr:our_lady_of_compassion_divar",
+    "destination_id": "goa:divar_island",
+    "name": "Our Lady of Compassion Church",
+    "category": "heritage",
+    "suggested_duration_minutes": 60,
+    "best_for": [
+      "heritage",
+      "views",
+      "island_culture"
+    ],
+    "operational_notes": [
+      "Hilltop church on Divar Island offering sweeping views over the Mandovi river basin."
+    ],
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "goa:attr:bogmalo_beach",
+    "destination_id": "goa:bogmalo",
+    "name": "Bogmalo Beach",
+    "category": "beach",
+    "suggested_duration_minutes": 90,
+    "best_for": [
+      "beach",
+      "diving",
+      "transit_stop"
+    ],
+    "operational_notes": [
+      "Curved sandy bay close to Dabolim airport with accredited scuba dive schools."
+    ],
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "goa:attr:naval_aviation_museum",
+    "destination_id": "goa:bogmalo",
+    "name": "Naval Aviation Museum",
+    "category": "heritage",
+    "suggested_duration_minutes": 90,
+    "best_for": [
+      "museum",
+      "aviation",
+      "history",
+      "family"
+    ],
+    "operational_notes": [
+      "Open Tuesday-Sunday 9:30 AM - 5:30 PM (closed Mondays). Displaying naval aircraft and armaments."
+    ],
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "goa:attr:netravali_bubbling_lake",
+    "destination_id": "goa:netravali",
+    "name": "Netravali Bubbling Lake",
+    "category": "nature",
+    "suggested_duration_minutes": 60,
+    "best_for": [
+      "nature",
+      "unique_phenomenon",
+      "offbeat"
+    ],
+    "operational_notes": [
+      "Sacred temple pond (Budbudyanchi Tali) where natural methane bubbles rise continuously."
+    ],
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "goa:attr:tiracol_fort",
+    "destination_id": "goa:tiracol",
+    "name": "Tiracol Fort",
+    "category": "heritage",
+    "suggested_duration_minutes": 90,
+    "best_for": [
+      "heritage",
+      "views",
+      "fort",
+      "coastal"
+    ],
+    "operational_notes": [
+      "Northernmost coastal fortress reachable via vehicle ferry across Tiracol river from Querim."
+    ],
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "goa:attr:mapusa_friday_market",
+    "destination_id": "goa:mapusa",
+    "name": "Mapusa Friday Market",
+    "category": "market",
+    "suggested_duration_minutes": 120,
+    "best_for": [
+      "market",
+      "local_produce",
+      "culture",
+      "shopping"
+    ],
+    "operational_notes": [
+      "Vibrant weekly bazaar on Fridays; stalls sell local pottery, Goan sausages, spices, and dried fish."
+    ],
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "goa:attr:mayem_lake",
+    "destination_id": "goa:bicholim",
+    "name": "Mayem Lake",
+    "category": "nature",
+    "suggested_duration_minutes": 90,
+    "best_for": [
+      "nature",
+      "lake",
+      "boating",
+      "family"
+    ],
+    "operational_notes": [
+      "Inland freshwater lake operated by GTDC with pedal boating and surrounding forested hills."
+    ],
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "goa:attr:holy_spirit_church_margao",
+    "destination_id": "goa:margao",
+    "name": "Holy Spirit Church",
+    "category": "heritage",
+    "suggested_duration_minutes": 60,
+    "best_for": [
+      "heritage",
+      "architecture",
+      "history"
+    ],
+    "operational_notes": [
+      "17th-century baroque church situated in Margao historic Largo de Igreja square."
+    ],
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "goa:attr:arossim_beach",
+    "destination_id": "goa:arossim",
+    "name": "Arossim Beach",
+    "category": "beach",
+    "suggested_duration_minutes": 90,
+    "best_for": [
+      "beach",
+      "peace",
+      "luxury_resorts"
+    ],
+    "operational_notes": [
+      "Serene white-sand beach with swaying palm groves fronting luxury beachfront resorts."
+    ],
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "goa:attr:utorda_beach",
+    "destination_id": "goa:utorda",
+    "name": "Utorda Beach",
+    "category": "beach",
+    "suggested_duration_minutes": 90,
+    "best_for": [
+      "beach",
+      "swimming",
+      "relaxation"
+    ],
+    "operational_notes": [
+      "Uncluttered, clean shoreline with gentle gradient suitable for safe swimming."
+    ],
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "goa:attr:sunset_beach_betalbatim",
+    "destination_id": "goa:betalbatim",
+    "name": "Sunset Beach (Betalbatim)",
+    "category": "beach",
+    "suggested_duration_minutes": 90,
+    "best_for": [
+      "beach",
+      "sunset",
+      "pine_groves"
+    ],
+    "operational_notes": [
+      "Known as Sunset Beach for unobstructed twilight views and quiet pine-shaded sands."
+    ],
+    "source_status": "official_tourism_seed"
+  },
+  {
+    "id": "goa:attr:bambolim_beach",
+    "destination_id": "goa:bambolim",
+    "name": "Bambolim Beach",
+    "category": "beach",
+    "suggested_duration_minutes": 60,
+    "best_for": [
+      "beach",
+      "shady_cove",
+      "relaxation"
+    ],
+    "operational_notes": [
+      "Sheltered coastal stretch on the Mandovi estuary surrounded by dense tree cover."
+    ],
+    "source_status": "official_tourism_seed"
+  }
+]
