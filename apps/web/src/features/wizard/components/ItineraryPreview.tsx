@@ -1,18 +1,20 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { useWizardStore } from "../store";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { FileText, Edit2, Loader2 } from "lucide-react";
+import { FileText, Edit2, Loader2, Layout } from "lucide-react";
 import { useMutation } from "@tanstack/react-query";
 import { generatePDF } from "@/lib/api";
 import { TripRequestType } from "../schema";
+import ProposalStudio from "@/features/proposal/studio/components/ProposalStudio";
 
 export default function ItineraryPreview() {
   const { formData, generatedItinerary, setGeneratedItinerary, setStep } = useWizardStore();
+  const [studioMode, setStudioMode] = useState(false);
 
   const pdfMutation = useMutation({
     mutationFn: generatePDF,
@@ -35,6 +37,11 @@ export default function ItineraryPreview() {
     }
   });
 
+  // Show Proposal Studio full-screen when active
+  if (studioMode) {
+    return <ProposalStudio onExit={() => setStudioMode(false)} />;
+  }
+
   if (!generatedItinerary) return null;
 
   const handleDownloadPDF = () => {
@@ -56,6 +63,15 @@ export default function ItineraryPreview() {
           <Button variant="outline" onClick={() => { setGeneratedItinerary(null); setStep(6); }} disabled={pdfMutation.isPending}>
             <Edit2 className="w-4 h-4 mr-2" />
             Edit Wizard
+          </Button>
+          <Button
+            variant="outline"
+            onClick={() => setStudioMode(true)}
+            disabled={pdfMutation.isPending}
+            className="border-primary/30 text-primary hover:bg-primary/5"
+          >
+            <Layout className="w-4 h-4 mr-2" />
+            Proposal Studio
           </Button>
           <Button 
             onClick={handleDownloadPDF} 
